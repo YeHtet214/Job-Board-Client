@@ -1,1 +1,0 @@
-import{R as m,j as s}from"./index-p34BVjv6.js";import{m as e,g as i}from"./index.esm-DArLBWuV.js";const c=({children:o,onSubmit:t,className:r=""})=>m.useContext(e)!==void 0?s.jsx(i,{className:`space-y-4 ${r}`,children:o}):s.jsx("form",{onSubmit:t,className:`space-y-6 ${r}`,children:o});export{c as F};

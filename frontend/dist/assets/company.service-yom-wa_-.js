@@ -1,6 +1,0 @@
-var o=Object.defineProperty;var i=(t,s,e)=>s in t?o(t,s,{enumerable:!0,configurable:!0,writable:!0,value:e}):t[s]=e;var n=(t,s,e)=>i(t,typeof s!="symbol"?s+"":s,e);import{t as p,a9 as c}from"./index-p34BVjv6.js";/**
- * @license lucide-react v0.482.0 - ISC
- *
- * This source code is licensed under the ISC license.
- * See the LICENSE file in the root directory of this source tree.
- */const r=[["path",{d:"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2",key:"1yyitq"}],["circle",{cx:"9",cy:"7",r:"4",key:"nufk8"}],["path",{d:"M22 21v-2a4 4 0 0 0-3-3.87",key:"kshegd"}],["path",{d:"M16 3.13a4 4 0 0 1 0 7.75",key:"1da9ce"}]],A=p("Users",r);class d extends c{constructor(){super(...arguments);n(this,"endpoints",{ALL:"/companies",DETAIL:e=>`/companies/${e}`,MY_COMPANY:"/companies/my-company"})}async getAllCompanies(){return(await this.get(this.endpoints.ALL)).data.data}async getCompanyById(e){return(await this.get(this.endpoints.DETAIL(e))).data.data}async getMyCompany(){return(await this.get(this.endpoints.MY_COMPANY)).data.data}async createCompany(e){return(await this.post(this.endpoints.ALL,e)).data.data}async updateCompany(e,a){return(await this.put(this.endpoints.DETAIL(e),a)).data.data}async deleteCompany(e){await this.delete(this.endpoints.DETAIL(e))}}const L=new d;export{A as U,L as c};

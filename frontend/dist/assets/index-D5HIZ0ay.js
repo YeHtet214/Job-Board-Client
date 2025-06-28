@@ -1,1 +1,0 @@
-import{r,l as n,af as s}from"./index-p34BVjv6.js";var u=r.createContext(void 0);function f(t){const e=r.useContext(u);return t||e||"ltr"}var c=n.useId||(()=>{}),i=0;function x(t){const[e,o]=r.useState(c());return s(()=>{o(a=>a??String(i++))},[t]),t||(e?`radix-${e}`:"")}export{f as a,x as u};
