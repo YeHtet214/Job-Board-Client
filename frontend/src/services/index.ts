@@ -3,8 +3,7 @@ import { isTokenExpired, willTokenExpireSoon } from '../utils/jwt';
 
 // Create axios instance with base settings
 const axiosInstance = axios.create({
-    // baseURL: process.env.REACT_APP_API_URL || 'http://localhost:3000/api',
-    baseURL: 'http://localhost:3000/api',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api',
 });
 
 // Whether we're currently refreshing the token

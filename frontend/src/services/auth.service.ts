@@ -7,8 +7,8 @@ class AuthService extends ApiService {
   private endpoints = {
     SIGNIN: '/auth/signin',
     SIGNUP: '/auth/signup',
-    GOOGLE_AUTH: 'http://localhost:3000/api/auth/google',
-    GOOGLE_CALLBACK: 'http://localhost:3000/api/auth/google/callback',
+    GOOGLE_AUTH: `${import.meta.env.VITE_API_BASE_URL}/auth/google`,
+    GOOGLE_CALLBACK: `${import.meta.env.VITE_API_BASE_URL}/auth/google/callback`,
     LOGOUT: '/auth/logout',
     REFRESH_TOKEN: '/auth/refresh-token',
     VERIFY_EMAIL: (token: string) => `/auth/verify-email/${token}`,
