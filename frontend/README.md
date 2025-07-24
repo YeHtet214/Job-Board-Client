@@ -1,50 +1,81 @@
-# React + TypeScript + Vite
+# 🧑‍💼 JobBoard – Full-Stack Job Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![JobBoard Banner](./docs/banner.png) <!-- Add a banner image if available -->
 
-Currently, two official plugins are available:
+A modern, full-stack job platform that connects employers and job seekers.  
+Built with **React + TypeScript + Tailwind CSS + ShadCN UI** for the frontend, and **Express + PostgreSQL + Prisma** for the backend.  
+This project demonstrates **real-world architecture**, including authentication (JWT & Google OAuth), job listings, bookmarks, and dashboards.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🚀 Live Demo
+[**🌐 View JobBoard Online**](https://your-live-demo-link.com)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## ✨ Features
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+### **For Job Seekers**
+- Browse job listings with advanced filters & search.
+- View detailed job descriptions.
+- Bookmark jobs for later.
+- Apply to jobs with a single click.
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+### **For Employers**
+- Post, edit, and manage job listings.
+- Track applications through the employer dashboard.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+### **Authentication**
+- Secure login/registration with **JWT**.
+- **Google OAuth** integration for social login.
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+### **Other Features**
+- Responsive design (mobile-friendly).
+- Optimized performance with **React Query**.
+- Dark mode with **Tailwind + CSS Variables**.
+- Fully tested with **Jest + Supertest**.
+
+---
+
+## 🛠️ Tech Stack
+
+### **Frontend**
+- [React](https://reactjs.org/) (TypeScript, Vite)
+- [Tailwind CSS](https://tailwindcss.com/) + [ShadCN UI](https://ui.shadcn.com/)
+- [React Query](https://react-query.tanstack.com/)
+- [React Router](https://reactrouter.com/)
+
+### **Backend**
+- [Express.js](https://expressjs.com/) (TypeScript)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Prisma ORM](https://www.prisma.io/)
+- [JWT](https://jwt.io/) + [Passport.js](http://www.passportjs.org/) for authentication
+- [Google OAuth](https://developers.google.com/identity/protocols/oauth2)
+
+### **Testing**
+- Jest + Supertest
+
+### **Deployment**
+- Frontend: **Vercel/Netlify**
+- Backend: **Heroku**
+- Database: **Neon/PostgreSQL**
+
+---
+
+## 📂 Project Structure
+JobBoard/
+├── client/ # Frontend (React + Vite + TS)
+│ ├── src/
+│ │ ├── components/ # Shared UI components
+│ │ ├── hooks/ # Custom hooks
+│ │ ├── pages/ # Pages (Home, Jobs, Profile)
+│ │ ├── services/ # API services
+│ │ └── ...
+│ └── ...
+├── server/ # Backend (Express + TS)
+│ ├── controllers/ # Route controllers
+│ ├── routes/ # API endpoints
+│ ├── services/ # Business logic
+│ ├── prisma/ # Prisma schema and migrations
+│ └── ...
+└── docs/ # Documentation & assets
