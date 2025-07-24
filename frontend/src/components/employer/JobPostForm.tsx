@@ -19,7 +19,6 @@ import {
   InputFieldWithLabel,
   TextareaField,
   SelectFieldWithLabel,
-  MultiSelectFieldWithLabel,
   DatePickerFieldWithLabel
 } from '@/components/forms';
 import { JobSchema } from '@/schemas/validation/job.schema';
@@ -48,9 +47,30 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [skills, setSkills] = useState<string[]>(job?.requiredSkills || []);
+  const [skillInput, setSkillInput] = useState('');
   const formikRef = useRef<any>(null);
 
   useEffect(() => setSkills(job?.requiredSkills || []), [job]);
+
+  // Handle skill input
+  const handleAddSkill = () => {
+    if (skillInput.trim() && !skills.includes(skillInput.trim())) {
+      const newSkills = [...skills, skillInput.trim()];
+      setSkills(newSkills);
+      setSkillInput('');
+      if (formikRef.current) {
+        formikRef.current.setFieldValue('requiredSkills', newSkills);
+      }
+    }
+  };
+
+  const handleRemoveSkill = (skillToRemove: string) => {
+    const newSkills = skills.filter(skill => skill !== skillToRemove);
+    setSkills(newSkills);
+    if (formikRef.current) {
+      formikRef.current.setFieldValue('requiredSkills', newSkills);
+    }
+  };
 
   // React Query mutations
   const createJob = useCreateJob();
@@ -68,27 +88,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
     expiresAt: job?.expiresAt ? new Date(job.expiresAt).toISOString().split('T')[0] :
       new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Default to 30 days from now
   };
-
-  // Handle skill input
-  // const handleAddSkill = () => {
-  //   if (skillInput.trim() && !skills.includes(skillInput.trim())) {
-  //     const newSkills = [...skills, skillInput.trim()];
-  //     setSkills(newSkills);
-  //     setSkillInput('');
-  //   }
-  // };
-
-  // const handleRemoveSkill = (skillToRemove: string) => {
-  //   const newSkills = skills.filter(skill => skill !== skillToRemove);
-  //   setSkills(newSkills);
-  // };
-
-  // Use useEffect to update Formik values when skills change
-  useEffect(() => {
-    if (formikRef.current) {
-      formikRef.current.setFieldValue('requiredSkills', skills);
-    }
-  }, [skills]);
 
   // Handle form submission
   const handleSubmit = async (values: CreateJobDto, { setSubmitting }: FormikHelpers<CreateJobDto>) => {
@@ -133,9 +132,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
   };
 
   const formikSubmitting = createJob.isPending || updateJob.isPending;
-
-  // Convert required skills to options format for MultiSelectFieldWithLabel
-  const skillsAsOptions = skills.map(skill => ({ value: skill, label: skill }));
 
   return (
     <Card>
@@ -213,17 +209,60 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
                 />
               </div>
 
-              <MultiSelectFieldWithLabel
-                formik={true}
-                name="requiredSkills"
-                label="Required Skills"
-                options={skillsAsOptions}
-                placeholder="Enter skills needed for this job"
-                allowCreation={true}
-                creationLabel="Add skill:"
-                disabled={isSubmitting || formikSubmitting}
-                required
-              />
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-jb-text-muted-foreground">
+                  Required Skills <span className="text-jb-danger">*</span>
+                </label>
+                <div className="flex space-x-2">
+                  <input
+                    type="text"
+                    value={skillInput}
+                    onChange={(e) => setSkillInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddSkill();
+                      }
+                    }}
+                    placeholder="Enter a skill"
+                    className="flex-1 min-w-0 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-jb-primary focus:border-jb-primary sm:text-sm"
+                    disabled={isSubmitting || formikSubmitting}
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddSkill}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-jb-primary hover:bg-jb-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-jb-primary"
+                    disabled={isSubmitting || formikSubmitting}
+                  >
+                    Add
+                  </button>
+                </div>
+                {skills.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-jb-primary/10 text-jb-primary"
+                      >
+                        {skill}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveSkill(skill)}
+                          className="ml-1.5 inline-flex items-center justify-center w-4 h-4 rounded-full bg-jb-primary/20 text-jb-primary hover:bg-jb-primary/30 focus:outline-none cursor-pointer"
+                        >
+                          <span className="sr-only">Remove skill</span>
+                          <svg className="w-2 h-2" fill="currentColor" viewBox="0 0 8 8">
+                            <path d="M8 0.8L7.2 0 4 3.2 0.8 0 0 0.8 3.2 4 0 7.2 0.8 8 4 4.8 7.2 8 8 7.2 4.8 4 8 0.8z" />
+                          </svg>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {formikRef.current?.errors.requiredSkills && formikRef.current?.touched.requiredSkills && (
+                  <p className="mt-1 text-sm text-red-600">{formikRef.current.errors.requiredSkills}</p>
+                )}
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                 <SelectFieldWithLabel
@@ -237,7 +276,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
                 />
 
                 <DatePickerFieldWithLabel
-                  formik={true}
                   name="expiresAt"
                   label="Job Posting Expires On"
                   required

@@ -116,10 +116,10 @@ const EmployerJobsPage: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h1 className="text-3xl font-bold text-jobboard-darkblue">Your Job Postings</h1>
+        <h1 className="text-3xl font-bold text-jb-primary">Your Job Postings</h1>
         <Button
           onClick={() => navigate('/employer/jobs/create')}
-          className="bg-jobboard-darkblue hover:bg-jobboard-darkblue/90"
+          className="text-jb-text-foreground bg-jb-primary hover:bg-jb-primary/80"
         >
           <Plus className="h-4 w-4 mr-2" />
           Post New Job

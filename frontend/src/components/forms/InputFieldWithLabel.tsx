@@ -45,15 +45,15 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
         
             return (
                 <div className="mb-4">
-                    <label htmlFor={name} className="block text-sm font-medium mb-1 text-muted-foreground">
+                    <Label htmlFor={name} className="block text-sm font-medium mb-2 text-jb-text-muted-foreground">
                         {label} {required && <span className="text-jb-danger">*</span>}
-                    </label>
+                    </Label>
                     <Input
                         id={name}
                         placeholder={placeholder}
                         disabled={disabled}
                         autoComplete={autoComplete}
-                        className={`mt-1 block w-full px-3 py-2 border ${
+                        className={`mt-1 block w-full px-3 py-4 border ${
                             hasError ? 'border-jb-danger' : 'border-jb-border'
                         } rounded-md shadow-sm focus:outline-none focus:ring-jb-primary focus:border-jb-primary ${className}`}
                         {...field}
@@ -69,7 +69,7 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
             console.warn(`InputField with name "${name}" is marked as a Formik field but no Formik context was found.`);
             return (
                 <div className="mb-4">
-                    <Label htmlFor={name} className="block text-sm font-medium mb-1 text-muted-foreground">
+                    <Label htmlFor={name} className="block text-sm font-medium mb-2 text-muted-foreground">
                         <div className="relative inline-block">
                             {label} {required && <span className="text-jb-danger absolute -right-2 top-1/2 transform -translate-y-1/2">*</span>}
                         </div>
@@ -79,7 +79,7 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
                         placeholder={placeholder}
                         disabled={disabled}
                         autoComplete={autoComplete}
-                        className={`mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-jb-primary focus:border-jb-primary ${className}`}
+                        className={`mt-1 block w-full px-3 py-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-jb-primary focus:border-jb-primary ${className}`}
                         {...props}
                     />
                 </div>
@@ -92,9 +92,9 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
         
         return (
             <div className="mb-4">
-                <Label htmlFor={name} className="block text-sm font-medium mb-1">
+                <Label htmlFor={name} className="block text-sm font-medium mb-2">
                     <div className="relative inline-block">
-                        {label} {required && <span className="text-red-500 absolute -right-2 top-1/2 transform -translate-y-1/2">*</span>}
+                        {label} {required && <span className="text-jb-danger absolute -right-2 top-1/2 transform -translate-y-1/2">*</span>}
                     </div>
                 </Label>
                 <Input
@@ -105,12 +105,12 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
                     onBlur={onBlur}
                     disabled={disabled}
                     autoComplete={autoComplete}
-                    className={`mt-1 block w-full px-3 py-2 border ${
-                        hasError ? 'border-red-500' : 'border-gray-300'
-                    } rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${className}`}
+                    className={`mt-1 block w-full px-3 py-4 border ${
+                        hasError ? 'border-jb-danger' : 'border-jb-border'
+                    } rounded-md shadow-sm focus:outline-none focus:ring-jb-primary focus:border-jb-primary ${className}`}
                 />
                 {hasError && (
-                    <p className="mt-1 text-sm text-red-600">{errors[name]?.message}</p>
+                    <p className="mt-1 text-sm text-jb-danger">{errors[name]?.message}</p>
                 )}
             </div>
         );

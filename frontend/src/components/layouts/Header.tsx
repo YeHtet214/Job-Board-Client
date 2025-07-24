@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
-import { LogOut, Home, Briefcase, Building, User, Menu } from 'lucide-react';
+import { LogOut, Home, Briefcase, Building, User, Menu, LogIn, UserRoundPlus } from 'lucide-react';
 import { ModeToggle } from '../ModeToggle';
-
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import {
@@ -37,8 +36,9 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4 py-3">
         <div className="flex justify-between items-center">
           {/* Logo */}
-          <Link to="/" className="text-2xl font-bold text-jb-primary z-10">
-            JobBoard
+          <Link to="/" className="text-2xl font-bold text-jb-primary z-10 flex items-center">
+            <img src="https://i.ibb.co/1tMWrFJB/jb-logo-tran.png" alt="logo" width="70"/>
+            <span className="ml-2">JobBoard</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -202,15 +202,6 @@ const Header: React.FC = () => {
                         Profile
                       </Link>
                     )}
-                    {/* <Link
-                      to="/settings"
-                      className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                        isActivePage === 'settings' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
-                      }`}
-                    >
-                      <Settings className="h-4 w-4" />
-                      Settings
-                    </Link> */}
                     <Button
                       variant="ghost"
                       onClick={handleLogout}
@@ -223,17 +214,35 @@ const Header: React.FC = () => {
                 )}
 
                 {!isLoading && !isAuthenticated && (
-                  <div className="flex flex-col gap-3 mt-2">
-                    <Link to="/login" className="text-sm font-medium transition-colors hover:text-jb-primary">
-                      Login
+                  // <div className="flex flex-col gap-3 mt-2">
+                  // </div>
+                  <>
+                    <Link
+                        to="/login"
+                        className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                          isActivePage === 'company' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
+                        }`}
+                      >
+                        <LogIn className="h-4 w-4" />
+                        Login
                     </Link>
-                    <Button asChild>
-                      <Link to="/register">Register</Link>
-                    </Button>
-                  </div>
+
+                    {/* <Button asChild> */}
+                      <Link
+                        to="/register"
+                        className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
+                          isActivePage === 'company' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
+                        }`}
+                      >
+                        <UserRoundPlus className="h-4 w-4" />
+                        Register
+                    </Link>
+                    {/* </Button> */}
+                  
+                  </>
                 )}
 
-                <div className="mt-2">
+                <div className="mt-2 ml-2 relative">
                   <ModeToggle />
                 </div>
               </nav>

@@ -81,10 +81,10 @@ const RegisterPage: React.FC = () => {
         <AuthLayout 
             title="Join Our Job Board" 
             subtitle="Connect with employers and find your perfect career match"
-            imageSrc="/auth-background.svg"
+            imageSrc="/auth-background-alt.svg"
             imagePosition="left"
         >
-            <Card className="w-full max-w-md border-jb-surface shadow-lg">
+            <Card className="w-full shadow-lg">
                 <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl font-bold text-jb-text">
                     Create an account

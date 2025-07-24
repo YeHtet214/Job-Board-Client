@@ -99,14 +99,15 @@ const VerifyEmailPage: React.FC = () => {
                             <Button 
                                 onClick={() => navigate('/login')}
                                 variant="outline"
-                                className="flex-6"
+                                className="flex-6 hover:bg-jb-surface"
+                                disabled={isResending}
                             >
                                 Back to Login
                             </Button>
                             <Button 
                                 onClick={handleResendVerification}
                                 disabled={isResending}
-                                className="flex-6"
+                                className="flex-6 hover:bg-jb-primary"
                             >
                                 {isResending ? (
                                     <>
@@ -183,8 +184,8 @@ const VerifyEmailPage: React.FC = () => {
 
     return (
         <div className="flex justify-center items-center min-h-[80vh] px-4 py-8">
-            <div className="bg-white rounded-lg shadow-md p-4 sm:p-8 max-w-md w-full">
-                <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 text-center">Email Verification</h1>
+            <div className="bg-jb-surface rounded-lg shadow-md p-4 sm:p-8 max-w-md w-full">
+                <h1 className="text-2xl sm:text-3xl font-bold text-jb-text mb-6 text-center">Email Verification</h1>
                 {renderContent()}
             </div>
         </div>

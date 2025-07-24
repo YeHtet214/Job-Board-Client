@@ -98,7 +98,7 @@ const SelectFieldWithLabel: React.FC<SelectFieldWithLabelProps> = (props) => {
       return (
         <div className="mb-4">
           <Label htmlFor={name} className="block text-sm font-medium mb-1">
-            {label} {required && <span className="text-red-500">*</span>}
+            {label} {required && <span className="text-jb-danger">*</span>}
           </Label>
           <Select disabled={disabled}>
             <SelectTrigger id={name} className={`w-full ${className}`}>
@@ -123,7 +123,7 @@ const SelectFieldWithLabel: React.FC<SelectFieldWithLabelProps> = (props) => {
     return (
       <div className="mb-4">
         <Label htmlFor={name} className="block text-sm font-medium mb-1">
-          {label} {required && <span className="text-red-500">*</span>}
+          {label} {required && <span className="text-jb-danger">*</span>}
         </Label>
         <Select
           disabled={disabled}

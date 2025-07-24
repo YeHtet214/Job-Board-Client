@@ -20,8 +20,8 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     const spinnerSize = sizeClasses[size];
 
     return (
-        <div className={`flex items-center justify-center ${fullScreen ? 'fixed inset-0 bg-white/50 z-50' : ''} ${className}`}>
-            <div className={`animate-spin rounded-full ${spinnerSize} border-t-2 border-b-2 border-jobboard-purple`}></div>
+        <div className={`flex items-center justify-center ${fullScreen ? 'fixed inset-0 bg-jb-surface/50 z-50' : ''} ${className}`}>
+            <div className={`animate-spin rounded-full ${spinnerSize} border-t-2 border-b-2 border-jb-primary`}></div>
         </div>
     );
 };

@@ -50,7 +50,7 @@ const JobList: React.FC = () => {
 
   if (jobs.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-6 text-center">
+      <div className="bg-jb-surface rounded-lg shadow-md p-6 text-center">
         {hasFilters ? (
           <>
             <div className="flex justify-center mb-4">
@@ -63,8 +63,8 @@ const JobList: React.FC = () => {
           </>
         ) : (
           <>
-            <h3 className="text-lg font-semibold mb-2">No jobs available</h3>
-            <p className="text-gray-600">Check back later for new opportunities.</p>
+            <h3 className="text-3xl font-semibold mb-2">No jobs available</h3>
+            <p className="text-jb-text-muted">Check back later for new opportunities.</p>
           </>
         )}
       </div>

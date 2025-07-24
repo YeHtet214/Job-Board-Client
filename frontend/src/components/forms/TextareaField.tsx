@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react';
 import { useField } from 'formik';
+import { Label } from '@radix-ui/react-label';
 
 type TextareaFieldProps = {
   name: string;
@@ -39,7 +40,7 @@ const TextareaField: React.FC<TextareaFieldProps> = (props) => {
 
     return (
       <div className="mb-4">
-        <label htmlFor={name} className="block text-sm font-medium mb-1 text-muted-foreground">
+        <label htmlFor={name} className="block text-sm font-medium mb-1 text-jb-text-muted-foreground">
           {label} {required && <span className="text-jb-danger">*</span>}
         </label>
         <textarea
@@ -61,9 +62,9 @@ const TextareaField: React.FC<TextareaFieldProps> = (props) => {
 
     return (
       <div className="mb-4">
-        <label htmlFor={name} className="block text-sm font-medium mb-1 text-muted-foreground">
+        <Label htmlFor={name} className="block text-sm font-medium mb-1 text-jb-text-muted-foreground">
           {label} {required && <span className="text-jb-danger">*</span>}
-        </label>
+        </Label>
         <textarea
           id={name}
           name={name}

@@ -16,54 +16,40 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
   imagePosition = 'left',
 }) => {
   return (
-    <div className="h-screen bg-jb-bg relative">
+    <div className="min-h-screen bg-jb-bg relative overflow-x-hidden">
       {/* Background pattern */}
-      <div className="absolute inset-0 bg-grid-pattern opacity-5 dark:opacity-10" aria-hidden="true" />
-
-      {/* Decorative blurred circles */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-jb-primary/10 rounded-full blur-3xl" aria-hidden="true" />
-      <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-jb-primary/20 rounded-full blur-3xl" aria-hidden="true" />
-
+      <div 
+        className="absolute top-0 bottom-0 inset-0 opacity-5"
+        style={{ backgroundImage: `url(${imageSrc})`, backgroundSize: 'auto', backgroundPosition: 'center' }}
+        aria-hidden="true"
+      />
+     
       {/* Mobile layout */}
       <div className="lg:hidden relative min-h-screen">
         <div 
-          className="absolute inset-0 bg-gradient-to-b from-jb-bg/40 via-jb-bg/60 to-jb-bg/80"
+          className="absolute inset-0 bg-gradient-to-b from-jb-bg/40 via-jb-bg/60 to-jb-bg/80 opacity-5"
           style={{ backgroundImage: `url(${imageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           aria-hidden="true"
         />
-        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-6">
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen">
           <div className="w-full max-w-md text-center mb-6">
             <h1 className="text-3xl font-bold tracking-tight text-jb-text mb-2">{title}</h1>
             <p className="text-jb-text-muted">{subtitle}</p>
           </div>
-          <div className="w-full max-w-md backdrop-blur-md bg-jb-surface/80 rounded-xl p-4 shadow-lg border border-jb-primary/10">
+          <div className="w-full max-w-md backdrop-blur-md bg-jb-surface/80 rounded-xl p-2 shadow-lg border border-jb-primary/10">
             {children}
           </div>
         </div>
       </div>
 
-      {/* Desktop layout */}
-      <div className="hidden lg:flex min-h-screen w-full relative">
-        {/* Background image and gradient overlay */}
-        <div 
-          className="absolute inset-0"
-          style={{ backgroundImage: `url(${imageSrc})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
-          aria-hidden="true"
-        />
-        <div
-          className={`absolute inset-0 ${
-            imagePosition === 'left'
-              ? 'bg-gradient-to-r from-jb-bg via-jb-bg/90 to-transparent'
-              : 'bg-gradient-to-l from-jb-bg via-jb-bg/90 to-transparent'
-          }`}
-          aria-hidden="true"
-        />
 
+      {/* Desktop layout */}
+      <div className="hidden lg:flex w-full relative" >
         {/* Content wrapper */}
-        <div className="flex flex-row w-full relative z-10">
+        <div className="grid grid-cols-2 w-full relative z-10">
           {/* Info section */}
           <div 
-            className={`w-1/2 flex items-center justify-center p-12 ${
+            className={`cols-6 flex items-center justify-center p-12 ${
               imagePosition === 'right' ? 'order-first' : 'order-last'
             }`}
           >
@@ -81,10 +67,10 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
           </div>
 
           {/* Form section */}
-          <div className={`w-1/2 flex items-center justify-center p-12 ${
+          <div className={`cols-6 p-12 flex items-center justify-center ${
             imagePosition === 'left' ? 'order-first' : 'order-last'
           }`}>
-            <div className="w-full max-w-md bg-jb-surface/95 backdrop-blur-md rounded-xl shadow-xl p-6 border border-jb-primary/10">
+            <div className="max-w-3/5 bg-jb-surface/95 backdrop-blur-md rounded-xl shadow-xl p-6 border border-jb-primary/10">
               {children}
             </div>
           </div>

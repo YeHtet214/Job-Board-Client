@@ -103,7 +103,7 @@ const ResetPasswordPage: React.FC = () => {
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
           <div className="flex items-center">
-            <Link to="/login" className="text-muted-foreground hover:text-primary mr-2">
+            <Link to="/login" className="text-jb-foreground hover:text-jb-text-muted mr-2">
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <CardTitle className="text-2xl font-bold">Reset Password</CardTitle>
@@ -193,7 +193,7 @@ const ResetPasswordPage: React.FC = () => {
 
                   <Button
                     type="submit"
-                    className="w-full"
+                    className="w-full border-jb-primary bg-jb-primary text-white hover:bg-jb-primary/90"
                     disabled={isSubmitting || !token}
                   >
                     {isSubmitting ? (
@@ -211,9 +211,9 @@ const ResetPasswordPage: React.FC = () => {
         </CardContent>
 
         <CardFooter className="flex justify-center border-t p-4">
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-jb-text-muted">
             Remember your password?{' '}
-            <Link to="/login" className="font-medium text-primary hover:underline">
+            <Link to="/login" className="font-medium text-jb-primary hover:underline">
               Back to login
             </Link>
           </p>

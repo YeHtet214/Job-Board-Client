@@ -1,182 +1,110 @@
-import React, { ReactNode } from 'react';
-import { useField, useFormikContext } from 'formik';
+import React, { useState, useRef, useEffect } from 'react';
+import { useField } from 'formik';
 import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { CalendarIcon } from 'lucide-react';
-import { format } from 'date-fns';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { format, parse } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { Calendar } from '../ui/calendar';
 
-type DatePickerFieldWithLabelProps = {
+interface DatePickerFieldWithLabelProps {
   name: string;
-  label: ReactNode;
+  label: string;
   placeholder?: string;
   className?: string;
   disabled?: boolean;
   required?: boolean;
   dateFormat?: string;
-} & (
-  | { formik: true }
-  | {
-      formik?: false;
-      value: Date | undefined;
-      onChange: (date: Date | undefined) => void;
-      onBlur?: () => void;
-      errors?: Record<string, { message: string }> | undefined;
-    }
-);
+}
 
-const DatePickerFieldWithLabel: React.FC<DatePickerFieldWithLabelProps> = (props) => {
-  const {
-    label,
-    name,
-    placeholder = 'Pick a date',
-    className = '',
-    disabled = false,
-    required = false,
-    dateFormat = 'PPP'
-  } = props;
+const DatePickerFieldWithLabel: React.FC<DatePickerFieldWithLabelProps> = ({
+  name,
+  label,
+  placeholder = 'Pick a date',
+  className = '',
+  disabled = false,
+  required = false,
+  dateFormat = 'PPP',
+}) => {
+  const [field, meta, helpers] = useField<Date | null>(name);
+  const [isOpen, setIsOpen] = useState(false);
+  const [displayValue, setDisplayValue] = useState('');
+  const datePickerRef = useRef<HTMLDivElement>(null);
+  
+  const hasError = meta.touched && meta.error;
+  const dateValue = field.value ? (field.value instanceof Date ? field.value : new Date(field.value)) : null;
 
-  // Handle both Formik and non-Formik usage
-  if ('formik' in props && props.formik) {
-    // Check if we're inside a Formik context
-    const formik = useFormikContext();
-    
-    if (formik) {
-      // Formik version
-      const [field, meta] = useField(name);
-      const hasError = meta.touched && meta.error;
-
-      // Convert string date to Date object if needed
-      const dateValue = field.value ? 
-        (field.value instanceof Date ? field.value : new Date(field.value)) : 
-        undefined;
-
-      return (
-        <div className="mb-4">
-          <Label htmlFor={name} className="block text-sm font-medium mb-1 text-muted-foreground">
-            <div className="relative inline-block">
-              {label} {required && <span className="text-red-500 absolute -right-2 top-1/2 transform -translate-y-1/2">*</span>}
-            </div>
-          </Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id={name}
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  !dateValue && "text-muted-foreground",
-                  hasError ? "border-red-500" : "",
-                  className
-                )}
-                disabled={disabled}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateValue ? format(dateValue, dateFormat) : <span>{placeholder}</span>}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar
-                mode="single"
-                selected={dateValue}
-                onSelect={(date) => {
-                  formik.setFieldValue(name, date);
-                  formik.setFieldTouched(name, true);
-                }}
-                initialFocus
-              />
-            </PopoverContent>
-          </Popover>
-          {hasError && (
-            <p className="mt-1 text-sm text-red-600">{meta.error}</p>
-          )}
-        </div>
-      );
+  // Update display value when date changes
+  useEffect(() => {
+    if (dateValue && !isNaN(dateValue.getTime())) {
+      setDisplayValue(format(dateValue, dateFormat));
     } else {
-      // Fallback for when formik context is missing
-      console.warn(`DatePickerField with name "${name}" is marked as a Formik field but no Formik context was found.`);
-      return (
-        <div className="mb-4">
-          <Label htmlFor={name} className="block text-sm font-medium mb-1 text-muted-foreground">
-            <div className="relative inline-block">
-              {label} {required && <span className="text-red-500 absolute -right-2 top-1/2 transform -translate-y-1/2">*</span>}
-            </div>
-          </Label>
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id={name}
-                variant="outline"
-                className={cn(
-                  "w-full justify-start text-left font-normal",
-                  "text-muted-foreground",
-                  className
-                )}
-                disabled={disabled}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                <span>{placeholder}</span>
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar mode="single" initialFocus />
-            </PopoverContent>
-          </Popover>
-        </div>
-      );
+      setDisplayValue('');
     }
-  } else {
-    // Non-Formik version
-    const { value, onChange, onBlur, errors } = props;
-    const hasError = errors && errors[name];
+  }, [dateValue, dateFormat]);
 
-    return (
-      <div className="mb-4">
-        <Label htmlFor={name} className="block text-sm font-medium mb-1">
-          <div className="relative inline-block">
-            {label} {required && <span className="text-red-500 absolute -right-2 top-1/2 transform -translate-y-1/2">*</span>}
-          </div>
-        </Label>
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              id={name}
-              variant="outline"
-              className={cn(
-                "w-full justify-start text-left font-normal",
-                !value && "text-muted-foreground",
-                hasError ? "border-red-500" : "",
-                className
-              )}
-              disabled={disabled}
-              onClick={() => {
-                if (onBlur) onBlur();
-              }}
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {value ? format(value, dateFormat) : <span>{placeholder}</span>}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-auto p-0">
+  // Close date picker when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (datePickerRef.current && !datePickerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleDateChange = (date: Date | null) => {
+    if (date && !isNaN(date.getTime())) {
+      helpers.setValue(date);
+      helpers.setTouched(true);
+    }
+  };
+
+  return (
+    <div className="mb-4 relative" ref={datePickerRef}>
+      <Label htmlFor={name} className="block text-sm font-medium mb-1 text-jb-text-muted-foreground">
+        {label} {required && <span className="text-jb-danger">*</span>}
+      </Label>
+      
+      <div className="relative">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => !disabled && setIsOpen(!isOpen)}
+          className={cn(
+            'w-full justify-start text-left font-normal',
+            !displayValue && 'text-muted-foreground',
+            hasError && 'border-red-500',
+            className
+          )}
+          disabled={disabled}
+        >
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          {displayValue || <span>{placeholder}</span>}
+        </Button>
+        
+        {isOpen && (
+          <div className="absolute z-20 mt-1 w-full bg-jb-bg border rounded-md shadow-lg p-2">
             <Calendar
               mode="single"
-              selected={value}
-              onSelect={(date) => {
-                onChange(date);
-                if (onBlur) onBlur();
-              }}
               initialFocus
+              selected={dateValue || undefined}
+              onSelect={(date) => handleDateChange(date || null)}
+              disabled={disabled}
             />
-          </PopoverContent>
-        </Popover>
-        {hasError && (
-          <p className="mt-1 text-sm text-red-600">{errors[name]?.message}</p>
+          </div>
         )}
       </div>
-    );
-  }
+      
+      {hasError && (
+        <p className="mt-1 text-sm text-red-600">{meta.error}</p>
+      )}
+    </div>
+  );
 };
 
 export default DatePickerFieldWithLabel;
