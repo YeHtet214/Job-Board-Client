@@ -1,7 +1,7 @@
 import React from 'react';
 import { useJobsData } from '@/hooks/react-queries/job';
 import JobCard from './JobCard';
-import { Job } from '@/types/job.types';
+import { Job } from '@/types/job';
 import { History, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { 
-  Building, MapPin, Globe, Calendar, Users, Briefcase, 
+import {
+  Building, MapPin, Globe, Calendar, Users, Briefcase,
   ChevronLeft, Mail, ExternalLink
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,7 +10,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { useCompany, useCompanyJobs } from '@/hooks/react-queries/company/useCompanyQueries';
-import { Job } from '@/types/job.types';
+import { Job } from '@/types/job';
+import ChatMessage from '@/components/messaging/ChatMessage';
 
 // Add a custom hook for company jobs
 
@@ -19,7 +20,7 @@ const CompanyDetailPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState('about');
 
   // Fetch company data using the custom hook
-  const { 
+  const {
     data: company,
     isLoading: isLoadingCompany,
     error: companyError
@@ -55,7 +56,7 @@ const CompanyDetailPage: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-8">
             <Skeleton className="h-12 w-full mb-6" />
             <Skeleton className="h-32 w-full mb-4" />
@@ -69,6 +70,7 @@ const CompanyDetailPage: React.FC = () => {
   if (companyError || !company) {
     return (
       <div className="container mx-auto px-4 sm:px-6 py-12 text-center">
+        <h1>Hello</h1>
         <Building className="h-16 w-16 mx-auto text-gray-400 mb-4" />
         <h2 className="text-2xl font-bold text-gray-700 mb-2">Company Not Found</h2>
         <p className="text-gray-500 mb-6">The company you're looking for doesn't exist or has been removed.</p>
@@ -90,6 +92,10 @@ const CompanyDetailPage: React.FC = () => {
           Back to Companies
         </Link>
 
+        <div className="bg-red">
+          <ChatMessage receiverId={company?.ownerId} />
+        </div>
+
         {/* Company Header */}
         <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
           <div className="h-48 bg-gradient-to-r from-jobboard-purple/20 to-jobboard-teal/20 relative" />
@@ -97,9 +103,9 @@ const CompanyDetailPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-start">
               <div className="absolute top-36 left-8 w-20 h-20 sm:w-24 sm:h-24 rounded-md border-4 border-white bg-white flex items-center justify-center shadow-md">
                 {company.logo ? (
-                  <img 
-                    src={company.logo} 
-                    alt={`${company.name} logo`} 
+                  <img
+                    src={company.logo}
+                    alt={`${company.name} logo`}
                     className="w-full h-full object-contain p-2"
                   />
                 ) : (
@@ -132,7 +138,7 @@ const CompanyDetailPage: React.FC = () => {
                     </Button>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2 mt-4">
                   <Badge variant="outline" className="bg-jobboard-light/50">
                     {company.industry}
@@ -160,13 +166,13 @@ const CompanyDetailPage: React.FC = () => {
               Open Jobs ({companyJobs.length})
             </TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="about" className="space-y-6">
             <Card>
               <CardContent className="pt-6">
                 <h2 className="text-xl font-semibold text-jobboard-darkblue mb-4">About {company.name}</h2>
                 <p className="text-gray-700 whitespace-pre-line">{company.description}</p>
-                
+
                 <div className="grid grid-cols-1 md:!grid-cols-2 gap-6 mt-8">
                   <div className="flex items-start">
                     <div className="bg-jobboard-light/50 p-3 rounded-md mr-4">
@@ -177,7 +183,7 @@ const CompanyDetailPage: React.FC = () => {
                       <p className="text-gray-600">{company.location}</p>
                     </div>
                   </div>
-                  
+
                   {company.foundedYear && (
                     <div className="flex items-start">
                       <div className="bg-jobboard-light/50 p-3 rounded-md mr-4">
@@ -189,7 +195,7 @@ const CompanyDetailPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   <div className="flex items-start">
                     <div className="bg-jobboard-light/50 p-3 rounded-md mr-4">
                       <Building className="h-5 w-5 text-jobboard-purple" />
@@ -199,7 +205,7 @@ const CompanyDetailPage: React.FC = () => {
                       <p className="text-gray-600">{company.industry}</p>
                     </div>
                   </div>
-                  
+
                   {company.size && (
                     <div className="flex items-start">
                       <div className="bg-jobboard-light/50 p-3 rounded-md mr-4">
@@ -211,7 +217,7 @@ const CompanyDetailPage: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {company.website && (
                     <div className="flex items-start">
                       <div className="bg-jobboard-light/50 p-3 rounded-md mr-4">
@@ -219,7 +225,7 @@ const CompanyDetailPage: React.FC = () => {
                       </div>
                       <div>
                         <h3 className="font-medium text-jobboard-darkblue">Website</h3>
-                        <a 
+                        <a
                           href={company.website}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -235,7 +241,7 @@ const CompanyDetailPage: React.FC = () => {
               </CardContent>
             </Card>
           </TabsContent>
-          
+
           <TabsContent value="jobs" className="space-y-6">
             {companyJobs.length === 0 ? (
               <Card>
@@ -265,9 +271,9 @@ const CompanyDetailPage: React.FC = () => {
                             {job.type.replace('_', ' ')}
                           </Badge>
                         </div>
-                        
+
                         <p className="text-gray-600 mt-3 line-clamp-2">{job.description}</p>
-                        
+
                         {job.requiredSkills && job.requiredSkills.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-4">
                             {job.requiredSkills.slice(0, 3).map((skill: string, index: number) => (

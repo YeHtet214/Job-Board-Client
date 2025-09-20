@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSavedJobs, useRemoveSavedJob } from '@/hooks/react-queries/job';
-import { SavedJobWithDetails } from '@/types/saved-job.types';
+import { SavedJobWithDetails } from '@/types/saved-job';
 import { Button } from '@/components/ui/button';
 import { Bookmark, BookmarkX, CalendarIcon, ExternalLink, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';

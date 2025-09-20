@@ -2,7 +2,7 @@ import { useFormikContext } from 'formik';
 import { Image } from 'lucide-react';
 import { Label } from '../ui/label';
 import { InputFieldWithLabel } from '../forms';
-import { CreateCompanyDto } from '../../types/company.types';
+import { CreateCompanyDto } from '../../types/company';
 
 const BrandingTab = () => {
   const { values } = useFormikContext<CreateCompanyDto>();

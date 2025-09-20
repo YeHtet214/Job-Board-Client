@@ -11,6 +11,9 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
+import Chat from '../messaging/ChatMessage';
+import ChatRoom from '../messaging/ChatMessage';
+import ChatComponent from '../messaging/ChatMessage';
 
 const Header: React.FC = () => {
   const { currentUser, logout, isAuthenticated, isLoading } = useAuth();
@@ -37,7 +40,7 @@ const Header: React.FC = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <Link to="/" className="text-2xl font-bold text-jb-primary z-10 flex items-center">
-            <img src="https://i.ibb.co/1tMWrFJB/jb-logo-tran.png" alt="logo" width="70"/>
+            <img src="https://i.ibb.co/1tMWrFJB/jb-logo-tran.png" alt="logo" width="70" />
             <span className="ml-2">JobBoard</span>
           </Link>
 
@@ -159,9 +162,8 @@ const Header: React.FC = () => {
                     <Link
                       key={label}
                       to={path}
-                      className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                        isActivePage === page ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
-                      }`}
+                      className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === page ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
+                        }`}
                     >
                       {icon}
                       {label}
@@ -173,9 +175,8 @@ const Header: React.FC = () => {
                   <>
                     <Link
                       to="/dashboard"
-                      className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                        isActivePage === 'dashboard' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
-                      }`}
+                      className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'dashboard' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
+                        }`}
                     >
                       <User className="h-4 w-4" />
                       Dashboard
@@ -183,9 +184,8 @@ const Header: React.FC = () => {
                     {currentUser?.role === 'EMPLOYER' && (
                       <Link
                         to="/company/profile"
-                        className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                          isActivePage === 'company' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
-                        }`}
+                        className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'company' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
+                          }`}
                       >
                         <Building className="h-4 w-4" />
                         Company Profile
@@ -194,9 +194,8 @@ const Header: React.FC = () => {
                     {currentUser?.role !== 'EMPLOYER' && (
                       <Link
                         to="/profile"
-                        className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                          isActivePage === 'profile' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
-                        }`}
+                        className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'profile' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
+                          }`}
                       >
                         <User className="h-4 w-4" />
                         Profile
@@ -218,27 +217,25 @@ const Header: React.FC = () => {
                   // </div>
                   <>
                     <Link
-                        to="/login"
-                        className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                          isActivePage === 'company' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
+                      to="/login"
+                      className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'company' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
                         }`}
-                      >
-                        <LogIn className="h-4 w-4" />
-                        Login
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Login
                     </Link>
 
                     {/* <Button asChild> */}
-                      <Link
-                        to="/register"
-                        className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                          isActivePage === 'company' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
+                    <Link
+                      to="/register"
+                      className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'company' ? 'text-jb-primary bg-jb-highlight font-semibold' : 'hover:text-jb-primary'
                         }`}
-                      >
-                        <UserRoundPlus className="h-4 w-4" />
-                        Register
+                    >
+                      <UserRoundPlus className="h-4 w-4" />
+                      Register
                     </Link>
                     {/* </Button> */}
-                  
+
                   </>
                 )}
 

@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { formatDate, getEmployerStatusBadge } from '@/utils/dashboard.utils';
-import { ReceivedApplication } from '@/types/dashboard.types';
+import { ReceivedApplication } from '@/types/dashboard';
 
 interface ReceivedApplicationsListProps {
   applications: ReceivedApplication[];

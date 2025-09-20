@@ -5,7 +5,7 @@ import {
   CardTitle 
 } from '@/components/ui/card';
 import { Building, Calendar, MapPin } from 'lucide-react';
-import { Experience } from '@/types/profile.types';
+import { Experience } from '@/types/profile';
 
 interface ExperienceSectionProps {
   experience?: Experience[];

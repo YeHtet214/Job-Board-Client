@@ -2,7 +2,7 @@ import ApplicationCard from "@/components/application/ApplicationCard";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { useAuth } from "@/contexts/authContext";
 import { useMyApplications } from "@/hooks/react-queries/application/useApplicationQueries";
-import { Application } from "@/types/application.types";
+import { Application } from "@/types/application";
 import { useEffect } from "react";
 
 const ApplicationListPage = () => {

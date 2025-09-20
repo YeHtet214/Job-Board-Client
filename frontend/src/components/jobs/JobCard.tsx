@@ -1,12 +1,12 @@
 import React from 'react';
-import { Job } from '@/types/job.types';
+import { Job } from '@/types/job';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Clock, Briefcase, Calendar, Bookmark, BookmarkCheck } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useSaveJob, useRemoveSavedJob, useJobsData } from '@/hooks/react-queries/job';
-import { JobSavedStatus } from '@/types/saved-job.types';
+import { JobSavedStatus } from '@/types/saved-job';
 import { useAuth } from '@/contexts/authContext';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '../ui/use-toast';

@@ -4,8 +4,8 @@ import JobService from '@/services/job.service';
 import {
   JobSeekerDashboardData,
   EmployerDashboardData
-} from '@/types/dashboard.types';
-import { UpdateApplicationDto, Application } from '@/types/application.types';
+} from '@/types/dashboard';
+import { UpdateApplicationDto, Application } from '@/types/application';
 import ApplicationService from '@/services/application.service';
 
 // Query keys

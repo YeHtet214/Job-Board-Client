@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormikProps } from 'formik';
-import { CreateApplicationDto } from '@/types/application.types';
+import { CreateApplicationDto } from '@/types/application';
 import {
   Card,
   CardContent,

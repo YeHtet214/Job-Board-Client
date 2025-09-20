@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { formatDistanceToNow } from 'date-fns';
-import { Job, JobType } from '@/types/job.types';
+import { Job, JobType } from '@/types/job';
 import useFeaturedJobs from '@/hooks/react-queries/job/useFeaturedJobs';
 import { useJobsData } from '@/hooks';
 

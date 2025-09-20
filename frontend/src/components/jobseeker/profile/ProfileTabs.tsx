@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, BookOpen, Building, Link } from 'lucide-react';
-import { Profile } from '@/types/profile.types';
+import { Profile } from '@/types/profile';
 import { useAuth } from '@/contexts/authContext';
 
 // Import section components

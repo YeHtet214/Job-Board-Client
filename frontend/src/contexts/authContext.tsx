@@ -8,12 +8,13 @@ import {
 } from '@/hooks/react-queries/auth';
 import { useCurrentUser } from '@/hooks/react-queries/user';
 import authService from '@/services/auth.service';
-import { User } from '@/types/user.types';
+import { User } from '@/types/user';
 import { isTokenExpired } from '@/utils/jwt';
 
 interface AuthContextType {
   currentUser: User | null;
   isAuthenticated: boolean;
+  accessToken: string,
   isLoading: boolean;
   refetchUser: () => Promise<any>;
   login: (email: string, password: string) => Promise<void>;
@@ -40,6 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return !!(accessToken && refreshToken && !isTokenExpired(accessToken));
   });
   const [showSessionExpiredDialog, setShowSessionExpiredDialog] = useState(false);
+  const [accessToken, setAccesstoken] = useState<string>('');
 
   // Use React Query hooks
   const {
@@ -81,6 +83,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     if (tokensValid) {
       setIsAuthenticated(true);
+      setAccesstoken(accessToken);
 
       // If we have valid tokens but no user data, refetch the user
       if (!currentUser && !isUserLoading) {
@@ -179,6 +182,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value = {
     currentUser: currentUser || null,
     isAuthenticated,
+    accessToken,
     isLoading,
     refetchUser,
     login,

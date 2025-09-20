@@ -1,5 +1,5 @@
 import { ApiService } from '@/services/api.service';
-import { SavedJobWithDetails, JobSavedStatus, SaveJobResponse } from '@/types/saved-job.types';
+import { SavedJobWithDetails, JobSavedStatus, SaveJobResponse } from '@/types/saved-job';
 
 /**
  * Service for handling saved job operations

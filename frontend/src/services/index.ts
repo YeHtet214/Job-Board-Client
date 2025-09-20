@@ -1,7 +1,6 @@
 import axios from 'axios';
 import { isTokenExpired, willTokenExpireSoon } from '../utils/jwt';
 
-// Create axios instance with base settings
 const axiosInstance = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
 });
@@ -31,8 +30,7 @@ axiosInstance.interceptors.request.use(async (config) => {
     const isAuthEndpoint = config.url?.includes('/auth/') && !config.url?.includes('/auth/logout');
 
     if (accessToken && !isAuthEndpoint) {
-        // Check if token will expire soon
-        if (willTokenExpireSoon(accessToken, 120)) { // 2 minutes buffer
+        if (willTokenExpireSoon(accessToken, 120)) { // expire in 2 minutes
             try {
                 // Only start a refresh if another request isn't already refreshing
                 if (!isRefreshing && refreshToken && !isTokenExpired(refreshToken)) {

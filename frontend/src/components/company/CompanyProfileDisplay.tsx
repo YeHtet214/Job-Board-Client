@@ -18,7 +18,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import type { Company } from '@/types/company.types';
+import type { Company } from '@/types/company';
+import ChatMessage from '../messaging/ChatMessage';
 
 interface CompanyProfileDisplayProps {
   company: Company;
@@ -29,6 +30,7 @@ const CompanyProfileDisplay: React.FC<CompanyProfileDisplayProps> = ({ company }
 
   return (
     <div className="space-y-6">
+      
       <Card>
         <CardHeader className="pb-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

@@ -1,7 +1,7 @@
 import React from 'react';
 import JobCard from './JobCard';
 import Pagination from './Pagination';
-import { Job } from '@/types/job.types';
+import { Job } from '@/types/job';
 import { AlertCircle, Search } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import JobSorting from './JobSorting';

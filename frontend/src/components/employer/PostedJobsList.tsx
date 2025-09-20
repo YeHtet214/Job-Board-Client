@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
 import { formatDate, getJobStatusBadge } from '@/utils/dashboard.utils';
-import { PostedJob } from '@/types/dashboard.types';
+import { PostedJob } from '@/types/dashboard';
 
 interface PostedJobsListProps {
   postedJobs: PostedJob[];

@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/authContext';
 import { useNavigate } from 'react-router-dom';
 import { Pencil } from 'lucide-react';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import { Profile } from '@/types/profile.types';
+import { Profile } from '@/types/profile';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { motion } from 'framer-motion';

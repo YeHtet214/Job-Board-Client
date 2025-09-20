@@ -1,5 +1,5 @@
 import { ApiService } from '@/services/api.service';
-import { Profile, CreateProfileDto, UpdateProfileDto } from '@/types/profile.types';
+import { Profile, CreateProfileDto, UpdateProfileDto } from '@/types/profile';
 
 class ProfileService extends ApiService {
   private endpoints = {

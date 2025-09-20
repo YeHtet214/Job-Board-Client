@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Check, File, MessageSquare, User } from 'lucide-react';
 import Progress from '@/components/ui/Progress';
-import { CreateApplicationDto } from '@/types/application.types';
+import { CreateApplicationDto } from '@/types/application';
 import {
     PersonalInfoTab,
     ResumeTab,

@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import savedJobService from '@/services/saved-job.service';
-import { SavedJobWithDetails, JobSavedStatus } from '@/types/saved-job.types';
+import { SavedJobWithDetails, JobSavedStatus } from '@/types/saved-job';
 import { useToast } from '@/components/ui/use-toast';
 
 // Query keys for saved jobs

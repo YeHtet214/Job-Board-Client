@@ -10,6 +10,7 @@ import StatsSection from '@/components/home/StatsSection';
 import FeaturedJobsSection from '@/components/home/FeaturedJobsSection';
 import FeaturedCompaniesSection from '@/components/home/FeaturedCompaniesSection';
 import { useTheme } from '@/components/ThemeProvider';
+import ChatIcon from '@/components/messaging/ChatIcon';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -89,6 +90,7 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="bg-jb-bg text-jb-text min-h-screen">
+      
       {/* Hero Section */}
       <motion.section
         ref={(node) => {
@@ -112,6 +114,7 @@ const HomePage: React.FC = () => {
         }}
       >
         <div className="container mx-auto px-4 sm:px-6">
+          <ChatIcon />
           <div className="max-w-3xl mx-auto text-center">
             <motion.span
               className="inline-block px-4 py-1.5 bg-jb-surface text-jb-text-muted rounded-full text-xs md:text-sm font-medium mb-6"

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useCompanies as useCompaniesQuery } from '@/hooks/react-queries/company/useCompanyQueries';
-import { Company } from '@/types/company.types';
+import { Company } from '@/types/company';
 
 interface CompaniesContextType {
   companies: Company[];

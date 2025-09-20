@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import ApplicationService from '@/services/application.service';
-import { CreateApplicationDto, UpdateApplicationDto } from '@/types/application.types';
+import { CreateApplicationDto, UpdateApplicationDto } from '@/types/application';
 import { useToast } from '@/components/ui/use-toast';
 
 export const useMyApplications = (userId: string) => {

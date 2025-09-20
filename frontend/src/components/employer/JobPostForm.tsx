@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useToast } from '@/components/ui/use-toast';
-import { Job, CreateJobDto, JobType } from '@/types/job.types';
+import { Job, CreateJobDto, JobType } from '@/types/job';
 import { useCreateJob, useUpdateJob } from '@/hooks/react-queries/job/useJobQueries';
 import {
   Form,

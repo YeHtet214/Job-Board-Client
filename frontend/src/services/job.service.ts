@@ -1,5 +1,5 @@
 import { ApiService } from '@/services/api.service';
-import { Job, CreateJobDto, UpdateJobDto, JobsResponse } from '@/types/job.types';
+import { Job, CreateJobDto, UpdateJobDto, JobsResponse } from '@/types/job';
 
 export interface JobSearchParams {
   keyword?: string;
@@ -19,10 +19,9 @@ class JobService extends ApiService {
     SEARCH: '/jobs/search',
     COMPANY: (companyId: string) => `/jobs/company/${companyId}`,
     SUGGESTIONS: '/jobs/suggestions',
-  };
+  }
 
   public async getAllJobs(params?: JobSearchParams): Promise<JobsResponse> {
-    console.log("Params: ", params)
     const queryParams = this.createQueryParams(params || {});
     const url = `${this.endpoints.ALL}?${queryParams.toString()}`;
     const response = await this.get<JobsResponse>(url);

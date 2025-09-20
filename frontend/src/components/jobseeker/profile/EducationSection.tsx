@@ -5,7 +5,7 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { GraduationCap, Calendar } from 'lucide-react';
-import { Education } from '@/types/profile.types';
+import { Education } from '@/types/profile';
 
 interface EducationSectionProps {
   education?: Education[];

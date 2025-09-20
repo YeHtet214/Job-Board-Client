@@ -16,7 +16,7 @@ import { Form, InputFieldWithLabel } from '@/components/forms';
 import { Formik, FormikProps } from 'formik';
 import { JobFilterSchema } from '@/schemas/validation/job.schema';
 import { useJobsData } from '@/hooks/react-queries/job';
-import { JobFilterType } from '@/types/job.types';
+import { JobFilterType } from '@/types/job';
 
 const JobFilters: React.FC = () => {
   const {

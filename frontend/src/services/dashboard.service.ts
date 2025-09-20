@@ -6,7 +6,7 @@ import {
   PostedJob,
   ReceivedApplication,
   EmployerActivity,
-} from '@/types/dashboard.types';
+} from '@/types/dashboard';
 
 class DashboardService extends ApiService {
   private endpoints = {

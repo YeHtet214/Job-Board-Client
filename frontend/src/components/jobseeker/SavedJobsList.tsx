@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Trash2 } from 'lucide-react';
 import { formatDate } from '@/utils/dashboard.utils';
-import { SavedJobWithDetails } from '@/types/saved-job.types';
+import { SavedJobWithDetails } from '@/types/saved-job';
 
 interface SavedJobsListProps {
   savedJobs: SavedJobWithDetails[];

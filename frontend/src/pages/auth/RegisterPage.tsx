@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/authContext';
 import { useNavigate, Link } from 'react-router-dom';
-import { UserRole } from '@/types/user.types';
+import { UserRole } from '@/types/user';
 import { Formik, FormikHelpers } from 'formik';
 import { 
   Form, 

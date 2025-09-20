@@ -40,7 +40,7 @@ import {
   useUpdateApplication 
 } from '@/hooks/react-queries/application/useApplicationQueries';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import { ApplicationStatus } from '@/types/application.types';
+import { ApplicationStatus } from '@/types/application';
 
 // Status display maps
 const statusIconMap = {

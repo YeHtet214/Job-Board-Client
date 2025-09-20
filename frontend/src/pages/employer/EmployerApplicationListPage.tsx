@@ -45,7 +45,7 @@ import {
 
 import { useToast } from '@/components/ui/use-toast';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import { ReceivedApplication } from '@/types/dashboard.types';
+import { ReceivedApplication } from '@/types/dashboard';
 import { useEmployerDashboard, useUpdateApplicationStatus } from '@/hooks/react-queries/dashboard';
 import { useAuth } from '@/contexts/authContext';
 import { formatDate, getEmployerStatusBadge } from '@/utils/dashboard.utils';

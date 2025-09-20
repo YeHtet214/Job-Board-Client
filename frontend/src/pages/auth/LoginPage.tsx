@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/authContext';
-import { LoginRequest } from '@/types/auth.types';
+import { LoginRequest } from '@/types/auth';
 import { Formik, FormikHelpers } from 'formik';
 import { Form, InputFieldWithLabel, PasswordFieldWithLabel, SwitchFieldWithLabel, SubmitButton } from '@/components/forms';
 import AuthLayout from '@/components/layouts/AuthLayout';

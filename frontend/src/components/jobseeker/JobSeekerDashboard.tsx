@@ -16,7 +16,7 @@ import {
   Calendar,
   Bookmark,
 } from 'lucide-react';
-import { JobApplication } from '@/types/dashboard.types';
+import { JobApplication } from '@/types/dashboard';
 import DashboardStatCard from '@/components/dashboard/DashboardStatCard';
 import ActivityFeed from '@/components/dashboard/ActivityFeed';
 import ProfileCompletionCard from '@/components/dashboard/ProfileCompletionCard';
@@ -33,8 +33,8 @@ import { useRemoveSavedJob, useSavedJobs } from '@/hooks/react-queries/job/useSa
 import { useAuth } from '@/contexts/authContext';
 import { useToast } from '@/components/ui/use-toast';
 import { useProfile } from '@/hooks/react-queries/profile/useProfileQueries';
-import { ProfileCompletionItemType } from '@/types/profile.types';
-import { SavedJobWithDetails } from '@/types/saved-job.types';
+import { ProfileCompletionItemType } from '@/types/profile';
+import { SavedJobWithDetails } from '@/types/saved-job';
 
 const JobSeekerDashboard: React.FC = () => {
   const navigate = useNavigate();

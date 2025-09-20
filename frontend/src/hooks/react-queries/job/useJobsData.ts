@@ -199,7 +199,7 @@
 // };
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Job, JobFilterType } from '@/types/job.types';
+import { Job, JobFilterType } from '@/types/job';
 import { useJobs } from './useJobQueries';
 import { SortOption } from '@/contexts/JobsContext';
 import { useSearchParams } from 'react-router-dom';

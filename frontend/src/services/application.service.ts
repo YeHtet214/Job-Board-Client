@@ -1,5 +1,5 @@
 import { ApiService } from './api.service';
-import { Application, CreateApplicationDto, UpdateApplicationDto } from '../types/application.types';
+import { Application, CreateApplicationDto, UpdateApplicationDto } from '../types/application';
 
 class ApplicationService extends ApiService {
   private endpoints = {

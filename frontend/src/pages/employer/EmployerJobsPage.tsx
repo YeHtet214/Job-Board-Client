@@ -30,7 +30,7 @@ import {
   Calendar,
   Users
 } from 'lucide-react';
-import { Job } from '../../types/job.types';
+import { Job } from '../../types/job';
 import { useMyCompany } from '../../hooks/react-queries/company/useCompanyQueries';
 import { motion } from 'framer-motion';
 

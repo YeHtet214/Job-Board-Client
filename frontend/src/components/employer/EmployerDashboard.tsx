@@ -16,7 +16,7 @@ import {
   Plus,
   UserCheck
 } from 'lucide-react';
-import { PostedJob, ReceivedApplication, EmployerActivity, EmployerStats } from '@/types/dashboard.types';
+import { PostedJob, ReceivedApplication, EmployerActivity, EmployerStats } from '@/types/dashboard';
 import DashboardStatCard from '@/components/dashboard/DashboardStatCard';
 import ActivityFeed from '@/components/dashboard/ActivityFeed';
 import ProfileCompletionCard from '@/components/dashboard/ProfileCompletionCard';
@@ -31,7 +31,7 @@ import {
   useUpdateApplicationStatus,
   useDeletePostedJob
 } from '@/hooks/react-queries/dashboard';
-import { UpdateApplicationStatusDto } from '@/types/dashboard.types';
+import { UpdateApplicationStatusDto } from '@/types/dashboard';
 
 const EmployerDashboard: React.FC = () => {
   const navigate = useNavigate();

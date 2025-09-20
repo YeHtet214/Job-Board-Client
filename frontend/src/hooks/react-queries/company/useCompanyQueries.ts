@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import companyService from '@/services/company.service';
-import type { CreateCompanyDto, UpdateCompanyDto } from '@/types/company.types';
+import type { CreateCompanyDto, UpdateCompanyDto } from '@/types/company';
 import { toast } from 'react-hot-toast';
 import jobService from '@/services/job.service';
 

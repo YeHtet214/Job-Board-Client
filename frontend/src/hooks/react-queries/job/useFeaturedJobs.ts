@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import jobService from '@/services/job.service';
 import { SortOption } from '@/contexts/JobsContext';
-import { JobsResponse } from '@/types/job.types';
+import { JobsResponse } from '@/types/job';
 
 /**
  * Custom hook to fetch featured jobs (latest 6 jobs)

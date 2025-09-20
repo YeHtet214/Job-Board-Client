@@ -147,6 +147,7 @@ const Footer: React.FC = () => {
 
   return (
     <footer className="jb-primary jb-text-muted border-t border-jb-muted/10">
+     
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}

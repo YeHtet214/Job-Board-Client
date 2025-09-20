@@ -16,7 +16,7 @@ import BasicInfoTab from './BasicInfoTab';
 import CompanyDetailsTab from './CompanyDetailsTab';
 import BrandingTab from './BrandingTab';
 import LoadingSpinner from '../ui/LoadingSpinner';
-import { CreateCompanyDto, Company, UpdateCompanyDto } from '../../types/company.types';
+import { CreateCompanyDto, Company, UpdateCompanyDto } from '../../types/company';
 import {
   useCreateCompany,
   useUpdateCompany

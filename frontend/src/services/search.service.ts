@@ -1,5 +1,5 @@
 import { ApiService } from '@/services/api.service';
-import { Job } from '@/types/job.types';
+import { Job } from '@/types/job';
 
 export interface JobSearchParams {
   keyword?: string;

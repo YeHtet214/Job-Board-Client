@@ -7,8 +7,8 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Profile } from '@/types/profile.types';
-import { User } from '@/types/user.types';
+import { Profile } from '@/types/profile';
+import { User } from '@/types/user';
 
 interface BasicInfoSectionProps {
   profile: Profile;

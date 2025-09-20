@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
 import { profileService } from '@/services/profile.service';
-import { CreateProfileDto, Profile, UpdateProfileDto } from '@/types/profile.types';
+import { CreateProfileDto, Profile, UpdateProfileDto } from '@/types/profile';
 import { useToast } from '@/components/ui/use-toast';
 
 // Query keys

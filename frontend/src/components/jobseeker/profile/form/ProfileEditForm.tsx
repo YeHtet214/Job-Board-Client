@@ -1,4 +1,4 @@
-import { Profile } from '@/types/profile.types';
+import { Profile } from '@/types/profile';
 import { Formik, Form } from 'formik';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { User, BookOpen, Building, Link } from 'lucide-react';

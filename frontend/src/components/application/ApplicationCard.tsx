@@ -1,4 +1,4 @@
-import { Application, ApplicationStatus } from "@/types/application.types";
+import { Application, ApplicationStatus } from "@/types/application";
 import { 
   Card, 
   CardContent, 

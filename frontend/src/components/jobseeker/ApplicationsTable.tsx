@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { formatDate, getJobSeekerStatusBadge } from '@/utils/dashboard.utils';
-import { JobApplication } from '@/types/dashboard.types';
+import { JobApplication } from '@/types/dashboard';
 import CancelConfirmAlert from '../common/CancelConfirmAlert';
 
 interface ApplicationsTableProps {
