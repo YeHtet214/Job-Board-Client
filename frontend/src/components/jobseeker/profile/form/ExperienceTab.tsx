@@ -15,11 +15,9 @@ import { ProfileFormValues } from './ProfileEditForm';
 
 interface ExperienceTabProps {
   formik: FormikProps<ProfileFormValues>;
-  isSaving: boolean;
-  onTabChange: (tab: string) => void;
 }
 
-const ExperienceTab = ({ formik, isSaving, onTabChange }: ExperienceTabProps) => {
+const ExperienceTab = ({ formik }: ExperienceTabProps) => {
   const { values } = formik;
 
   return (
@@ -132,26 +130,6 @@ const ExperienceTab = ({ formik, isSaving, onTabChange }: ExperienceTabProps) =>
           )}
         />
       </CardContent>
-      <CardFooter className="flex justify-between px-0 md:px-6">
-        <div className="flex gap-2">
-          <Button type="button" variant="outline" onClick={() => onTabChange('education')}>
-            Previous
-          </Button>
-          <Button type="button" variant="outline" onClick={() => onTabChange('links')}>
-            Next
-          </Button>
-        </div>
-        <Button type="submit" disabled={isSaving}>
-          {isSaving ? (
-            <span className="flex items-center">
-              <LoadingSpinner size="sm" className="mr-2" />
-              Saving...
-            </span>
-          ) : (
-            "Save"
-          )}
-        </Button>
-      </CardFooter>
     </Card>
   );
 };

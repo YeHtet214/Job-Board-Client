@@ -20,6 +20,7 @@ class UserService extends ApiService {
     return response.data.data;
   }
 
+
   public async updateUserInfo(userData: {
     firstName?: string;
     lastName?: string;

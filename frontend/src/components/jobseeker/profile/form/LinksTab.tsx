@@ -208,23 +208,6 @@ const LinksTab = ({
           </div>
         </div>
       </CardContent>
-
-      <CardFooter className="flex justify-between px-0 md:px-6">
-        <Button type="button" variant="outline" onClick={() => onTabChange('experience')}>
-          Previous
-        </Button>
-        
-        <Button type="submit" disabled={isSaving}>
-          {isSaving ? (
-            <span className="flex items-center">
-              <LoadingSpinner size="sm" className="mr-2" />
-              Saving...
-            </span>
-          ) : (
-            "Save"
-          )}
-        </Button>
-      </CardFooter>
     </Card>
   );
 };

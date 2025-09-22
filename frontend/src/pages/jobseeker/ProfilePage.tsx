@@ -47,18 +47,15 @@ const ProfilePage = () => {
     }
   }, [currentUser, navigate]);
 
-  useEffect(() => {
-    setEditMode(false);
-  }, [profile]);
-
   const handleSubmit = async (values: ProfileFormValues) => {
+    console.log("Profile values:", values);
     try {
       if (profile?.id) {
         await updateProfile(values);
       } else {
         await createProfile(values as any);
       }
-      setEditMode(false);
+      // setEditMode(false);
     } catch (error) {
       console.error('Error saving profile:', error);
     }
@@ -94,9 +91,10 @@ const ProfilePage = () => {
         className="container mx-auto max-w-5xl py-10 px-4 sm:px-6 text-jb-text"
       >
         <h1 className="text-3xl font-bold mb-4 text-jb-text">Profile</h1>
-        <ProfileOverview enterEditMode={enterEditMode} />
 
-        {editMode && (
+        {!editMode ? (
+          <ProfileOverview enterEditMode={enterEditMode} />
+        ) : (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -165,7 +163,7 @@ const ProfilePage = () => {
         <Button
           onClick={() => setEditMode(false)}
           variant="outline"
-          className="border-jb-muted text-jb-text hover:bg-jb-muted/10"
+          className="border-jb-text-muted text-jb-text hover:bg-jb-muted/10"
         >
           Cancel
         </Button>

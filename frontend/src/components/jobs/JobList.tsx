@@ -12,8 +12,6 @@ const JobList: React.FC = () => {
   const { jobs, isLoading, error, keyword, location, jobTypes, experienceLevel, totalCount } = useJobsData();
   const { isAuthenticated, currentUser } = useAuth();
 
-  console.log("JObs in list: ",jobs);
-
   // Check if user is a job seeker for saved job functionality
   const isJobSeeker = currentUser?.role === 'JOBSEEKER';
   

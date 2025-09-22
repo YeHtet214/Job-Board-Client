@@ -54,8 +54,6 @@ const JobFilters: React.FC = () => {
   const handleOnChange = (values: FormikProps<any> | typeof initialValues) => {
     // Extract values from either Formik props or directly from values
     const formValues = 'values' in values ? values.values : values;
-
-    console.log("FOrm values; ", formValues)
     
     const updateParamsProps: JobFilterType = {
       keyword: formValues.keyword as string || '',

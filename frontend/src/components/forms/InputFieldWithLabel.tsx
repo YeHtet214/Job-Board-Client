@@ -45,7 +45,7 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
         
             return (
                 <div className="mb-4">
-                    <Label htmlFor={name} className="block text-sm font-medium mb-2 text-jb-text-muted-foreground">
+                    <Label htmlFor={name} className="block text-sm font-medium mb-1 text-jb-text-muted-foreground">
                         {label} {required && <span className="text-jb-danger">*</span>}
                     </Label>
                     <Input
@@ -53,7 +53,7 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
                         placeholder={placeholder}
                         disabled={disabled}
                         autoComplete={autoComplete}
-                        className={`mt-1 block w-full px-3 py-4 border ${
+                        className={` block w-full px-3 py-4 border ${
                             hasError ? 'border-jb-danger' : 'border-jb-border'
                         } rounded-md shadow-sm focus:outline-none focus:ring-jb-primary focus:border-jb-primary ${className}`}
                         {...field}
@@ -79,7 +79,7 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
                         placeholder={placeholder}
                         disabled={disabled}
                         autoComplete={autoComplete}
-                        className={`mt-1 block w-full px-3 py-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-jb-primary focus:border-jb-primary ${className}`}
+                        className={` block w-full px-3 py-4 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-jb-primary focus:border-jb-primary ${className}`}
                         {...props}
                     />
                 </div>
@@ -92,7 +92,7 @@ const InputFieldWithLabel: React.FC<InputFieldWithLabelProps> = (props) => {
         
         return (
             <div className="mb-4">
-                <Label htmlFor={name} className="block text-sm font-medium mb-2">
+                <Label htmlFor={name} className="block text-sm font-medium mb-2 text-jb-text">
                     <div className="relative inline-block">
                         {label} {required && <span className="text-jb-danger absolute -right-2 top-1/2 transform -translate-y-1/2">*</span>}
                     </div>

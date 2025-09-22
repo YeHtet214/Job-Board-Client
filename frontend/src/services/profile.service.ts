@@ -1,5 +1,6 @@
 import { ApiService } from '@/services/api.service';
 import { Profile, CreateProfileDto, UpdateProfileDto } from '@/types/profile';
+import { profile } from 'console';
 
 class ProfileService extends ApiService {
   private endpoints = {
@@ -24,9 +25,15 @@ class ProfileService extends ApiService {
   public async createProfile(profileData: CreateProfileDto): Promise<Profile> {
     const formData = new FormData();
 
+    console.log("Profile data form in service raw: ", profileData); 
     for (const [key, value] of Object.entries(profileData)) {
       formData.append(key, value);
     }
+
+    console.log("Profile data form in service: ", formData);
+    console.log(formData.getAll('experience'));
+    console.log(formData.getAll('education'));
+    console.log(formData.getAll('skills'));
 
     const response = await this.post<Profile>(this.endpoints.MY_PROFILE, formData);
     return response.data.data;

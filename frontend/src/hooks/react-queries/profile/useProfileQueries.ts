@@ -52,7 +52,7 @@ export const useCreateProfile = () => {
       toast({
         title: "Success",
         description: "Profile created successfully",
-        variant: "default",
+        variant: "success",
       });
     },
     onError: (error) => {
