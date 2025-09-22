@@ -12,12 +12,11 @@ const useFeaturedJobs = () => {
     queryFn: async () => {
       try {
         // Fetch the latest 6 jobs sorted by newest first
-        const result = await jobService.getAllJobs({
+        return await jobService.getAllJobs({
           sortBy: SortOption.NEWEST,
           limit: 6,
           page: 1
         });
-        return result;
       } catch (error) {
         console.error('Error fetching featured jobs:', error);
         return { jobs: [], totalPages: 0, totalCount: 0, currentPage: 1 };

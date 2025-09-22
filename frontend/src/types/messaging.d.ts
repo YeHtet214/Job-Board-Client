@@ -1,19 +1,36 @@
+import { User } from "./user";
+
 // ====== Core User & Conversation ======
-export type UserSummary = {
+export type ConversationParticipant = {
   id: string;
   name: string;
   avatarUrl?: string;
-  role: "employer" | "seeker";
+  conversationId: string;
+  user: User;
+  joinedAt?: Date 
+  lastReadAt?: Date
 };
 
 export type Conversation = {
   id: string;
-  participants: UserSummary[]; // usually 2, but keep array for group chat support
+  participants: ConversationParticipant[]; // usually 2, but keep array for group chat support
   lastMessage?: Message;
   unreadCount: number;
   updatedAt: string;
   createdAt: string;
 };
+
+export type NormalizedConversation = {
+  id: string;
+  receipent: {
+    name: string;
+    id: string;
+  } | null;
+  updatedAt: string;
+  lastMessage: string;
+  createdAt: string;
+  unreadCount: number;
+}
 
 // ====== Messages ======
 export type MessageStatus = "sending" | "sent" | "delivered" | "read" | "failed";

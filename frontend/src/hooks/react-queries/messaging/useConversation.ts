@@ -1,30 +1,29 @@
-import { MessagingService } from "@/services/messaging.service";
-import { useQuery } from "@tanstack/react-query";
+import MessagingService from "@/services/messaging.service";
+import { Conversation } from "@/types/messaging";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 const messagingKeys  = {
   all: ['conversations'] as const,
   details: () => [...messagingKeys.all, 'details'] as const,
   detail: (id: string) => [messagingKeys.details(), id] as const,
-  message: () => [...messagingKeys.all, 'message'] as const,
-  conv_message: (id: string) => [messagingKeys.message(), id] as const,
+  conversationMessages: () => [...messagingKeys.all, 'conversationMessages'] as const,
+  messageById: (id: string) => [messagingKeys.conversationMessages(), id] as const,
 };
 
-export const useConversation = async () => {
+export function useConversation<T>(): UseQueryResult<T, Error> {
   return useQuery({
     queryKey: messagingKeys.all,
     queryFn: async () => {
-      const conversations = await MessagingService.getAllConversations();
-      return conversations
+      return await MessagingService.getConversations() as Conversation[];
     },
   })
 }
 
-export const useMessage = async () => {
+export function useConversationMessag<T>(conId: string): UseQueryResult<T, Error> {
   return useQuery({
-    queryKey: ,
+    queryKey: messagingKeys.conversationMessages(),
     queryFn: async () => {
-      const conversations = await MessagingService.getAllConversations();
-      return conversations
+      return await MessagingService.getConversationMessages(conId);
     },
   })
 }
