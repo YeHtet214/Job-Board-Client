@@ -10,6 +10,8 @@ import { ProfileValidationSchema } from '@/schemas/validation/profile.shcema';
 import { Button } from '@/components/ui/button';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { useToast } from '@/components/ui/use-toast';
+import { useAuth } from '@/contexts/authContext';
+import { useProfile } from '@/hooks/react-queries/profile';
 
 // Extended profile type for form fields
 export interface ProfileFormValues extends Profile {

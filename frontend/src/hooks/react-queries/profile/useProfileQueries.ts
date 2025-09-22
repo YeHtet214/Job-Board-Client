@@ -143,12 +143,15 @@ export const useUploadProfileImage = () => {
 
   return useMutation({
     mutationFn: (file: File) => profileService.uploadProfileImage(file),
-    onSuccess: (imageUrl) => {
+    onSuccess: async (imageUrl) => {
       // Update the profile with the new image URL
       queryClient.setQueryData<Profile | null>(profileKeys.details(), (oldData) => {
         if (!oldData) return null;
         return { ...oldData, profileImageUrl: imageUrl };
       });
+
+      // Invalidate and refetch profile data in the background
+      await queryClient.invalidateQueries({ queryKey: profileKeys.details(), refetchType: 'active' });
 
       toast({
         title: "Success",

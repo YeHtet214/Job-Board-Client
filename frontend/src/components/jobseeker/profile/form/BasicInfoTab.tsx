@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { TextareaField, InputFieldWithLabel } from '@/components/forms';
 import LoadingSpinner from '@/components/ui/LoadingSpinner';
 import { ProfileFormValues } from './ProfileEditForm';
+import { useProfile } from '@/hooks/react-queries/profile';
 
 interface BasicInfoTabProps {
   formik: FormikProps<ProfileFormValues>;
@@ -30,8 +31,9 @@ const BasicInfoTab = ({
   const { values, setFieldValue } = formik;
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const { data: profile } = useProfile();
 
-  console.log("PROFILE IMAGE URL ", profileImageURL)
+  console.log("PROFILE IMAGE URL ", profile?.profileImageURL)
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -94,9 +96,9 @@ const BasicInfoTab = ({
         <div className="flex flex-col items-center space-y-4">
           <div className="relative group">
             <div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center overflow-hidden border-2 border-border">
-              {profileImageURL ? (
+              {profile?.profileImageURL ? (
                 <img
-                  src={profileImageURL}
+                  src={profile?.profileImageURL}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />

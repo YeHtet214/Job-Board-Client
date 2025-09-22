@@ -48,16 +48,16 @@ const ProfilePage = () => {
   }, [currentUser, navigate]);
 
   const handleSubmit = async (values: ProfileFormValues) => {
-    console.log("Profile values:", values);
     try {
       if (profile?.id) {
         await updateProfile(values);
       } else {
         await createProfile(values as any);
       }
-      // setEditMode(false);
     } catch (error) {
       console.error('Error saving profile:', error);
+    } finally {
+      setEditMode(false);
     }
   };
 
