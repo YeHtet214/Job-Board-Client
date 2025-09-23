@@ -1,3 +1,5 @@
+import { Profile } from "./profile";
+
 export type UserRole = 'JOBSEEKER' | 'EMPLOYER' | 'ADMIN';
 
 export interface User {
@@ -8,4 +10,7 @@ export interface User {
   role: UserRole;
   createdAt?: string;
   updatedAt?: string;
+  profile?: Profile;
+  profileImageURL?: string; // for conversatoin receiver avatar
+  logo?: string; // for conversation receiver avatar
 }

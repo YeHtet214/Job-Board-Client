@@ -13,9 +13,7 @@ export default function ChatIcon() {
   const { currentUser } = useAuth();
   const { data: conversations } = useConversation<Conversation[]>();
 
-  console.log("Conversation fetch from query: ", conversations);
-
-  console.log("Socket in chat: ", socket);
+  console.log("Fetched Concrresatin:  ", conversations);
 
   const handleOpen = () => {
     setIsOpen(true);

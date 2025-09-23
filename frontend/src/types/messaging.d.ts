@@ -15,6 +15,7 @@ export type Conversation = {
   id: string;
   participants: ConversationParticipant[]; // usually 2, but keep array for group chat support
   lastMessage?: Message;
+  messages: Message[];
   unreadCount: number;
   updatedAt: string;
   createdAt: string;
@@ -25,8 +26,10 @@ export type NormalizedConversation = {
   receipent: {
     name: string;
     id: string;
+    avatar?: string;
   } | null;
   updatedAt: string;
+  messages: Message[];
   lastMessage: string;
   createdAt: string;
   unreadCount: number;

@@ -15,14 +15,17 @@ export function normalizeConversation(
 
 	return convs.map((conv) => ({
 		id: conv.id,
-		receipent: conv.participants.map((summ) => {
-			if (summ.user.id === currentUserId) return null;
+		receipent: conv.participants.map((participant) => {
+			const receipent = participant.user;
+			if (receipent.id === currentUserId) return null;
 			return {
-				name: summ.user.firstName + " " + summ.user.lastName,
-				id: summ.user.id,
+				name: receipent.firstName + " " + receipent.lastName,
+				id: receipent.id,
+				avatar: receipent.profileImageURL ? receipent.profileImageURL : receipent.logo,
 			};
-		})[0],
+		}).filter(Boolean)[0],
     updatedAt: conv.updatedAt,
+		messages: conv.messages,
     lastMessage: conv.lastMessage?.content ?? "",
     createdAt: conv.createdAt,
     unreadCount: conv.unreadCount,
