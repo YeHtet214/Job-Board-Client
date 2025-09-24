@@ -12,8 +12,6 @@ const ConversationList = ({ convs, onConversationClick }: ConversationListProps)
   const [openConversation, setOpenConversation] = useState<NormalizedConversation | null>(null);
   const { currentUser } = useAuth();
 
-  console.log("Fetched convs: ", convs);
-
   const handleConversationClick = (conv: any) => {
     // Handle conversation click
     if (conv && conv.id !== openConversation?.id) {

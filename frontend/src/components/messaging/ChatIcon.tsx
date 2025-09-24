@@ -1,19 +1,20 @@
 import { useState } from 'react';
-import { useSocket } from '@/contexts/SocketContext';
 import { Conversation } from '@/types/messaging';
 import ConversationList from '@/components/messaging/ConversationList';
 import { useConversation } from '@/hooks/react-queries/messaging/useConversation';
-import { MessageCircleIcon , MessageCircleDashedIcon, MessageSquareIcon, MessageCircleMore, MessageCircleMoreIcon } from 'lucide-react';
+import {  MessageCircleMore } from 'lucide-react';
 import { useAuth } from '@/contexts/authContext';
 import { normalizeConversation } from '@/lib/utils';
+import { useMessaging } from '@/contexts/MessagingContext';
 
 export default function ChatIcon() {
   const [isOpen, setIsOpen] = useState(false);
-  const { socket } = useSocket();
+  const { socket } = useMessaging();
   const { currentUser } = useAuth();
   const { data: conversations } = useConversation<Conversation[]>();
 
   console.log("Fetched Concrresatin:  ", conversations);
+  console.log("SOCKET: ", socket);
 
   const handleOpen = () => {
     setIsOpen(true);

@@ -43,7 +43,7 @@ export type Message = {
   tempId?: string;          // for optimistic UI before server ack
   conversationId: string;
   senderId: string;
-  content: string;
+  body: string;
   status: MessageStatus;
   createdAt: string;       
   updatedAt?: string;

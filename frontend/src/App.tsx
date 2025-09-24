@@ -7,7 +7,7 @@ import SessionExpiredModal from './components/auth/SessionExpiredModal';
 import { Toaster } from './components/ui/toaster';
 import './App.css';
 import { ThemeProvider } from './components/ThemeProvider';
-import { SocketProvider } from './contexts/SocketContext';
+import { MessagingProvider } from './contexts/MessagingContext';
 
 // Create a client
 const queryClient = new QueryClient({
@@ -24,7 +24,7 @@ const App = () => {
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <SocketProvider>
+          <MessagingProvider>
             <ThemeProvider>
               <Router>
                 <SessionExpiredModal />
@@ -32,7 +32,7 @@ const App = () => {
                 <Toaster />
               </Router>
             </ThemeProvider>
-          </SocketProvider>
+          </MessagingProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ErrorBoundary>
