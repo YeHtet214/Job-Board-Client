@@ -1,6 +1,6 @@
-import { useSocket } from "@/contexts/SocketContext"
+import { useAuth } from "@/contexts/authContext"
 import { useMessaging } from "@/contexts/MessagingContext"
-import { NormalizedConversation, Message } from "@/types/messaging"
+import { NormalizedConversation, Message, MessageStatus } from "@/types/messaging"
 import { SendHorizontal } from "lucide-react"
 import { FormEvent, useEffect, useState } from "react"
 import { v4 as uuidv4 } from 'uuid'
@@ -18,13 +18,15 @@ const ReceipentMessage = ({ conv, message }: { conv: NormalizedConversation, mes
 
 const ConversationDialog = ({ conv }: { conv: NormalizedConversation }) => {
   const [input, setInput] = useState<string>('');
-  const { socket } = useSocket();
-  const { getMergedConversation, addOptimisticMessage, updateMessageStatus } = useMessaging();
+  const { socket, sendMessage, getMergedConversation, realtimeMessages, addOptimisticMessage, updateMessageStatus } = useMessaging();
+  const { currentUser } = useAuth();
   
+
   // Get conversation with real-time updates
   const mergedConv = getMergedConversation(conv);
 
   useEffect(() => {
+
     const pressEnterSendMessage = (e: KeyboardEvent) => {
       if (e.key === 'Enter') {
         handleSubmit();
@@ -36,43 +38,29 @@ const ConversationDialog = ({ conv }: { conv: NormalizedConversation }) => {
     return () => {
       document.removeEventListener('keydown', pressEnterSendMessage);
     }
-  }, []);
+  }, [realtimeMessages, conv.id]);
 
   const handleSubmit = (e?: FormEvent | null) => {
     if (e) e.preventDefault();
     if (!socket || !input.trim()) return;
-    
+
     const tempId = uuidv4();
+    if (!currentUser) return;
     const optimisticMessage: Message = {
       id: tempId,
       tempId,
       conversationId: conv.id,
-      senderId: 'current-user', // This should come from auth context
+      senderId: currentUser.id,
       body: input,
-      status: 'sending',
+      status: "sending",
       createdAt: new Date().toISOString()
     };
-    
-    // Add optimistic message immediately
+
     addOptimisticMessage(conv.id, optimisticMessage);
-    setInput('');
-    
+
     try {
-      socket.emit("chat:send", { 
-        receiverId: conv.receipent?.id || null, 
-        conversationId: conv.id || null, 
-        text: input 
-      }, (res: any) => {
-        if (res.ok)  {
-          console.log("Message sent:", res.messageId);
-          // Update message status with server ID
-          updateMessageStatus(conv.id, tempId, 'sent', res.messageId);
-        } else {
-          console.error("Send failed:", res.error);
-          // Update message status to failed
-          updateMessageStatus(conv.id, tempId, 'failed');
-        }
-      });
+      sendMessage({ tempId, receiverId: conv.receipent?.id || '', conversationId: conv.id, body: input });
+      setInput('');
     } catch (error) {
       console.error(error);
       updateMessageStatus(conv.id, tempId, 'failed');
@@ -86,7 +74,7 @@ const ConversationDialog = ({ conv }: { conv: NormalizedConversation }) => {
         <img src={conv.receipent?.avatar} alt="profile image" className={`w-10 h-10 object-cover rounded-full`} />
       </div>
 
-      {mergedConv.messages && mergedConv.messages.map((message: any) => (
+      {mergedConv.messages.map((message: any) => (
         <div className="flex items-start my-2" key={message.tempId || message.id}>
           {message.senderId === conv.receipent?.id ? (
             <ReceipentMessage conv={conv} message={message} />

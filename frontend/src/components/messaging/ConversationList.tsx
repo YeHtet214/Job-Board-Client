@@ -10,10 +10,13 @@ type ConversationListProps = {
 
 const ConversationList = ({ convs, onConversationClick }: ConversationListProps) => {
   const [openConversation, setOpenConversation] = useState<NormalizedConversation | null>(null);
+  const [toggleConversation, setToggleConversation] = useState(false);
   const { currentUser } = useAuth();
 
   const handleConversationClick = (conv: any) => {
     // Handle conversation click
+    setToggleConversation(!toggleConversation);
+
     if (conv && conv.id !== openConversation?.id) {
       setOpenConversation(conv);
     }
@@ -21,11 +24,11 @@ const ConversationList = ({ convs, onConversationClick }: ConversationListProps)
 
   return (
     <div className="w-full min-h-[300px] mx-auto grid grid-cols-3 bg-jb-surface rounded-lg shadow-md overflow-hidden">
-      <ul className={`divide-y ${openConversation ? 'col-span-1' : 'col-span-2'} divide-jb-sruface-200`}>
+      <ul className={`divide-y transition ${toggleConversation ? 'w-auto border-r-1' : 'w-100'} divide-jb-sruface-200`}>
         {convs ? convs.map((conv: NormalizedConversation) => (
           <li key={conv.id} className={`flex ${openConversation?.id === conv.id ? 'bg-jb-bg' : ''} items-center px-4 py-3 hover:bg-jb-bg transition cursor-pointer`} onClick={() => handleConversationClick(conv)}>
             <img
-              src={'https://i.pravatar.cc/40?img=1'}
+              src={conv.receipent?.avatar}
               alt={conv.receipent?.id === currentUser?.id ? currentUser?.firstName : conv.receipent?.name}
               className="w-10 h-10 rounded-full object-cover mr-4 border"
             />
@@ -36,13 +39,13 @@ const ConversationList = ({ convs, onConversationClick }: ConversationListProps)
               <p className="text-sm text-jb-text-muted truncate">{conv.lastMessage} last message</p>
             </div>
           </li>
-        )): (
+        )) : (
           <>No conversations found!</>
         )}
       </ul>
 
-      { openConversation && (
-        <div className="col-span-2 border-l-1">
+      {openConversation && (
+        <div className={`transition w-100 overflow-hidden ${toggleConversation ? 'translate-x-0' : 'translate-x-[200%]'}`}>
           <ConversationDialog conv={openConversation} />
         </div>
       )}

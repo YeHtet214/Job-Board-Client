@@ -1,15 +1,17 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Message, NormalizedConversation, SocketNewMessage, Conversation } from '@/types/messaging';
+import { Message, NormalizedConversation, Conversation, MessageStatus } from '@/types/messaging';
 import { useAuth } from './authContext';
 import { createSocket } from '@/lib/socket';
 import { Socket } from 'socket.io-client';
+import { string } from 'yup';
+import { useConversation } from '@/hooks/react-queries/messaging/useConversation';
 
 type MessagingContextType = {
-  // Real-time message updates
   realtimeMessages: Map<string, Message[]>;
   socket: typeof Socket | null;
-  // Methods for managing conversations
+  isConnected: boolean;
+  sendMessage: ({ tempId, receiverId, conversationId, body }: { tempId: string,receiverId: string, conversationId: string, body: string }) => void;
   addMessage: (conversationId: string, message: Message) => void;
   updateConversation: (conversationId: string, updater: (conv: Conversation) => Conversation) => void;
 
@@ -26,21 +28,19 @@ const MessagingContext = createContext<MessagingContextType | undefined>(undefin
 export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<typeof Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const { accessToken } = useAuth();
+  const { accessToken, currentUser } = useAuth();
   const queryClient = useQueryClient();
 
   // Map to store real-time messages that haven't been persisted to React Query cache yet
   const [realtimeMessages, setRealtimeMessages] = useState<Map<string, Message[]>>(new Map());
 
-  // Handle incoming socket messages
   useEffect(() => {
+    console
     if (!accessToken) return;
 
     //create socket with access token
     const s = createSocket(accessToken);
     setSocket(s);
-
-    console.log("SSS: ", s)
 
     s.connect();
 
@@ -63,9 +63,9 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       console.log("🔔 Notification:", notif);
     });
 
-    const handleNewMessage = (data: SocketNewMessage) => {
-      const { message } = data;
-
+    const handleNewMessage = (message: Message) => {
+      if (currentUser?.id === message.senderId) return;
+    
       // Add to real-time messages
       setRealtimeMessages(prev => {
         const updated = new Map(prev);
@@ -79,16 +79,49 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
       // Invalidate specific conversation messages if they're being viewed
       queryClient.invalidateQueries({
-        queryKey: ['conversations', 'conversationMessages', message.conversationId]
+        queryKey: ['conversations', message.conversationId, 'messages'],
       });
     };
 
     s.on('chat:new', handleNewMessage);
 
     return () => {
-      s.off('chat:new', handleNewMessage);
+      s.disconnect();
+      setIsConnected(false);
+
     };
-  }, [socket, queryClient]);
+  }, [accessToken]);
+
+  const sendMessage = async ({ tempId, receiverId, conversationId, body }: { tempId: string, receiverId: string, conversationId: string, body: string }) => {
+    socket?.emit("chat:send", {
+      receiverId,
+      conversationId,
+      text: body
+    }, (res: any) => {
+      if (res.ok) {
+        setRealtimeMessages(prev => {
+          const updated = new Map(prev);
+          const messages = updated.get(conversationId) || [];
+          const newMessages = messages.map(m => {
+            if (m.tempId === tempId) {
+              return {
+                ...m,
+                status: "sent" as MessageStatus,
+                id: res.messageId
+              }
+            }
+            return m;
+          })
+          updated.set(conversationId, newMessages);
+          return updated;
+        });
+        // updateMessageStatus(conversationId, tempId, 'sent', res.messageId);
+      } else {
+        console.error("Send failed:", res.error);
+        updateMessageStatus(conversationId, tempId, "failed");
+      }
+    });
+  }
 
   // Add a message to real-time store
   const addMessage = useCallback((conversationId: string, message: Message) => {
@@ -96,6 +129,8 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       const updated = new Map(prev);
       const messages = updated.get(conversationId) || [];
       updated.set(conversationId, [...messages, message]);
+
+      console.log("Realtime messages updated:", updated);
       return updated;
     });
   }, []);
@@ -196,6 +231,8 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   const value = useMemo(() => ({
     realtimeMessages,
+    isConnected,
+    sendMessage,
     addMessage,
     updateConversation,
     getMergedConversation,
@@ -204,6 +241,8 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     socket,
   }), [
     realtimeMessages,
+    isConnected,
+    sendMessage,
     addMessage,
     updateConversation,
     getMergedConversation,

@@ -37,7 +37,6 @@ export type NormalizedConversation = {
 
 // ====== Messages ======
 export type MessageStatus = "sending" | "sent" | "delivered" | "read" | "failed";
-
 export type Message = {
   id: string;               // server assigned id
   tempId?: string;          // for optimistic UI before server ack
@@ -72,10 +71,6 @@ export type SocketSendMessage = {
 export type SocketMessageAck = {
   tempId: string;
   message: Message; // includes final server id & timestamps
-};
-
-export type SocketNewMessage = {
-  message: Message;
 };
 
 export type SocketPresenceUpdate = {

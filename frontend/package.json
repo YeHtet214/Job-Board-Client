@@ -67,6 +67,7 @@
     "socket.io-client": "^4.8.1",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
+    "uuid": "^13.0.0",
     "yup": "^1.6.1"
   },
   "devDependencies": {
@@ -80,6 +81,7 @@
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
     "@types/socket.io-client": "^1.4.36",
+    "@types/uuid": "^10.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/ui": "^3.2.3",
     "autoprefixer": "^10.4.20",

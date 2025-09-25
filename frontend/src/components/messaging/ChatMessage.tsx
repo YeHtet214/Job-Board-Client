@@ -1,4 +1,4 @@
-import { useSocket } from "@/contexts/SocketContext";
+import { useMessaging } from "@/contexts/MessagingContext";
 import { useState } from "react";
 
 const ConversationDialog = ({ send, close }: { send: (msg: string) => void, close: () => void }) => {
@@ -19,7 +19,7 @@ const ConversationDialog = ({ send, close }: { send: (msg: string) => void, clos
 
 export default function ChatMessage({ receiverId, conversationId }: { receiverId?: string, conversationId?: string }) {
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const { socket, isConnected } = useSocket();
+  const { socket, isConnected } = useMessaging();
 
   const sendMessage = (text: string) => {
     if (!socket) return;
