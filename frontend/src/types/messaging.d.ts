@@ -11,32 +11,33 @@ export type ConversationParticipant = {
   lastReadAt?: Date
 };
 
-export type Conversation = {
-  id: string;
-  participants: ConversationParticipant[]; // usually 2, but keep array for group chat support
-  lastMessage?: Message;
-  messages: Message[];
-  unreadCount: number;
-  updatedAt: string;
-  createdAt: string;
-};
+// export type Conversation = {
+//   id: string;
+//   participants: ConversationParticipant[]; // usually 2, but keep array for group chat support
+//   lastMessage?: Message;
+//   messages: Message[];
+//   unreadCount: number;
+//   updatedAt: string;
+//   createdAt: string;
+// };
 
-export type NormalizedConversation = {
+export type Conversation = {
   id: string;
   receipent: {
     name: string;
     id: string;
     avatar?: string;
-  } | null;
+  };
   updatedAt: string;
   messages: Message[];
-  lastMessage: string;
+  lastMessage?: Message;
   createdAt: string;
   unreadCount: number;
 }
 
 // ====== Messages ======
 export type MessageStatus = "sending" | "sent" | "delivered" | "read" | "failed";
+
 export type Message = {
   id: string;               // server assigned id
   tempId?: string;          // for optimistic UI before server ack

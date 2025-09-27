@@ -14,6 +14,7 @@ export function useConversation<T>(): UseQueryResult<T, Error> {
     queryKey: messagingKeys.all,
     queryFn: async () => {
       const conversations = await MessagingService.getConversations() as Conversation[];
+      console.log("Returned conversations; ",conversations);
       return conversations;
     },
   })

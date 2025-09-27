@@ -4,7 +4,6 @@ import ConversationList from '@/components/messaging/ConversationList';
 import { useConversation } from '@/hooks/react-queries/messaging/useConversation';
 import {  MessageCircleMore } from 'lucide-react';
 import { useAuth } from '@/contexts/authContext';
-import { normalizeConversation } from '@/lib/utils';
 import { useMessaging } from '@/contexts/MessagingContext';
 
 export default function ChatIcon() {
@@ -46,7 +45,7 @@ export default function ChatIcon() {
           </button>
           {socket && conversations && (
             <ConversationList
-              convs={normalizeConversation(conversations, currentUser.id)}
+              convs={conversations}
               onConversationClick={(conversation: Conversation) => {
                 socket.emit(
                   'chat:join',

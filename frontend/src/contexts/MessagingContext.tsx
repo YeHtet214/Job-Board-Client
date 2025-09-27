@@ -1,11 +1,9 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Message, NormalizedConversation, Conversation, MessageStatus } from '@/types/messaging';
+import { Message, Conversation, MessageStatus } from '@/types/messaging';
 import { useAuth } from './authContext';
 import { createSocket } from '@/lib/socket';
 import { Socket } from 'socket.io-client';
-import { string } from 'yup';
-import { useConversation } from '@/hooks/react-queries/messaging/useConversation';
 
 type MessagingContextType = {
   realtimeMessages: Map<string, Message[]>;
@@ -16,7 +14,7 @@ type MessagingContextType = {
   updateConversation: (conversationId: string, updater: (conv: Conversation) => Conversation) => void;
 
   // Get merged conversation with real-time updates
-  getMergedConversation: (conversation: NormalizedConversation) => NormalizedConversation;
+  getMergedConversation: (conversation: Conversation) => Conversation;
 
   // Optimistic updates
   addOptimisticMessage: (conversationId: string, message: Message) => void;
@@ -24,6 +22,7 @@ type MessagingContextType = {
 };
 
 const MessagingContext = createContext<MessagingContextType | undefined>(undefined);
+
 
 export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<typeof Socket | null>(null);
@@ -64,7 +63,12 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     });
 
     const handleNewMessage = (message: Message) => {
+
+      console.log("New message got: ", message);
+      console.log("CUrrent User: ", currentUser);
       if (currentUser?.id === message.senderId) return;
+
+      console.log("SKIPPED CHECK")
     
       // Add to real-time messages
       setRealtimeMessages(prev => {
@@ -204,7 +208,7 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   }, [queryClient]);
 
   // Get merged conversation with real-time updates
-  const getMergedConversation = useCallback((conversation: NormalizedConversation): NormalizedConversation => {
+  const getMergedConversation = useCallback((conversation: Conversation): Conversation => {
     const rtMessages = realtimeMessages.get(conversation.id) || [];
 
     // Merge messages, avoiding duplicates
@@ -224,7 +228,7 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return {
       ...conversation,
       messages: allMessages,
-      lastMessage: lastMessage?.body || conversation.lastMessage,
+      lastMessage: lastMessage || conversation.lastMessage,
       updatedAt: lastMessage?.createdAt || conversation.updatedAt
     };
   }, [realtimeMessages]);

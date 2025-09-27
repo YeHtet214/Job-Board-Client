@@ -26,7 +26,7 @@ export function normalizeConversation(
 		}).filter(Boolean)[0],
     updatedAt: conv.updatedAt,
 		messages: conv.messages,
-    lastMessage: conv.lastMessage?.content ?? "",
+    lastMessage: conv.lastMessage?.body ?? "",
     createdAt: conv.createdAt,
     unreadCount: conv.unreadCount,
 	}));
