@@ -34,10 +34,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { 
-  Search, 
-  Filter, 
-  X, 
+import {
+  Search,
+  Filter,
+  X,
   UserCheck,
   ClipboardList,
   Eye
@@ -62,12 +62,12 @@ const EmployerApplicationListPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('ALL');
   const [selectedApplication, setSelectedApplication] = useState<ReceivedApplication | null>(null);
   const [statusDialogOpen, setStatusDialogOpen] = useState(false);
-  
+
   // Fetch employer dashboard data
-  const { 
-    data: employerData, 
-    isLoading, 
-    error 
+  const {
+    data: employerData,
+    isLoading,
+    error
   } = useEmployerDashboard({
     enabled: currentUser?.role === 'EMPLOYER'
   });
@@ -85,21 +85,21 @@ const EmployerApplicationListPage: React.FC = () => {
   // Handle search and filtering
   useEffect(() => {
     let result = applications;
-    
+
     // Apply search filter
     if (searchTerm) {
       const searchLower = searchTerm.toLowerCase();
-      result = result.filter(app => 
-        app.applicantName.toLowerCase().includes(searchLower) || 
+      result = result.filter(app =>
+        app.applicantName.toLowerCase().includes(searchLower) ||
         app.jobTitle.toLowerCase().includes(searchLower)
       );
     }
-    
+
     // Apply status filter
     if (statusFilter !== 'ALL') {
       result = result.filter(app => app.status === statusFilter);
     }
-    
+
     setFilteredApplications(result);
   }, [searchTerm, statusFilter, applications]);
 
@@ -118,7 +118,7 @@ const EmployerApplicationListPage: React.FC = () => {
   // Handle application status update
   const handleUpdateStatus = (status: ReceivedApplication['status']) => {
     if (!selectedApplication) return;
-    
+
     updateApplicationStatus(
       { id: selectedApplication.id, statusData: { status } },
       {
@@ -127,13 +127,13 @@ const EmployerApplicationListPage: React.FC = () => {
             title: "Status updated",
             description: `Application status updated to ${status.toLowerCase()}.`,
           });
-          
+
           // Update local state
-          const updatedApplications = applications.map(app => 
+          const updatedApplications = applications.map(app =>
             app.id === selectedApplication.id ? { ...app, status } : app
           );
           setApplications(updatedApplications);
-          
+
           // Close dialog
           setStatusDialogOpen(false);
           setSelectedApplication(null);
@@ -175,7 +175,7 @@ const EmployerApplicationListPage: React.FC = () => {
 
   return (
     <div className="container mx-auto max-w-6xl py-10 px-4 sm:px-6">
-      <motion.div 
+      <motion.div
         className="flex justify-between items-center mb-8"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -239,9 +239,9 @@ const EmployerApplicationListPage: React.FC = () => {
                     </SelectContent>
                   </Select>
                   {(searchTerm || statusFilter !== 'ALL') && (
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={clearFilters}
                       title="Clear filters"
                     >
@@ -278,8 +278,8 @@ const EmployerApplicationListPage: React.FC = () => {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex justify-end gap-2">
-                            <Button 
-                              variant="outline" 
+                            <Button
+                              variant="outline"
                               size="sm"
                               onClick={() => navigate(`/employer/applications/${application.id}`)}
                             >
@@ -306,8 +306,8 @@ const EmployerApplicationListPage: React.FC = () => {
                 <ClipboardList className="h-12 w-12 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium mb-2">No Applications Found</h3>
                 <p className="text-gray-500 mb-6">
-                  {applications.length === 0 
-                    ? "You haven't received any job applications yet." 
+                  {applications.length === 0
+                    ? "You haven't received any job applications yet."
                     : "No applications match your search filters."}
                 </p>
                 {applications.length === 0 ? (
@@ -318,8 +318,8 @@ const EmployerApplicationListPage: React.FC = () => {
                     Post a Job
                   </Button>
                 ) : (
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={clearFilters}
                   >
                     Clear Filters
@@ -352,7 +352,7 @@ const EmployerApplicationListPage: React.FC = () => {
                       disabled={selectedApplication?.status === option.value || updateApplicationStatusLoading}
                     >
                       {option.label}
-                      {selectedApplication?.status === option.value && 
+                      {selectedApplication?.status === option.value &&
                         <Badge className="ml-2 bg-green-100 text-green-800 border-green-200">Current</Badge>
                       }
                     </Button>
@@ -362,8 +362,8 @@ const EmployerApplicationListPage: React.FC = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => setStatusDialogOpen(false)}
             >
               Cancel

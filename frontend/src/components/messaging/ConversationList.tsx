@@ -23,7 +23,7 @@ const ConversationList = ({ convs, onConversationClick }: ConversationListProps)
   };
 
   return (
-    <div className="w-full min-h-[300px] mx-auto grid grid-cols-3 bg-jb-surface rounded-lg shadow-md overflow-auto">
+    <div className="w-full min-h-[300px] mx-auto grid grid-cols-3 bg-jb-surface rounded-lg shadow-md overflow-hidden">
       <ul className={`divide-y transition ${toggleConversation ? 'w-auto border-r-1' : 'w-100'} divide-jb-sruface-200`}>
         {convs ? convs.map((conv: Conversation) => (
           <li key={conv.id} className={`flex ${openConversation?.id === conv.id ? 'bg-jb-bg' : ''} items-center px-4 py-3 hover:bg-jb-bg transition cursor-pointer`} onClick={() => handleConversationClick(conv)}>

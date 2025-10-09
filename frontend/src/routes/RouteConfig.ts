@@ -127,14 +127,14 @@ export const routes: RouteConfig[] = [
     meta: { title: 'Dashboard', description: 'Your personal dashboard' }
   },
   {
-    path: '/profile',
+    path: '/profile/:id',
     element: ProfilePage,
     requiresAuth: true,
     allowedRoles: ['JOBSEEKER', 'EMPLOYER', 'ADMIN'],
     meta: { title: 'Profile', description: 'Manage your profile' }
   },
   {
-    path: '/company/profile',
+    path: '/company/:id/profile',
     element: CompanyProfilePage,
     requiresAuth: true,
     allowedRoles: ['EMPLOYER'],

@@ -22,6 +22,7 @@ export default function ChatMessage({ receiverId, conversationId }: { receiverId
   const { socket, isConnected } = useMessaging();
 
   const sendMessage = (text: string) => {
+    alert("Messaging sending: " + text)
     if (!socket) return;
     socket.emit("chat:send", { receiverId: receiverId || null, conversationId: conversationId || null, text }, (res: any) => {
       if (res.ok) console.log("Message sent:", res.messageId);

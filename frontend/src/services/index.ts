@@ -2,7 +2,7 @@ import axios from 'axios';
 import { isTokenExpired, willTokenExpireSoon } from '../utils/jwt';
 
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL + "/api",
 });
 
 // Whether we're currently refreshing the token

@@ -92,7 +92,7 @@ const Header: React.FC = () => {
                   {currentUser?.role === 'EMPLOYER' && (
                     <NavigationMenuItem>
                       <Link
-                        to="/company/profile"
+                        to="/company/:id/profile"
                         className={`${navigationMenuTriggerStyle()} ${linkBaseClasses} ${isActivePage === 'company' ? activeLinkClasses : ''}`}
                       >
                         <Building className="h-4 w-4" />
@@ -101,10 +101,10 @@ const Header: React.FC = () => {
                     </NavigationMenuItem>
                   )}
 
-                  {currentUser?.role !== 'EMPLOYER' && (
+                  {currentUser?.role === 'JOBSEEKER' && (
                     <NavigationMenuItem>
                       <Link
-                        to="/profile"
+                        to="/profile/:id"
                         className={`${navigationMenuTriggerStyle()} ${linkBaseClasses} ${isActivePage === 'profile' ? activeLinkClasses : ''}`}
                       >
                         <User className="h-4 w-4" />

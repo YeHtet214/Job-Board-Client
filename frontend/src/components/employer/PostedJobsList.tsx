@@ -33,7 +33,7 @@ const PostedJobsList: React.FC<PostedJobsListProps> = ({
   onDeleteJob,
   emptyStateMessage = "You haven't posted any jobs yet."
 }) => {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -73,27 +73,27 @@ const PostedJobsList: React.FC<PostedJobsListProps> = ({
 
                   {onDeleteJob && (
                     <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
+                      <DropdownMenuTrigger>
                         <Button size="sm" variant="ghost">
                           <MoreHorizontal className="h-4 w-4 text-jb-text" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
+                      <DropdownMenuContent align="end" className='bg-jb-surface shadow p-2'>
                         <DropdownMenuItem
-                          onClick={() => navigate(`/jobs/${job.id}/edit`)}
+                          className='border-b hover:border-b-jb-primary hover:text-blue-500' onClick={() => navigate(`/jobs/${job.id}/edit`)}
                         >
                           Edit Job
                         </DropdownMenuItem>
                         <DropdownMenuItem
-                          onClick={() => navigate(`/jobs/${job.id}/applications`)}
+                          className='border-b hover:border-b-jb-primary hover:text-jb-primary' onClick={() => navigate(`/jobs/${job.id}/applications`)}
                         >
                           View Applications
                         </DropdownMenuItem>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <DropdownMenuItem
-                              className="text-jb-danger"
-                              onSelect={(e) => e.preventDefault()}
+                              className="text-jb-danger/75 hover:text-jb-danger"
+                              onSelect={(e) => e.preventDefault() }
                             >
                               Delete Job
                             </DropdownMenuItem>
@@ -110,7 +110,7 @@ const PostedJobsList: React.FC<PostedJobsListProps> = ({
                             <AlertDialogFooter>
                               <AlertDialogCancel>Cancel</AlertDialogCancel>
                               <AlertDialogAction
-                                onClick={() => onDeleteJob(job)}
+                                onClick={() => onDeleteJob(job) }
                                 className="bg-jb-danger hover:bg-jb-danger/90 text-white"
                               >
                                 Delete

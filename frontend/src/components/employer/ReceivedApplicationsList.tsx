@@ -60,16 +60,17 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
 
                       {onUpdateApplicationStatus && (
                         <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
+                          <DropdownMenuTrigger>
                             <Button size="sm" variant="secondary">
                               Update Status
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-jb-surface text-jb-text">
+                          <DropdownMenuContent align="end" className="bg-jb-surface text-jb-textbg-jb-surface shadow p-2">
                             {statusOptions.map((option) => (
                               <DropdownMenuItem
                                 key={option.value}
                                 disabled={application.status === option.value}
+                                className='hover:text-jb-primary/90'
                                 onClick={() =>
                                   onUpdateApplicationStatus(application, option.value)
                                 }
