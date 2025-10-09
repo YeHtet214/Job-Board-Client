@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { Message, NormalizedConversation, Conversation, MessageStatus } from '@/types/messaging';
+import { Message, Conversation, MessageStatus } from '@/types/messaging';
 import { useAuth } from './authContext';
 import { createSocket } from '@/lib/socket';
 import { Socket } from 'socket.io-client';

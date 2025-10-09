@@ -1,11 +1,11 @@
 import { useAuth } from "@/contexts/authContext"
 import { useMessaging } from "@/contexts/MessagingContext"
-import { NormalizedConversation, Message, MessageStatus } from "@/types/messaging"
+import { Conversation, Message } from "@/types/messaging"
 import { SendHorizontal } from "lucide-react"
 import { FormEvent, useEffect, useState } from "react"
 import { v4 as uuidv4 } from 'uuid'
 
-const ReceipentMessage = ({ conv, message }: { conv: NormalizedConversation, message: any }) => {
+const ReceipentMessage = ({ conv, message }: { conv: Conversation, message: any }) => {
   return (
     <div className="flex items-center my-2 text-left">
       <img src={conv.receipent?.avatar} alt="profile image" className={`w-10 h-10 object-cover rounded-full`} />
@@ -16,11 +16,10 @@ const ReceipentMessage = ({ conv, message }: { conv: NormalizedConversation, mes
   )
 }
 
-const ConversationDialog = ({ conv }: { conv: NormalizedConversation }) => {
+const ConversationDialog = ({ conv }: { conv: Conversation }) => {
   const [input, setInput] = useState<string>('');
   const { socket, sendMessage, getMergedConversation, realtimeMessages, addOptimisticMessage, updateMessageStatus } = useMessaging();
   const { currentUser } = useAuth();
-  
 
   // Get conversation with real-time updates
   const mergedConv = getMergedConversation(conv);
