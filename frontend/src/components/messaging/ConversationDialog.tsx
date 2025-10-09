@@ -1,6 +1,6 @@
 import { useAuth } from "@/contexts/authContext"
 import { useMessaging } from "@/contexts/MessagingContext"
-import { Conversation, Message, MessageStatus } from "@/types/messaging"
+import { Conversation, Message } from "@/types/messaging"
 import { SendHorizontal } from "lucide-react"
 import { FormEvent, useEffect, useState } from "react"
 import { v4 as uuidv4 } from 'uuid'
@@ -20,7 +20,6 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
   const [input, setInput] = useState<string>('');
   const { socket, sendMessage, getMergedConversation, realtimeMessages, addOptimisticMessage, updateMessageStatus } = useMessaging();
   const { currentUser } = useAuth();
-
 
   // Get conversation with real-time updates
   const mergedConv = getMergedConversation(conv);

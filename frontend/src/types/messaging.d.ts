@@ -11,16 +11,6 @@ export type ConversationParticipant = {
   lastReadAt?: Date
 };
 
-// export type Conversation = {
-//   id: string;
-//   participants: ConversationParticipant[]; // usually 2, but keep array for group chat support
-//   lastMessage?: Message;
-//   messages: Message[];
-//   unreadCount: number;
-//   updatedAt: string;
-//   createdAt: string;
-// };
-
 export type Conversation = {
   id: string;
   receipent: {
@@ -30,7 +20,7 @@ export type Conversation = {
   };
   updatedAt: string;
   messages: Message[];
-  lastMessage?: Message;
+  lastMessage: Message | null ;
   createdAt: string;
   unreadCount: number;
 }
@@ -46,7 +36,7 @@ export type Message = {
   body: string;
   status: MessageStatus;
   createdAt: string;       
-  updatedAt?: string;
+  readAt?: string;
 };
 
 // ====== REST Responses ======
