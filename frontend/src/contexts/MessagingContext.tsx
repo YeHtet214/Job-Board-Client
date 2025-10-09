@@ -19,6 +19,7 @@ type MessagingContextType = {
   // Optimistic updates
   addOptimisticMessage: (conversationId: string, message: Message) => void;
   updateMessageStatus: (conversationId: string, tempId: string, status: Message['status'], serverId?: string) => void;
+  notis: Notification[]
 };
 
 const MessagingContext = createContext<MessagingContextType | undefined>(undefined);
@@ -27,6 +28,7 @@ const MessagingContext = createContext<MessagingContextType | undefined>(undefin
 export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [socket, setSocket] = useState<typeof Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [notis, setNotis] = useState<Notification[]>([]);
   const { accessToken, currentUser } = useAuth();
   const queryClient = useQueryClient();
 
@@ -60,6 +62,8 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
     s.on("notification", (notif) => {
       console.log("🔔 Notification:", notif);
+
+      setNotis(prev => [...prev, notif]);
     });
 
     const handleNewMessage = (message: Message) => {
@@ -160,7 +164,7 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         return conv;
       });
     });
-  }, [addMessage, queryClient]);
+  }, [queryClient]);
 
   // Update message status (e.g., from 'sending' to 'sent')
   const updateMessageStatus = useCallback((
@@ -193,14 +197,14 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   // Update a conversation in the cache
   const updateConversation = useCallback((
     conversationId: string,
-    updater: (conv: Conversation) => Conversation
+    udpated: (conv: Conversation) => Conversation
   ) => {
     queryClient.setQueryData<Conversation[]>(['conversations'], (old) => {
       if (!old) return old;
 
       return old.map(conv => {
         if (conv.id === conversationId) {
-          return updater(conv);
+          return udpated(conv);
         }
         return conv;
       });
@@ -242,6 +246,7 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     getMergedConversation,
     addOptimisticMessage,
     updateMessageStatus,
+    notis,
     socket,
   }), [
     realtimeMessages,
@@ -252,6 +257,7 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     getMergedConversation,
     addOptimisticMessage,
     updateMessageStatus,
+    notis,
     socket
   ]);
 

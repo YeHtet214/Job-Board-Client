@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/authContext';
-import { LogOut, Home, Briefcase, Building, User, Menu, LogIn, UserRoundPlus } from 'lucide-react';
+import { LogOut, Home, Briefcase, Building, User, Menu, LogIn, UserRoundPlus, Bell } from 'lucide-react';
 import { ModeToggle } from '../ModeToggle';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -11,15 +11,14 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import Chat from '../messaging/ChatMessage';
-import ChatRoom from '../messaging/ChatMessage';
-import ChatComponent from '../messaging/ChatMessage';
+import { Badge } from '../ui/badge';
+import { useMessaging } from '@/contexts/MessagingContext';
 
 const Header: React.FC = () => {
   const { currentUser, logout, isAuthenticated, isLoading } = useAuth();
   const [isActivePage, setIsActivePage] = useState<string>('');
+  const { notis } = useMessaging();
   const navigate = useNavigate();
-
   const location = useLocation();
 
   useEffect(() => {
@@ -127,6 +126,13 @@ const Header: React.FC = () => {
               )}
             </NavigationMenuList>
           </NavigationMenu>
+
+          <div className='relative'>
+            <Badge className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 text-jb-bg h-5 min-w-5 rounded-full px-1">
+              {notis.length}
+            </Badge>
+            <Bell className="h-5 w-5 z-10" />
+          </div>
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center gap-4">

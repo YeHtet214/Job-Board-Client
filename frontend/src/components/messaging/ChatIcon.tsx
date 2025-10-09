@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { Conversation } from '@/types/messaging';
 import ConversationList from '@/components/messaging/ConversationList';
-import { useConversation } from '@/hooks/react-queries/messaging/useConversation';
 import { MessageCircleMore, X } from 'lucide-react';
 import { useAuth } from '@/contexts/authContext';
 import { useMessaging } from '@/contexts/MessagingContext';
@@ -31,22 +29,6 @@ export default function ChatIcon() {
           </button>
           {socket && (
             <ConversationList
-<<<<<<< HEAD
-              convs={conversations}
-              onConversationClick={(conversation: Conversation) => {
-                socket.emit(
-                  'chat:join',
-                  { conversationId: conversation.id },
-                  (res: any) => {
-                    if (res.ok) {
-                      console.log('Joined conversation:', res.conversationId);
-                    } else {
-                      console.error('Failed to join conversation:', res.error);
-                    }
-                  }
-                );
-              }}
-=======
               // onConversationClick={(conversation: Conversation) => {
               //   socket.emit(
               //     'chat:join',
@@ -60,7 +42,7 @@ export default function ChatIcon() {
               //     }
               //   );
               // }}
->>>>>>> realTime_Messaging
+
             />
           )}
         </div>

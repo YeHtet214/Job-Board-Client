@@ -39,6 +39,14 @@ export type Message = {
   readAt?: string;
 };
 
+export type Notification = {
+  id: string;
+  senderId: string,
+  conversationId: string,
+  messageId: string,
+  snippet: string,
+}
+
 // ====== REST Responses ======
 export type ConversationListResponse = {
   conversations: Conversation[];
