@@ -47,6 +47,13 @@ export type Notification = {
     snippet: string
 }
 
+export interface SendMessagePayload {
+    tempId?: string
+    receiverId: string
+    conversationId: string
+    body: string
+}
+
 // ====== REST Responses ======
 export type ConversationListResponse = {
     conversations: Conversation[]

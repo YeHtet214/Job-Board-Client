@@ -7,7 +7,7 @@ import React, {
     useMemo,
 } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { Message, Conversation, MessageStatus } from '@/types/messaging'
+import { Message, Conversation, MessageStatus, SendMessagePayload } from '@/types/messaging'
 import { useAuth } from './authContext'
 import { createSocket } from '@/lib/socket'
 import { Socket } from 'socket.io-client'
@@ -83,12 +83,14 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
             setIsConnected(false)
         })
 
-        s.on('presence:update', (data : any) => {
+        s.on('presence:update', (data: any) => {
             console.log('📡 Presence update:', data)
         })
 
         s.on('notification', (notif: any) => {
             console.log('🔔 Notification:', notif)
+
+            alert("New message notification");
 
             setNotis((prev) => [...prev, notif])
         })
@@ -126,18 +128,13 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
         receiverId,
         conversationId,
         body,
-    }: {
-        tempId: string
-        receiverId: string
-        conversationId: string
-        body: string
-    }) => {
+    }: SendMessagePayload) => {
         socket?.emit(
             'chat:send',
             {
                 receiverId,
                 conversationId,
-                text: body,
+                body,
             },
             (res: any) => {
                 if (res.ok) {
