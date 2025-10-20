@@ -147,6 +147,16 @@
     --color-jb-text-muted: var(--jb-text-muted);
 }
 
+@layer utilities {
+    .scrollbar-hidden::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hidden {
+        -ms-overflow-style: none; 
+        scrollbar-width: none;
+    }
+}
+
 /* Base Layer Styles */
 @layer base {
     * {

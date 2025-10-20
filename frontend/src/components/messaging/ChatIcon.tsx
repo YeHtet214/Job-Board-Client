@@ -9,25 +9,17 @@ export default function ChatIcon() {
     const { socket } = useMessaging()
     const { currentUser } = useAuth()
 
-    const handleOpen = () => {
-        setIsOpen(true)
-    }
-
-    const handleClose = () => {
-        setIsOpen(false)
-    }
-
     if (!currentUser) return null
 
     return (
         <div className="fixed bottom-6 right-6 text-jb-text z-100">
             {isOpen ? (
-                <div className="absolute bottom-14 text-jb-text right-0 w-2xl min-h-[300px] bg-jb-bg p-4 rounded-lg shadow-lg">
+                <div className="absolute bottom-0 bg-jb-surface text-jb-text right-0 w-2xl min-h-[300px] bg-jb-b rounded-lg shadow-lg overflow-hidden px-4 py-8">
                     <button
-                        onClick={handleClose}
-                        className="absolute top-0 right-0 p-2 cursor-pointer hover:text-jb-danger/50 transition"
+                        onClick={() => setIsOpen(false)}
+                        className="absolute top-0 right-0 border-s-1  border-b-1 bg-red-200 text-jb-danger opacity-50 p-1 cursor-pointer transition focus:bg-red-300"
                     >
-                        <X />
+                        <X size={15} />
                     </button>
                     {socket && (
                         <ConversationList
@@ -49,7 +41,7 @@ export default function ChatIcon() {
                 </div>
             ) : (
                 <button
-                    onClick={handleOpen}
+                    onClick={() => setIsOpen(true)}
                     className="bg-jb-surface p-2 rounded-full shadow-lg cursor-pointer hover:bg-jb-bg"
                 >
                     <MessageCircleMore

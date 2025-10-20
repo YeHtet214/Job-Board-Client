@@ -89,7 +89,7 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
 
     return (
         <div
-            className={`bg-jb-bg w-full h-full p-2 border-b-1 flex flex-col justify-between`}
+            className={`bg-jb-bg h-full p-2 border-b-1 flex flex-col justify-between scrollbar-hidden`}
         >
             <div className={`border-b-1 py-2 border-jb-surface`}>
                 <h6 className="float-end text-jb-text-muted text-xs">
@@ -102,7 +102,7 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
                 />
             </div>
 
-            <div className="flex-1 overflow-y-auto">
+            <div className="flex-1 overflow-y-auto scrollbar-hidden">
                 {mergedConv.messages.map((message: any) => (
                     <div
                         className="flex items-start my-2"
@@ -142,6 +142,7 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
                     type="text"
                     className=" w-[95%] h-full bg-transparent outline-none"
                     autoFocus
+                    placeholder="Messge..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                 />

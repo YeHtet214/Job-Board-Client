@@ -70,21 +70,21 @@ const ConversationList = () => {
     if (isLoading) {
         return (
             <div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 my-2">
                     <Skeleton className="h-12 w-12 rounded-full" />
                     <div className="space-y-2">
                         <Skeleton className="h-4 w-[250px]" />
                         <Skeleton className="h-4 w-[200px]" />
                     </div>
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 my-2">
                     <Skeleton className="h-12 w-12 rounded-full" />
                     <div className="space-y-2">
                         <Skeleton className="h-4 w-[250px]" />
                         <Skeleton className="h-4 w-[200px]" />
                     </div>
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 my-2">
                     <Skeleton className="h-12 w-12 rounded-full" />
                     <div className="space-y-2">
                         <Skeleton className="h-4 w-[250px]" />
@@ -96,9 +96,9 @@ const ConversationList = () => {
     }
 
     return (
-        <div className="w-full min-h-[300px] mx-auto grid grid-cols-3 bg-jb-surface rounded-lg shadow-md overflow-hidden">
+        <div className={`min-h-[300px] grid ${openConversation ? 'md:grid-cols-3' : 'md:grid-cols-1'} rounded-lg shadow-md overflow-hidden`}>
             <ul
-                className={`divide-y transition ${toggleConversation ? 'w-auto border-r-1' : 'w-100'} divide-jb-sruface-200`}
+                className={`transition ${toggleConversation ? 'w-auto border-r-1' : 'w-full'}`}
             >
                 {conversations ? (
                     conversations.map((conv: Conversation) => (
@@ -116,7 +116,7 @@ const ConversationList = () => {
 
             {openConversation && (
                 <div
-                    className={`transition w-100 max-h-[75vh] overflow-auto ${toggleConversation ? 'translate-x-0' : 'translate-x-[200%]'}`}
+                    className={`col-span-2 transition max-h-[75vh] overflow-y-auto ${toggleConversation ? 'translate-x-0' : 'translate-x-[200%]'}`}
                 >
                     <ConversationDialog conv={openConversation} />
                 </div>

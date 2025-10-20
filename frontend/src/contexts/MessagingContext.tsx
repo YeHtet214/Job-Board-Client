@@ -66,7 +66,6 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
     >(new Map())
 
     useEffect(() => {
-        console
         if (!accessToken) return
 
         //create socket with access token
@@ -77,20 +76,18 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
 
         // listeners
         s.on('connection', () => {
-            console.log('✅ Socket connected:', s.id)
             setIsConnected(true)
         })
 
-        s.on('disconnect', (reason) => {
-            console.log('❌ Socket disconnected:', reason)
+        s.on('disconnect', () => {
             setIsConnected(false)
         })
 
-        s.on('presence:update', (data) => {
+        s.on('presence:update', (data : any) => {
             console.log('📡 Presence update:', data)
         })
 
-        s.on('notification', (notif) => {
+        s.on('notification', (notif: any) => {
             console.log('🔔 Notification:', notif)
 
             setNotis((prev) => [...prev, notif])
