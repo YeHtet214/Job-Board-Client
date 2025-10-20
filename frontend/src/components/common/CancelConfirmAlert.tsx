@@ -1,17 +1,32 @@
-
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Button } from '@/components/ui/button'
+import { X } from 'lucide-react'
 
 interface CancelConfirmAlertProps {
-    buttonContent?: string;
-    alertTitle: string;
-    alertDescription: string;
-    cancelItem: any;
-    onWithdraw: (cancelItem: any) => void;
+    buttonContent?: string
+    alertTitle: string
+    alertDescription: string
+    cancelItem: any
+    onWithdraw: (cancelItem: any) => void
 }
 
-const CancelConfirmAlert: React.FC<CancelConfirmAlertProps> = ({buttonContent, alertTitle, alertDescription, cancelItem, onWithdraw}) => {
+const CancelConfirmAlert: React.FC<CancelConfirmAlertProps> = ({
+    buttonContent,
+    alertTitle,
+    alertDescription,
+    cancelItem,
+    onWithdraw,
+}) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -37,7 +52,7 @@ const CancelConfirmAlert: React.FC<CancelConfirmAlertProps> = ({buttonContent, a
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    );
+    )
 }
 
-export default CancelConfirmAlert;
+export default CancelConfirmAlert

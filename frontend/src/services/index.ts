@@ -1,171 +1,213 @@
-import axios from 'axios';
-import { isTokenExpired, willTokenExpireSoon } from '../utils/jwt';
+import axios from 'axios'
+import { isTokenExpired, willTokenExpireSoon } from '../utils/jwt'
 
 const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_API_BASE_URL + "/api",
-});
+    baseURL: import.meta.env.VITE_API_BASE_URL + '/api',
+})
 
 // Whether we're currently refreshing the token
-let isRefreshing = false;
+let isRefreshing = false
 // Queued requests waiting for token refresh
-let refreshSubscribers: Array<(token: string) => void> = [];
+let refreshSubscribers: Array<(token: string) => void> = []
 
 // Function to add callbacks to the subscriber queue
 const subscribeTokenRefresh = (callback: (token: string) => void) => {
-    refreshSubscribers.push(callback);
-};
+    refreshSubscribers.push(callback)
+}
 
 // Function to notify subscribers about new token
 const onTokenRefreshed = (newToken: string) => {
-    refreshSubscribers.forEach(callback => callback(newToken));
-    refreshSubscribers = [];
-};
+    refreshSubscribers.forEach((callback) => callback(newToken))
+    refreshSubscribers = []
+}
 
 // Request interceptor to add auth token and handle expiring tokens
-axiosInstance.interceptors.request.use(async (config) => {
-    const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
+axiosInstance.interceptors.request.use(
+    async (config) => {
+        const accessToken = localStorage.getItem('accessToken')
+        const refreshToken = localStorage.getItem('refreshToken')
 
-    // Skip auth header for auth endpoints except logout
-    const isAuthEndpoint = config.url?.includes('/auth/') && !config.url?.includes('/auth/logout');
+        // Skip auth header for auth endpoints except logout
+        const isAuthEndpoint =
+            config.url?.includes('/auth/') &&
+            !config.url?.includes('/auth/logout')
 
-    if (accessToken && !isAuthEndpoint) {
-        if (willTokenExpireSoon(accessToken, 120)) { // expire in 2 minutes
-            try {
-                // Only start a refresh if another request isn't already refreshing
-                if (!isRefreshing && refreshToken && !isTokenExpired(refreshToken)) {
-                    isRefreshing = true;
+        if (accessToken && !isAuthEndpoint) {
+            if (willTokenExpireSoon(accessToken, 120)) {
+                // expire in 2 minutes
+                try {
+                    // Only start a refresh if another request isn't already refreshing
+                    if (
+                        !isRefreshing &&
+                        refreshToken &&
+                        !isTokenExpired(refreshToken)
+                    ) {
+                        isRefreshing = true
 
-                    // Make refresh request directly without going through interceptors
-                    const response = await axios.post(`${axiosInstance.defaults.baseURL}/auth/refresh-token`, {
-                        refreshToken
-                    });
+                        // Make refresh request directly without going through interceptors
+                        const response = await axios.post(
+                            `${axiosInstance.defaults.baseURL}/auth/refresh-token`,
+                            {
+                                refreshToken,
+                            }
+                        )
 
-                    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;
+                        const {
+                            accessToken: newAccessToken,
+                            refreshToken: newRefreshToken,
+                        } = response.data.data
 
-                    localStorage.setItem('accessToken', newAccessToken);
-                    localStorage.setItem('refreshToken', newRefreshToken);
+                        localStorage.setItem('accessToken', newAccessToken)
+                        localStorage.setItem('refreshToken', newRefreshToken)
 
-                    // Update the current request with new token
-                    config.headers.Authorization = `Bearer ${newAccessToken}`;
+                        // Update the current request with new token
+                        config.headers.Authorization = `Bearer ${newAccessToken}`
 
-                    // Notify all waiting requests
-                    onTokenRefreshed(newAccessToken);
-                    isRefreshing = false;
-                } else if (isRefreshing) {
-                    // If we're already refreshing, wait for the new token
-                    const newToken = await new Promise<string>((resolve) => {
-                        subscribeTokenRefresh((token) => resolve(token));
-                    });
+                        // Notify all waiting requests
+                        onTokenRefreshed(newAccessToken)
+                        isRefreshing = false
+                    } else if (isRefreshing) {
+                        // If we're already refreshing, wait for the new token
+                        const newToken = await new Promise<string>(
+                            (resolve) => {
+                                subscribeTokenRefresh((token) => resolve(token))
+                            }
+                        )
 
-                    // Apply new token to this request
-                    config.headers.Authorization = `Bearer ${newToken}`;
+                        // Apply new token to this request
+                        config.headers.Authorization = `Bearer ${newToken}`
+                    }
+                } catch (error) {
+                    console.error('Error refreshing token:', error)
+                    // If refresh fails, clear tokens and let the response interceptor handle the error
                 }
-            } catch (error) {
-                console.error('Error refreshing token:', error);
-                // If refresh fails, clear tokens and let the response interceptor handle the error
+            } else {
+                // Token is still valid, use it
+                config.headers.Authorization = `Bearer ${accessToken}`
             }
-        } else {
-            // Token is still valid, use it
-            config.headers.Authorization = `Bearer ${accessToken}`;
         }
-    }
 
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
+        return config
+    },
+    (error) => {
+        return Promise.reject(error)
+    }
+)
 
 // Response interceptor to handle auth errors
-axiosInstance.interceptors.response.use((response) => {
-    return response;
-}, async (error) => {
-    const originalRequest = error.config;
+axiosInstance.interceptors.response.use(
+    (response) => {
+        return response
+    },
+    async (error) => {
+        const originalRequest = error.config
 
-    // Extract error message if available
-    if (error.response?.data?.message) {
-        error.message = error.response.data.message;
-    }
+        // Extract error message if available
+        if (error.response?.data?.message) {
+            error.message = error.response.data.message
+        }
 
-    // Don't trigger session expired events for auth endpoints (login, register, etc.)
-    const isAuthEndpoint = originalRequest.url?.includes('/auth/') && 
-                           !originalRequest.url?.includes('/auth/refresh-token') &&
-                           !originalRequest.url?.includes('/auth/logout');
-    
-    // Handle 401 Unauthorized errors (but not for login/register attempts)
-    if (error.response && error.response.status === 401 && !originalRequest._retry && !isAuthEndpoint) {
-        originalRequest._retry = true;
+        // Don't trigger session expired events for auth endpoints (login, register, etc.)
+        const isAuthEndpoint =
+            originalRequest.url?.includes('/auth/') &&
+            !originalRequest.url?.includes('/auth/refresh-token') &&
+            !originalRequest.url?.includes('/auth/logout')
 
-        const refreshToken = localStorage.getItem('refreshToken');
+        // Handle 401 Unauthorized errors (but not for login/register attempts)
+        if (
+            error.response &&
+            error.response.status === 401 &&
+            !originalRequest._retry &&
+            !isAuthEndpoint
+        ) {
+            originalRequest._retry = true
 
-        // Only try to refresh if we have a refresh token and aren't already refreshing
-        if (refreshToken && !isRefreshing && !isTokenExpired(refreshToken)) {
-            try {
-                isRefreshing = true;
+            const refreshToken = localStorage.getItem('refreshToken')
 
-                // Refresh token
-                const response = await axios.post(`${axiosInstance.defaults.baseURL}/auth/refresh-token`, {
-                    refreshToken
-                });
+            // Only try to refresh if we have a refresh token and aren't already refreshing
+            if (
+                refreshToken &&
+                !isRefreshing &&
+                !isTokenExpired(refreshToken)
+            ) {
+                try {
+                    isRefreshing = true
 
-                const { accessToken: newAccessToken, refreshToken: newRefreshToken } = response.data.data;
+                    // Refresh token
+                    const response = await axios.post(
+                        `${axiosInstance.defaults.baseURL}/auth/refresh-token`,
+                        {
+                            refreshToken,
+                        }
+                    )
 
-                localStorage.setItem('accessToken', newAccessToken);
-                localStorage.setItem('refreshToken', newRefreshToken);
+                    const {
+                        accessToken: newAccessToken,
+                        refreshToken: newRefreshToken,
+                    } = response.data.data
 
-                console.log("Access Token: ", newAccessToken, "Refresh Token: ", newRefreshToken);
+                    localStorage.setItem('accessToken', newAccessToken)
+                    localStorage.setItem('refreshToken', newRefreshToken)
 
-                // Update the original request
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+                    console.log(
+                        'Access Token: ',
+                        newAccessToken,
+                        'Refresh Token: ',
+                        newRefreshToken
+                    )
 
-                // Notify waiting requests
-                onTokenRefreshed(newAccessToken);
-                isRefreshing = false;
+                    // Update the original request
+                    originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
 
-                // Retry the original request
-                return axiosInstance(originalRequest);
-            } catch (refreshError) {
-                isRefreshing = false;
+                    // Notify waiting requests
+                    onTokenRefreshed(newAccessToken)
+                    isRefreshing = false
 
-                // Clear auth tokens on refresh failure
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
+                    // Retry the original request
+                    return axiosInstance(originalRequest)
+                } catch (refreshError) {
+                    isRefreshing = false
 
-                // Dispatch session expired event
-                window.dispatchEvent(new CustomEvent('auth:sessionExpired'));
+                    // Clear auth tokens on refresh failure
+                    localStorage.removeItem('accessToken')
+                    localStorage.removeItem('refreshToken')
 
-                return Promise.reject(refreshError);
-            }
-        } else if (isRefreshing) {
-            // If already refreshing, wait for new token
-            try {
-                const newToken = await new Promise<string>((resolve) => {
-                    subscribeTokenRefresh((token) => resolve(token));
-                });
+                    // Dispatch session expired event
+                    window.dispatchEvent(new CustomEvent('auth:sessionExpired'))
 
-                console.log("New token: ", newToken);
+                    return Promise.reject(refreshError)
+                }
+            } else if (isRefreshing) {
+                // If already refreshing, wait for new token
+                try {
+                    const newToken = await new Promise<string>((resolve) => {
+                        subscribeTokenRefresh((token) => resolve(token))
+                    })
 
-                // Update request and retry
-                originalRequest.headers.Authorization = `Bearer ${newToken}`;
-                return axiosInstance(originalRequest);
-            } catch (waitError) {
-                return Promise.reject(waitError);
-            }
-        } else {
-            // If refresh token is expired or not available
-            console.log("Just to remove refresh Token: ", refreshToken)
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
+                    console.log('New token: ', newToken)
 
-            // Only dispatch session expired if we're not handling an auth endpoint
-            if (!isAuthEndpoint) {
-                // Dispatch session expired event
-                window.dispatchEvent(new CustomEvent('auth:sessionExpired'));
+                    // Update request and retry
+                    originalRequest.headers.Authorization = `Bearer ${newToken}`
+                    return axiosInstance(originalRequest)
+                } catch (waitError) {
+                    return Promise.reject(waitError)
+                }
+            } else {
+                // If refresh token is expired or not available
+                console.log('Just to remove refresh Token: ', refreshToken)
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+
+                // Only dispatch session expired if we're not handling an auth endpoint
+                if (!isAuthEndpoint) {
+                    // Dispatch session expired event
+                    window.dispatchEvent(new CustomEvent('auth:sessionExpired'))
+                }
             }
         }
+
+        return Promise.reject(error)
     }
+)
 
-    return Promise.reject(error);
-});
-
-export default axiosInstance;
+export default axiosInstance
