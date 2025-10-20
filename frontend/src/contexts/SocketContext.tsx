@@ -57,14 +57,14 @@
 //       setConversations(prev => {
 //         const updated = new Map(prev);
 //         const conversation = updated.get(message.conversationId);
-        
+
 //         if (conversation) {
 //           conversation.messages.push(message);
 //           updated.set(message.conversationId, conversation);
 //           conversation.updatedAt = message.createdAt;
 //           return updated;
 //         }
-        
+
 //       })
 //     };
 
