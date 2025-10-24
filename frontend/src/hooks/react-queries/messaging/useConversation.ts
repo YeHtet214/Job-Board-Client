@@ -15,7 +15,7 @@ const messagingKeys = {
         [...messagingKeys.all, convId, 'messages'] as const,
 }
 
-export function useConversation<T>(): UseQueryResult<T, Error> {
+export function useConversationQuery<T>(): UseQueryResult<T, Error> {
     return useQuery({
         queryKey: messagingKeys.all,
         queryFn: async () => {
@@ -27,7 +27,7 @@ export function useConversation<T>(): UseQueryResult<T, Error> {
     })
 }
 
-export function useConversationMessage<T>(
+export function useConversationMessageQuery<T>(
     convId: string
 ): UseQueryResult<T, Error> {
     return useQuery({

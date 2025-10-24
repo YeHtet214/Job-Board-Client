@@ -2,8 +2,9 @@ import { Conversation } from '@/types/messaging'
 import { useAuth } from '@/contexts/authContext'
 import { useState } from 'react'
 import ConversationDialog from './ConversationDialog'
-import { useConversation } from '@/hooks/react-queries/messaging/useConversation'
+import { useConversationQuery } from '@/hooks/react-queries/messaging/useConversation'
 import { Skeleton } from '../ui/skeleton'
+import { useMessaging } from '@/contexts/MessagingContext'
 interface ConversationCardType {
     conv: Conversation
     isCurrentOpen: boolean
@@ -50,9 +51,19 @@ const ConversationList = () => {
     const [openConversation, setOpenConversation] =
         useState<Conversation | null>(null)
     const [toggleConversation, setToggleConversation] = useState(false)
-    const { data: conversations, isLoading } = useConversation<Conversation[]>()
+    const { data: conversations, isLoading } = useConversationQuery<Conversation[]>()
+    const { socket } = useMessaging();
 
     const handleConversationClick = (conv: any) => {
+
+        socket?.emit("join", { conversationId: conv.id }, (res: any) => {
+            if (res.ok) {
+                console.log("Notis test: ", res.notis);
+            } else {
+                console.error("Failed to join conversation:", res.error);
+            }
+        });
+
         // Handle conversation click
         setToggleConversation((prev) => {
             // if (conv.id === openConversation?.id || openConversation) return false;
@@ -69,7 +80,7 @@ const ConversationList = () => {
 
     if (isLoading) {
         return (
-            <div>
+            <div className='w-full h-full'>
                 <div className="flex items-center space-x-4 my-2">
                     <Skeleton className="h-12 w-12 rounded-full" />
                     <div className="space-y-2">
@@ -96,7 +107,7 @@ const ConversationList = () => {
     }
 
     return (
-        <div className={`min-h-[300px] grid ${openConversation ? 'md:grid-cols-3' : 'md:grid-cols-1'} rounded-lg shadow-md overflow-hidden`}>
+        <div className={`h-full grid ${openConversation ? 'md:grid-cols-3' : 'md:grid-cols-1'} rounded-lg shadow-md overflow-hidden`}>
             <ul
                 className={`transition ${toggleConversation ? 'w-auto border-r-1' : 'w-full'}`}
             >
@@ -116,7 +127,7 @@ const ConversationList = () => {
 
             {openConversation && (
                 <div
-                    className={`col-span-2 transition max-h-[75vh] overflow-y-auto ${toggleConversation ? 'translate-x-0' : 'translate-x-[200%]'}`}
+                    className={`col-span-2 relative transition overflow-y-auto ${toggleConversation ? 'translate-x-0' : 'translate-x-[200%]'}`}
                 >
                     <ConversationDialog conv={openConversation} />
                 </div>

@@ -47,9 +47,7 @@ type MessagingContextType = {
     notis: Notification[]
 }
 
-const MessagingContext = createContext<MessagingContextType | undefined>(
-    undefined
-)
+const MessagingContext = createContext<MessagingContextType | undefined>(undefined)
 
 export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
@@ -87,10 +85,17 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
             console.log('📡 Presence update:', data)
         })
 
+        s.on('notification:dispatch', (data: any) => {
+            console.log("Noti after offline: ", data.notis);
+            const ids = data.notis.map((notif: any) => notif.id)
+
+            socket?.emit("updateNotiStatus", ids, (res: any) => {
+                res.ok && console.log("Successfully updated notis status")
+            })
+        })
+
         s.on('notification', (notif: any) => {
             console.log('🔔 Notification:', notif)
-
-            alert("New message notification");
 
             setNotis((prev) => [...prev, notif])
         })

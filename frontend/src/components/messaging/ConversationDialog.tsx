@@ -88,10 +88,8 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
     }
 
     return (
-        <div
-            className={`bg-jb-bg h-full p-2 border-b-1 flex flex-col justify-between scrollbar-hidden`}
-        >
-            <div className={`border-b-1 py-2 border-jb-surface`}>
+        <div className={`bg-jb-bg p-2 border-b-1 flex flex-col justify-between max-h-full`}>
+            <div className={`border-b-1 py-2 border-jb-surface `}>
                 <h6 className="float-end text-jb-text-muted text-xs">
                     {conv.updatedAt || 'A few sec ago'}
                 </h6>
@@ -140,7 +138,7 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
             >
                 <input
                     type="text"
-                    className=" w-[95%] h-full bg-transparent outline-none"
+                    className=" w-[95%] py-2 bg-transparent outline-none"
                     autoFocus
                     placeholder="Messge..."
                     value={input}
