@@ -39,27 +39,27 @@ export type Message = {
     readAt?: string
 }
 
-export type Notification = {
+export interface Notification {
     id: string
-    type: string;
-    sender?: {
-        id: string,
-        name: string
+    type: string
+    payload: {
+        message: string
+        senderName: string
+        conversationId: string
     }
-    conversationId: string
-    messageId: string
-    snippet: string
+    status: 'PENDING' | 'DELIVERED' | 'READ'
+    createdAt: DateTime
 }
 
 export interface OfflineNotification {
     id: string
-    type: string;
+    type: string
     sender?: {
-        id: string,
+        id: string
         name: string
     }
-    payload: JSON,
-    status: string,
+    payload: JSON
+    status: string
     createdAt: string
 }
 

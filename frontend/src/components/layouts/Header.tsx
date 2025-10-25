@@ -10,7 +10,6 @@ import {
     Menu,
     LogIn,
     UserRoundPlus,
-    Bell,
 } from 'lucide-react'
 import { ModeToggle } from '../ModeToggle'
 import { Button } from '@/components/ui/button'
@@ -21,13 +20,11 @@ import {
     NavigationMenuList,
     navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
-import { Badge } from '../ui/badge'
-import { useMessaging } from '@/contexts/MessagingContext'
+import NotificationItems from '../notifications'
 
 const Header: React.FC = () => {
     const { currentUser, logout, isAuthenticated, isLoading } = useAuth()
     const [isActivePage, setIsActivePage] = useState<string>('')
-    const { notis } = useMessaging()
     const navigate = useNavigate()
     const location = useLocation()
 
@@ -145,12 +142,7 @@ const Header: React.FC = () => {
                         </NavigationMenuList>
                     </NavigationMenu>
 
-                    <div className="relative">
-                        <Badge className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 text-jb-bg h-5 min-w-5 rounded-full px-1">
-                            {notis.length}
-                        </Badge>
-                        <Bell className="h-5 w-5 z-10" />
-                    </div>
+                    <NotificationItems />
 
                     {/* Desktop Auth Buttons */}
                     <div className="hidden md:flex items-center gap-4">

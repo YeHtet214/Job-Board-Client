@@ -39,3 +39,11 @@ export const formatDate = (
 ): string => {
     return new Date(dateString).toLocaleDateString('en-US', options)
 }
+
+
+export const foramatAPIEnum = (value: string) => {
+    return value
+        .split('_')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+}

@@ -7,10 +7,11 @@ import React, {
     useMemo,
 } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { Message, Conversation, MessageStatus, SendMessagePayload } from '@/types/messaging'
+import { Message, Conversation, MessageStatus, SendMessagePayload, Notification } from '@/types/messaging'
 import { useAuth } from './authContext'
 import { createSocket } from '@/lib/socket'
 import { Socket } from 'socket.io-client'
+import { useToast } from '@/components/ui/use-toast'
 
 type MessagingContextType = {
     realtimeMessages: Map<string, Message[]>
@@ -57,6 +58,7 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
     const [notis, setNotis] = useState<Notification[]>([])
     const { accessToken, currentUser } = useAuth()
     const queryClient = useQueryClient()
+    const { toast } = useToast();
 
     // Map to store real-time messages that haven't been persisted to React Query cache yet
     const [realtimeMessages, setRealtimeMessages] = useState<
@@ -85,12 +87,14 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
             console.log('📡 Presence update:', data)
         })
 
-        s.on('notification:dispatch', (data: any) => {
-            console.log("Noti after offline: ", data.notis);
-            const ids = data.notis.map((notif: any) => notif.id)
+        s.on('notification:dispatch', (notis: any) => {
+            console.log("Noti after offline: ", notis);
 
-            socket?.emit("updateNotiStatus", ids, (res: any) => {
-                res.ok && console.log("Successfully updated notis status")
+            setNotis(notis);
+            toast({
+                title: notis[0].title,
+                description: notis[0].payload.message,
+                variant: 'default',
             })
         })
 

@@ -1,4 +1,4 @@
-import { Conversation, Message } from '@/types/messaging'
+import { Conversation, Message, Notification } from '@/types/messaging'
 import { ApiService } from './api.service'
 
 class MessagingService extends ApiService {
@@ -6,6 +6,7 @@ class MessagingService extends ApiService {
         ALL: '/conversations',
         CONVERSATION: (id: string) => `/conversations/${id}`,
         CONVERSATION_MESSAGES: (id: string) => `/conversations/${id}/messages`,
+        NOTIFICATIONS: '/notifications',
     }
 
     public async getConversations(): Promise<Conversation[]> {
@@ -25,6 +26,17 @@ class MessagingService extends ApiService {
             this.endpoints.CONVERSATION_MESSAGES(id)
         )
         return response.data.data
+    }
+
+    public async batchUpdateNotificationsStatus(
+        ids: string[],
+    ): Promise<Notification[]> {
+        const response = await this.put<Notification[]>(
+            this.endpoints.NOTIFICATIONS,
+            ids
+        )
+
+        return response.data.data;
     }
 }
 

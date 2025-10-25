@@ -39,15 +39,7 @@ export class ApiService {
     }
 
     protected put<T>(
-        /*************  ✨ Windsurf Command ⭐  *************/
-        /**
-         * Make a PUT request to the specified URL
-         * @param url The URL of the request
-         * @param data The data to send with the request
-         * @param config Optional configuration for the request
-         * @returns A promise that resolves with the response of the request
-         */
-        /*******  f0e49faa-1a73-4179-98d8-a7dbbabf4fbd  *******/ url: string,
+        url: string,
         data: any,
         config: any = {}
     ): Promise<AxiosResponse<ApiResponse<T>>> {
