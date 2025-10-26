@@ -1,9 +1,10 @@
 import { Conversation } from '@/types/messaging'
 import { useAuth } from '@/contexts/authContext'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ConversationDialog from './ConversationDialog'
 import { useConversationQuery } from '@/hooks/react-queries/messaging/useConversation'
 import { Skeleton } from '../ui/skeleton'
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useMessaging } from '@/contexts/MessagingContext'
 interface ConversationCardType {
     conv: Conversation
@@ -17,22 +18,32 @@ const ConversationCard = ({
     selectConv,
 }: ConversationCardType) => {
     const { currentUser } = useAuth()
+    const [avatarName, setAvatarName] = useState<string>('')
+
+    useEffect(() => {
+        const makeAvatarFromName = () => {
+            if (conv.receipent?.id === currentUser?.id) {
+                return currentUser?.firstName[0] + currentUser?.lastName[0]
+            } else {
+                return conv.receipent?.name.split(" ")[0].charAt(0) + conv.receipent?.name.split(" ")[1].charAt(0)
+            }
+        }
+
+        setAvatarName(makeAvatarFromName())
+    }, [conv, currentUser])
 
     return (
         <li
             key={conv.id}
-            className={`flex ${isCurrentOpen && 'bg-jb-bg'} items-center px-4 py-3 hover:bg-jb-bg transition cursor-pointer`}
+            className={`flex ${isCurrentOpen && 'bg-jb-bg'} items-center px-4 py-3 hover:bg-jb-bg transition cursor-pointer absolute`}
             onClick={() => selectConv(conv)}
         >
-            <img
-                src={conv.receipent?.avatar}
-                alt={
-                    conv.receipent?.id === currentUser?.id
-                        ? currentUser?.firstName
-                        : conv.receipent?.name
-                }
-                className="w-10 h-10 rounded-full object-cover mr-4 border"
-            />
+            <Avatar>
+                <AvatarImage src={conv.receipent?.avatar} />
+                <AvatarFallback>
+                    {avatarName}
+                </AvatarFallback>
+            </Avatar>
             <div className="flex-1">
                 <div className="flex justify-between items-center">
                     <span className="font-medium text-jb-text opacity-90 truncate">
@@ -47,12 +58,36 @@ const ConversationCard = ({
     )
 }
 
+const ConversationSkeleton = () => (
+    <div className='w-full h-full'>
+        <div className="flex items-center space-x-4 my-2">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+            </div>
+        </div>
+        <div className="flex items-center space-x-4 my-2">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+            </div>
+        </div>
+        <div className="flex items-center space-x-4 my-2">
+            <Skeleton className="h-12 w-12 rounded-full" />
+            <div className="space-y-2">
+                <Skeleton className="h-4 w-[250px]" />
+                <Skeleton className="h-4 w-[200px]" />
+            </div>
+        </div>
+    </div>
+)
+
 const ConversationList = () => {
-    const [openConversation, setOpenConversation] =
-        useState<Conversation | null>(null)
     const [toggleConversation, setToggleConversation] = useState(false)
     const { data: conversations, isLoading } = useConversationQuery<Conversation[]>()
-    const { socket } = useMessaging();
+    const { socket, openConversation, setOpenConversation } = useMessaging();
 
     const handleConversationClick = (conv: any) => {
 
@@ -65,52 +100,18 @@ const ConversationList = () => {
         });
 
         // Handle conversation click
-        setToggleConversation((prev) => {
-            // if (conv.id === openConversation?.id || openConversation) return false;
-            // return !prev;
-            if (prev === true) return true
-
-            return !prev
-        })
+        setToggleConversation(prev => !prev);
 
         if (conv && conv.id !== openConversation?.id) {
             setOpenConversation(conv)
         }
     }
 
-    if (isLoading) {
-        return (
-            <div className='w-full h-full'>
-                <div className="flex items-center space-x-4 my-2">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-[250px]" />
-                        <Skeleton className="h-4 w-[200px]" />
-                    </div>
-                </div>
-                <div className="flex items-center space-x-4 my-2">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-[250px]" />
-                        <Skeleton className="h-4 w-[200px]" />
-                    </div>
-                </div>
-                <div className="flex items-center space-x-4 my-2">
-                    <Skeleton className="h-12 w-12 rounded-full" />
-                    <div className="space-y-2">
-                        <Skeleton className="h-4 w-[250px]" />
-                        <Skeleton className="h-4 w-[200px]" />
-                    </div>
-                </div>
-            </div>
-        )
-    }
+    if (isLoading) return <ConversationSkeleton />;
 
     return (
         <div className={`h-full grid ${openConversation ? 'md:grid-cols-3' : 'md:grid-cols-1'} rounded-lg shadow-md overflow-hidden`}>
-            <ul
-                className={`transition ${toggleConversation ? 'w-auto border-r-1' : 'w-full'}`}
-            >
+            <ul className={`transition ${toggleConversation ? 'w-auto border-r-1' : 'w-full'}`} >
                 {conversations ? (
                     conversations.map((conv: Conversation) => (
                         <ConversationCard
@@ -126,9 +127,7 @@ const ConversationList = () => {
             </ul>
 
             {openConversation && (
-                <div
-                    className={`col-span-2 relative transition overflow-y-auto ${toggleConversation ? 'translate-x-0' : 'translate-x-[200%]'}`}
-                >
+                <div className={`col-span-2 relative transition overflow-y-auto ${toggleConversation ? 'translate-x-0' : 'translate-x-[200%]'}`} >
                     <ConversationDialog conv={openConversation} />
                 </div>
             )}

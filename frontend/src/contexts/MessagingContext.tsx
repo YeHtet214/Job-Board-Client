@@ -4,19 +4,21 @@ import React, {
     useEffect,
     useState,
     useCallback,
-    useMemo,
 } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { Message, Conversation, MessageStatus, SendMessagePayload, Notification } from '@/types/messaging'
+import { Message, Conversation, MessageStatus, SendMessagePayload, Notification, NotiType, RealTimeNoti } from '@/types/messaging'
 import { useAuth } from './authContext'
 import { createSocket } from '@/lib/socket'
 import { Socket } from 'socket.io-client'
 import { useToast } from '@/components/ui/use-toast'
 
 type MessagingContextType = {
-    realtimeMessages: Map<string, Message[]>
     socket: typeof Socket | null
+    realtimeMessages: Map<string, Message[]>
+    notifications: Notification[]
     isConnected: boolean
+    openConversation: Conversation | null
+    setOpenConversation: React.Dispatch<React.SetStateAction<Conversation | null>>
     sendMessage: ({
         tempId,
         receiverId,
@@ -45,7 +47,6 @@ type MessagingContextType = {
         status: Message['status'],
         serverId?: string
     ) => void
-    notis: Notification[]
 }
 
 const MessagingContext = createContext<MessagingContextType | undefined>(undefined)
@@ -53,26 +54,33 @@ const MessagingContext = createContext<MessagingContextType | undefined>(undefin
 export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
-    const [socket, setSocket] = useState<typeof Socket | null>(null)
-    const [isConnected, setIsConnected] = useState(false)
-    const [notis, setNotis] = useState<Notification[]>([])
     const { accessToken, currentUser } = useAuth()
     const queryClient = useQueryClient()
     const { toast } = useToast();
 
+    const [socket, setSocket] = useState<typeof Socket | null>(null)
+    const [isConnected, setIsConnected] = useState(false)
+    const [notifications, setNotifications] = useState<Notification[]>([])
+    const [openConversation, setOpenConversation] =
+        useState<Conversation | null>(null)
     // Map to store real-time messages that haven't been persisted to React Query cache yet
     const [realtimeMessages, setRealtimeMessages] = useState<
         Map<string, Message[]>
     >(new Map())
 
     useEffect(() => {
-        if (!accessToken) return
+        if (!accessToken || !currentUser) {
+            setNotifications([])
+            return
+        }
 
         //create socket with access token
         const s = createSocket(accessToken)
         setSocket(s)
 
         s.connect()
+
+
 
         // listeners
         s.on('connection', () => {
@@ -87,21 +95,32 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
             console.log('📡 Presence update:', data)
         })
 
-        s.on('notification:dispatch', (notis: any) => {
-            console.log("Noti after offline: ", notis);
+        // Event handler at the first page load to get all notifications while offline
+        s.on('notification:dispatch', (notis: Notification[]) => {
 
-            setNotis(notis);
-            toast({
-                title: notis[0].title,
-                description: notis[0].payload.message,
-                variant: 'default',
+            console.log("ALL Noti: ", notis);
+
+            // Real time notifications has no id with type === "Realtime_Message"
+            setNotifications(notis);
+
+            notis.map((noti: Notification) => {
+                toast({
+                    title: `${noti.payload.senderName} sent you a message`,
+                    description: noti.payload.snippet,
+                    variant: 'default',
+                })
             })
         })
 
-        s.on('notification', (notif: any) => {
-            console.log('🔔 Notification:', notif)
+        // Event handler to get notifications while online
+        s.on('notification', (noti: RealTimeNoti) => {
+            console.log('🔔 Notification:', noti)
 
-            setNotis((prev) => [...prev, notif])
+            toast({
+                title: `${noti.senderName} sent you a message`,
+                description: noti.snippet,
+                variant: 'default',
+            })
         })
 
         const handleNewMessage = (message: Message) => {
@@ -130,7 +149,7 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
             s.disconnect()
             setIsConnected(false)
         }
-    }, [accessToken])
+    }, [accessToken, currentUser])
 
     const sendMessage = async ({
         tempId,
@@ -301,35 +320,21 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
         [realtimeMessages]
     )
 
-    const value = useMemo(
-        () => ({
-            realtimeMessages,
-            isConnected,
-            sendMessage,
-            addMessage,
-            updateConversation,
-            getMergedConversation,
-            addOptimisticMessage,
-            updateMessageStatus,
-            notis,
-            socket,
-        }),
-        [
-            realtimeMessages,
-            isConnected,
-            sendMessage,
-            addMessage,
-            updateConversation,
-            getMergedConversation,
-            addOptimisticMessage,
-            updateMessageStatus,
-            notis,
-            socket,
-        ]
-    )
-
     return (
-        <MessagingContext.Provider value={value}>
+        <MessagingContext.Provider value={{
+            socket,
+            realtimeMessages,
+            notifications,
+            isConnected,
+            openConversation,
+            setOpenConversation,
+            sendMessage,
+            addMessage,
+            updateConversation,
+            getMergedConversation,
+            addOptimisticMessage,
+            updateMessageStatus,
+        }}>
             {children}
         </MessagingContext.Provider>
     )

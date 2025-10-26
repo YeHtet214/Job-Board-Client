@@ -21,19 +21,22 @@ import {
     navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
 import NotificationItems from '../notifications'
+import { useMessaging } from '@/contexts/MessagingContext'
 
 const Header: React.FC = () => {
     const { currentUser, logout, isAuthenticated, isLoading } = useAuth()
     const [isActivePage, setIsActivePage] = useState<string>('')
     const navigate = useNavigate()
     const location = useLocation()
+    const { socket } = useMessaging()
 
     useEffect(() => {
         setIsActivePage(location.pathname.split('/')[1])
     }, [location])
 
     const handleLogout = async () => {
-        await logout()
+        await logout().then(() => socket?.emit("disconnect"))
+        socket?.emit("disconnect")
         navigate('/login')
     }
 
@@ -196,11 +199,10 @@ const Header: React.FC = () => {
                                         <Link
                                             key={label}
                                             to={path}
-                                            className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                                                isActivePage === page
-                                                    ? 'text-jb-primary bg-jb-highlight font-semibold'
-                                                    : 'hover:text-jb-primary'
-                                            }`}
+                                            className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === page
+                                                ? 'text-jb-primary bg-jb-highlight font-semibold'
+                                                : 'hover:text-jb-primary'
+                                                }`}
                                         >
                                             {icon}
                                             {label}
@@ -212,11 +214,10 @@ const Header: React.FC = () => {
                                     <>
                                         <Link
                                             to="/dashboard"
-                                            className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                                                isActivePage === 'dashboard'
-                                                    ? 'text-jb-primary bg-jb-highlight font-semibold'
-                                                    : 'hover:text-jb-primary'
-                                            }`}
+                                            className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'dashboard'
+                                                ? 'text-jb-primary bg-jb-highlight font-semibold'
+                                                : 'hover:text-jb-primary'
+                                                }`}
                                         >
                                             <User className="h-4 w-4" />
                                             Dashboard
@@ -224,11 +225,10 @@ const Header: React.FC = () => {
                                         {currentUser?.role === 'EMPLOYER' && (
                                             <Link
                                                 to="/company/profile"
-                                                className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                                                    isActivePage === 'company'
-                                                        ? 'text-jb-primary bg-jb-highlight font-semibold'
-                                                        : 'hover:text-jb-primary'
-                                                }`}
+                                                className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'company'
+                                                    ? 'text-jb-primary bg-jb-highlight font-semibold'
+                                                    : 'hover:text-jb-primary'
+                                                    }`}
                                             >
                                                 <Building className="h-4 w-4" />
                                                 Company Profile
@@ -237,11 +237,10 @@ const Header: React.FC = () => {
                                         {currentUser?.role !== 'EMPLOYER' && (
                                             <Link
                                                 to="/profile"
-                                                className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                                                    isActivePage === 'profile'
-                                                        ? 'text-jb-primary bg-jb-highlight font-semibold'
-                                                        : 'hover:text-jb-primary'
-                                                }`}
+                                                className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'profile'
+                                                    ? 'text-jb-primary bg-jb-highlight font-semibold'
+                                                    : 'hover:text-jb-primary'
+                                                    }`}
                                             >
                                                 <User className="h-4 w-4" />
                                                 Profile
@@ -264,11 +263,10 @@ const Header: React.FC = () => {
                                     <>
                                         <Link
                                             to="/login"
-                                            className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                                                isActivePage === 'company'
-                                                    ? 'text-jb-primary bg-jb-highlight font-semibold'
-                                                    : 'hover:text-jb-primary'
-                                            }`}
+                                            className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'company'
+                                                ? 'text-jb-primary bg-jb-highlight font-semibold'
+                                                : 'hover:text-jb-primary'
+                                                }`}
                                         >
                                             <LogIn className="h-4 w-4" />
                                             Login
@@ -277,11 +275,10 @@ const Header: React.FC = () => {
                                         {/* <Button asChild> */}
                                         <Link
                                             to="/register"
-                                            className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${
-                                                isActivePage === 'company'
-                                                    ? 'text-jb-primary bg-jb-highlight font-semibold'
-                                                    : 'hover:text-jb-primary'
-                                            }`}
+                                            className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'company'
+                                                ? 'text-jb-primary bg-jb-highlight font-semibold'
+                                                : 'hover:text-jb-primary'
+                                                }`}
                                         >
                                             <UserRoundPlus className="h-4 w-4" />
                                             Register

@@ -39,16 +39,30 @@ export type Message = {
     readAt?: string
 }
 
+interface NotiType {
+    Realtime_Message
+    New_Message
+    Job_Application // get by employer for applying the posted job by job seeker
+    Application_Status_Update // for job seekers applications' status updated by employer
+}   
+
 export interface Notification {
     id: string
-    type: string
+    type: NotiType
     payload: {
-        message: string
+        snippet: string
         senderName: string
         conversationId: string
     }
     status: 'PENDING' | 'DELIVERED' | 'READ'
     createdAt: DateTime
+}
+
+export interface RealTimeNoti {
+  type: NotiType;
+  senderName: string;
+  snippet: string;
+  createdAt: Date;
 }
 
 export interface OfflineNotification {

@@ -11,7 +11,7 @@ import { User } from '@/types/user'
 export const authKeys = {
     all: ['auth'] as const,
     user: () => [...authKeys.all, 'user'] as const,
-    currentUser: () => [...authKeys.user(), 'current'] as const,
+    currentUser: () => ['current-user'] as const,
     verification: () => [...authKeys.all, 'verification'] as const,
     verifyEmail: (token: string) =>
         [...authKeys.verification(), token] as const,
@@ -65,7 +65,7 @@ export const useLogout = () => {
             // Clear user data from cache
             queryClient.setQueryData(authKeys.currentUser(), null)
             // Invalidate all queries to refetch any public data that might be needed
-            queryClient.invalidateQueries()
+            queryClient.invalidateQueries({ queryKey: [...authKeys.all] })
         },
         onError: (error) => {
             console.error('Logout error:', error)

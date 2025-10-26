@@ -3,26 +3,20 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
-  ItemFooter,
-  ItemHeader,
   ItemMedia,
   ItemTitle,
 } from "../ui/item"
 
-import { foramatAPIEnum } from "@/lib/formatters";
 import { Notification } from "@/types/messaging";
-import { Mail } from "lucide-react";
 
 const NotiItem = ({ noti, isLast }: { noti: Notification, isLast: boolean }) => {
 
   return (
-    <Item variant="outline" size="sm">
-      <ItemMedia>
-        <Mail size={20}/>
-      </ItemMedia>
+    <Item variant="muted" size="sm" className="hover">
+      <ItemMedia className="h-2 w-2 rounded-full bg-jb-primary" />
       <ItemContent>
-        <ItemTitle>{foramatAPIEnum(noti.type)}</ItemTitle>
-        <ItemDescription>{noti.payload.message}</ItemDescription>
+        <ItemTitle>{`${noti.payload.senderName} sent you a message`}</ItemTitle>
+        <ItemDescription>{noti.payload.snippet}</ItemDescription>
       </ItemContent>
       <ItemActions />
     </Item>
