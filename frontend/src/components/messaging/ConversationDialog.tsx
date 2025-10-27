@@ -88,7 +88,7 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
     }
 
     return (
-        <div className={`bg-jb-bg p-2 border-b-1 flex flex-col justify-between max-h-full`}>
+        <div className="h-full flex flex-col p-2 ">
             <div className={`border-b-1 py-2 border-jb-surface `}>
                 <h6 className="float-end text-jb-text-muted text-xs">
                     {conv.updatedAt || 'A few sec ago'}
@@ -99,8 +99,7 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
                     className={`w-10 h-10 object-cover rounded-full`}
                 />
             </div>
-
-            <div className="flex-1 overflow-y-auto scrollbar-hidden">
+            <div className="h-full overflow-y-scroll scrollbar-hidden">
                 {mergedConv.messages.map((message: any) => (
                     <div
                         className="flex items-start my-2"
@@ -131,14 +130,13 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
                 ))}
             </div>
 
-            {/* // Send Message INPUT Form */}
             <form
                 className="w-full relative bg-jb-surface shadow-2xl border-1 rounded-3xl px-4 h-10  outline-none"
                 onSubmit={handleSubmit}
             >
                 <input
                     type="text"
-                    className=" w-[95%] py-2 bg-transparent outline-none"
+                    className=" py-2 bg-transparent outline-none"
                     autoFocus
                     placeholder="Messge..."
                     value={input}

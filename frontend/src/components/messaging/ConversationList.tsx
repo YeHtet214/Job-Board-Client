@@ -35,7 +35,7 @@ const ConversationCard = ({
     return (
         <li
             key={conv.id}
-            className={`flex ${isCurrentOpen && 'bg-jb-bg'} items-center px-4 py-3 hover:bg-jb-bg transition cursor-pointer absolute`}
+            className={`flex gap-2 ${isCurrentOpen && 'bg-jb-bg'} items-center hover:bg-jb-bg transition cursor-pointer`}
             onClick={() => selectConv(conv)}
         >
             <Avatar>
@@ -85,12 +85,16 @@ const ConversationSkeleton = () => (
 )
 
 const ConversationList = () => {
-    const [toggleConversation, setToggleConversation] = useState(false)
     const { data: conversations, isLoading } = useConversationQuery<Conversation[]>()
     const { socket, openConversation, setOpenConversation } = useMessaging();
 
     const handleConversationClick = (conv: any) => {
+        if (conv.id === openConversation?.id) {
+            setOpenConversation(null)
+            return;
+        }
 
+        // Join Conversation { *** Need to refactor, every time converation open, join event trigger!}
         socket?.emit("join", { conversationId: conv.id }, (res: any) => {
             if (res.ok) {
                 console.log("Notis test: ", res.notis);
@@ -98,9 +102,6 @@ const ConversationList = () => {
                 console.error("Failed to join conversation:", res.error);
             }
         });
-
-        // Handle conversation click
-        setToggleConversation(prev => !prev);
 
         if (conv && conv.id !== openConversation?.id) {
             setOpenConversation(conv)
@@ -110,8 +111,8 @@ const ConversationList = () => {
     if (isLoading) return <ConversationSkeleton />;
 
     return (
-        <div className={`h-full grid ${openConversation ? 'md:grid-cols-3' : 'md:grid-cols-1'} rounded-lg shadow-md overflow-hidden`}>
-            <ul className={`transition ${toggleConversation ? 'w-auto border-r-1' : 'w-full'}`} >
+        <div className={`flex jusitfy-between w-full h-full rounded-lg shadow-md overflow-hidden`}>
+            <ul className={`overflow-y-scroll scrollbar-hidden transition ${openConversation ? 'flex-1/3 border-r' : 'w-full'}`} >
                 {conversations ? (
                     conversations.map((conv: Conversation) => (
                         <ConversationCard
@@ -126,11 +127,11 @@ const ConversationList = () => {
                 )}
             </ul>
 
-            {openConversation && (
-                <div className={`col-span-2 relative transition overflow-y-auto ${toggleConversation ? 'translate-x-0' : 'translate-x-[200%]'}`} >
+            <div className={` transition ${openConversation && 'flex-2/3'}`} >
+                {openConversation && (
                     <ConversationDialog conv={openConversation} />
-                </div>
-            )}
+                )}
+            </div>
         </div>
     )
 }
