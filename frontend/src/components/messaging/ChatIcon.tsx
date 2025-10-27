@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import ConversationList from '@/components/messaging/ConversationList'
 import { MessageCircleMore} from 'lucide-react'
 import { useAuth } from '@/contexts/authContext'

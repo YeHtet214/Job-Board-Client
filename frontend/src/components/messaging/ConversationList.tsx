@@ -123,7 +123,7 @@ const ConversationList = () => {
                         />
                     ))
                 ) : (
-                    <>No conversations found!</>
+                    <h1>No conversations found!</h1>
                 )}
             </ul>
 

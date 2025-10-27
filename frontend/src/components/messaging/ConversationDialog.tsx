@@ -2,7 +2,7 @@ import { useAuth } from '@/contexts/authContext'
 import { useMessaging } from '@/contexts/MessagingContext'
 import { Conversation, Message } from '@/types/messaging'
 import { SendHorizontal } from 'lucide-react'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
 const ReceipentMessage = ({
@@ -26,6 +26,54 @@ const ReceipentMessage = ({
     )
 }
 
+const NewConversationDialog = ({ conv }: { conv: Conversation }) => {
+    const { sendMessage } = useMessaging();
+    const [input, setInput] = useState<string>('')
+
+    const handleSendMessage = (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        sendMessage({
+            tempId: uuidv4(),
+            receiverId: conv.receipent?.id,
+            conversationId: conv.id,
+            body: input,
+        })
+        setInput('')
+    }
+    return (
+        <div className="h-full flex justify-center items-center">
+            <div className={`border-b-1 py-2 border-jb-surface `}>
+                <img
+                    src={conv.receipent?.avatar}
+                    alt="profile image"
+                    className={`w-10 h-10 object-cover rounded-full`}
+                />
+            </div>
+
+            <form
+                className="w-full relative bg-jb-surface shadow-2xl border-1 rounded-3xl px-4 h-10  outline-none"
+                onSubmit={handleSendMessage}
+            >
+                <input
+                    type="text"
+                    className=" py-2 bg-transparent outline-none"
+                    autoFocus
+                    placeholder="Messge..."
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                />
+                <button
+                    type="submit"
+                    className="absolute top-1/2 right-2 text-jb-primary transform -translate-y-1/2 cursor-pointer hover:text-jb-primary/75"
+                >
+                    <SendHorizontal size={15} />
+                </button>
+            </form>
+        </div>
+    )
+}
+
+
 const ConversationDialog = ({ conv }: { conv: Conversation }) => {
     const [input, setInput] = useState<string>('')
     const {
@@ -38,8 +86,10 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
     } = useMessaging()
     const { currentUser } = useAuth()
 
+    if (!conv.id) return <NewConversationDialog conv={conv} />
+
     // Get conversation with real-time updates
-    const mergedConv = getMergedConversation(conv)
+    const mergedConv = useMemo(() => getMergedConversation(conv), [conv]);
 
     useEffect(() => {
         const pressEnterSendMessage = (e: KeyboardEvent) => {

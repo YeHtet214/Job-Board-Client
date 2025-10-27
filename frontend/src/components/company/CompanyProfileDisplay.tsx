@@ -44,7 +44,7 @@ const CompanyProfileDisplay: React.FC<CompanyProfileDisplayProps> = ({
                                 <CardTitle className="text-2xl text-jb-text">
                                     {company.name}
                                 </CardTitle>
-                                <CardDescription className="text-base text-jb-text-secondary">
+                                <CardDescription className="text-base text-jb-text">
                                     {company.industry}
                                 </CardDescription>
                             </div>

@@ -84,8 +84,8 @@ const JobDetailContent: React.FC = () => {
                         <CardHeader className="pb-2">
                             <div className="flex items-start justify-between">
                                 <div className="flex items-center">
-                                    <div className="w-16 h-16 bg-jobboard-light rounded-md flex items-center justify-center mr-4">
-                                        <span className="text-jobboard-darkblue font-bold text-xl">
+                                    <div className="w-16 h-16 bg-jb-surface rounded-full shadow flex items-center justify-center mr-4">
+                                        <span className="text-jb-primary font-bold text-xl">
                                             {companyInitials}
                                         </span>
                                     </div>
@@ -99,14 +99,25 @@ const JobDetailContent: React.FC = () => {
                                         </CardDescription>
                                     </div>
                                 </div>
-                                {canEdit && (
+                                {canEdit ? (
                                     <div className="flex space-x-2">
                                         <Link to={`/jobs/${job.id}/edit`}>
                                             <Button
                                                 variant="outline"
-                                                className="text-jobboard-darkblue"
+                                                className="text-jb-primary"
                                             >
                                                 Edit
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                ): (
+                                    <div className="flex space-x-2">
+                                        <Link to={`/jobs/${job.id}/apply`}>
+                                            <Button
+                                                variant="outline"
+                                                className="text-jb-primary"
+                                            >
+                                                Message
                                             </Button>
                                         </Link>
                                     </div>
@@ -224,7 +235,7 @@ const JobDetailContent: React.FC = () => {
                                 </Button>
                                 {canApply && (
                                     <Link to={`/jobs/${job.id}/apply`}>
-                                        <Button className="bg-jobboard-purple hover:bg-jobboard-purple/90">
+                                        <Button className="bg-jb-primary hover:bg-jb-primary/90">
                                             Apply Now
                                         </Button>
                                     </Link>
@@ -233,7 +244,7 @@ const JobDetailContent: React.FC = () => {
                                     <Link
                                         to={`/login?redirect=/jobs/${job.id}`}
                                     >
-                                        <Button className="bg-jobboard-purple hover:bg-jobboard-purple/90">
+                                        <Button className="bg-jb-primary hover:bg-jb-primary/90">
                                             Login to Apply
                                         </Button>
                                     </Link>
