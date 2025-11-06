@@ -1,139 +1,110 @@
+// components/messaging/ConversationList.tsx
+
 import { Conversation } from '@/types/messaging'
-import { useAuth } from '@/contexts/authContext'
-import { useEffect, useState } from 'react'
+import { useState, useCallback } from 'react'
 import ConversationDialog from './ConversationDialog'
-import { useConversationQuery } from '@/hooks/react-queries/messaging/useConversation'
+import ConversationCard from './ConversationCard'
+import { useConversationQuery } from '@/hooks/react-queries/messaging/useConversationQuery'
 import { Skeleton } from '../ui/skeleton'
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { useMessaging } from '@/contexts/MessagingContext'
-interface ConversationCardType {
-    conv: Conversation
-    isCurrentOpen: boolean
-    selectConv: (conv: Conversation) => void
-}
+import { SOCKET_EVENTS } from '@/lib/constants/socketEvents'
+import { JoinConversationResponse } from '@/types/socket'
 
-const ConversationCard = ({
-    conv,
-    isCurrentOpen,
-    selectConv,
-}: ConversationCardType) => {
-    const { currentUser } = useAuth()
-    const [avatarName, setAvatarName] = useState<string>('')
-
-    useEffect(() => {
-        const makeAvatarFromName = () => {
-            if (conv.receipent?.id === currentUser?.id) {
-                return currentUser?.firstName[0] + currentUser?.lastName[0]
-            } else {
-                return conv.receipent?.name.split(" ")[0].charAt(0) + conv.receipent?.name.split(" ")[1].charAt(0)
-            }
-        }
-
-        setAvatarName(makeAvatarFromName())
-    }, [conv, currentUser])
-
-    return (
-        <li
-            key={conv.id}
-            className={`flex gap-2 ${isCurrentOpen && 'bg-jb-bg'} items-center hover:bg-jb-bg transition cursor-pointer`}
-            onClick={() => selectConv(conv)}
-        >
-            <Avatar>
-                <AvatarImage src={conv.receipent?.avatar} />
-                <AvatarFallback>
-                    {avatarName}
-                </AvatarFallback>
-            </Avatar>
-            <div className="flex-1">
-                <div className="flex justify-between items-center">
-                    <span className="font-medium text-jb-text opacity-90 truncate">
-                        {conv.receipent?.name}
-                    </span>
-                </div>
-                <p className="text-sm text-jb-text-muted truncate">
-                    {conv.lastMessage?.body}
-                </p>
-            </div>
-        </li>
-    )
-}
-
+/**
+ * Loading skeleton component
+ */
 const ConversationSkeleton = () => (
-    <div className='w-full h-full'>
-        <div className="flex items-center space-x-4 my-2">
-            <Skeleton className="h-12 w-12 rounded-full" />
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-4 w-[200px]" />
-            </div>
+  <div className="w-full h-full p-2">
+    {[1, 2, 3].map((i) => (
+      <div key={i} className="flex items-center space-x-4 my-2">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="space-y-2 flex-1">
+          <Skeleton className="h-4 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
         </div>
-        <div className="flex items-center space-x-4 my-2">
-            <Skeleton className="h-12 w-12 rounded-full" />
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-4 w-[200px]" />
-            </div>
-        </div>
-        <div className="flex items-center space-x-4 my-2">
-            <Skeleton className="h-12 w-12 rounded-full" />
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-[250px]" />
-                <Skeleton className="h-4 w-[200px]" />
-            </div>
-        </div>
-    </div>
+      </div>
+    ))}
+  </div>
 )
 
+/**
+ * Displays all conversations and handles conversation selection
+ */
 const ConversationList = () => {
-    const { data: conversations, isLoading } = useConversationQuery<Conversation[]>()
-    const { socket, openConversation, setOpenConversation } = useMessaging();
+  const { data: conversations, isLoading } =
+    useConversationQuery<Conversation[]>()
+  const { socket, openConversation, setOpenConversation } = useMessaging()
+  const [joinedConversations, setJoinedConversations] = useState<Set<string>>(
+    new Set()
+  )
+  const handleConversationClick = useCallback(
+    (conv: Conversation) => {
+      if (conv.id === openConversation?.id) {
+        setOpenConversation(null)
+        return
+      }
 
-    const handleConversationClick = (conv: any) => {
-        if (conv.id === openConversation?.id) {
-            setOpenConversation(null)
-            return;
-        }
-
-        // Join Conversation { *** Need to refactor, every time converation open, join event trigger!}
-        socket?.emit("join", { conversationId: conv.id }, (res: any) => {
+      if (socket && !joinedConversations.has(conv.id)) {
+        socket.emit(
+          SOCKET_EVENTS.JOIN,
+          { conversationId: conv.id },
+          (res: JoinConversationResponse) => {
             if (res.ok) {
-                console.log("Notis test: ", res.notis);
+              console.log('✅ Joined conversation:', conv.id)
+              setJoinedConversations((prev) => new Set(prev).add(conv.id))
+
+              if (res.notis && res.notis.length > 0) {
+                console.log('📬 Conversation notifications:', res.notis)
+              }
             } else {
-                console.error("Failed to join conversation:", res.error);
+              console.error('❌ Failed to join conversation:', res.error)
             }
-        });
+          }
+        )
+      }
 
-        if (conv && conv.id !== openConversation?.id) {
-            setOpenConversation(conv)
-        }
-    }
+      setOpenConversation(conv)
+    },
+    [socket, openConversation, joinedConversations, setOpenConversation]
+  )
 
-    if (isLoading) return <ConversationSkeleton />;
+  if (isLoading) {
+    return <ConversationSkeleton />
+  }
 
+  if (!conversations || conversations.length === 0) {
     return (
-        <div className={`flex jusitfy-between w-full h-full rounded-lg shadow-md overflow-hidden`}>
-            <ul className={`overflow-y-scroll scrollbar-hidden transition ${openConversation ? 'flex-1/3 border-r' : 'w-full'}`} >
-                {conversations ? (
-                    conversations.map((conv: Conversation) => (
-                        <ConversationCard
-                            key={conv.id}
-                            conv={conv}
-                            isCurrentOpen={openConversation?.id === conv.id}
-                            selectConv={handleConversationClick}
-                        />
-                    ))
-                ) : (
-                    <h1>No conversations found!</h1>
-                )}
-            </ul>
-
-            <div className={` transition ${openConversation && 'flex-2/3'}`} >
-                {openConversation && (
-                    <ConversationDialog conv={openConversation} />
-                )}
-            </div>
-        </div>
+      <div className="w-full h-full flex items-center justify-center">
+        <p className="text-jb-text-muted">No conversations found</p>
+      </div>
     )
+  }
+
+  return (
+    <div className="flex justify-between w-full h-full rounded-lg shadow-md overflow-hidden">
+      <ul
+        className={`overflow-y-scroll scrollbar-hidden transition-all ${
+          openConversation ? 'w-1/3 border-r border-jb-text/20' : 'w-full'
+        }`}
+      >
+        {conversations.map((conv: Conversation) => (
+          <ConversationCard
+            key={conv.id}
+            conv={conv}
+            isCurrentOpen={openConversation?.id === conv.id}
+            selectConv={handleConversationClick}
+          />
+        ))}
+      </ul>
+
+      {/* Conversation dialog */}
+      <div
+        className={`transition-all ${openConversation ? 'w-2/3' : 'w-0'}`}
+      >
+        {openConversation && <ConversationDialog conv={openConversation} />}
+      </div>
+    </div>
+  )
 }
 
 export default ConversationList

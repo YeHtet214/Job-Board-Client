@@ -166,6 +166,7 @@ const CompanyDetailPage: React.FC = () => {
                                                 <Button
                                                     variant="outline"
                                                     className="flex items-center gap-2"
+                                                    onClick={() => !isAuthenticated && navigate('/login')}
                                                 >
                                                     <Mail className="h-4 w-4" />
                                                     <span className="hidden sm:inline">
@@ -178,6 +179,10 @@ const CompanyDetailPage: React.FC = () => {
                                             </DialogTrigger>
                                             <DialogContent>
                                                 <ConversationDialog conv={{
+                                                    createdAt: new Date(),
+                                                    updatedAt: new Date(),
+                                                    messages: [],
+                                                    lastMessage: null,
                                                     receipent: {
                                                         id: company.id,
                                                         name: company.name,

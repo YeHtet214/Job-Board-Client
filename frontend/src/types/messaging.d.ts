@@ -18,10 +18,10 @@ export type Conversation = {
         id: string
         avatar?: string
     }
-    updatedAt: string
-    messages: Message[]
+    updatedAt: Date
+    messages: Message[] | []
     lastMessage: Message | null
-    createdAt: string
+    createdAt: Date
     unreadCount: number
 }
 
@@ -35,8 +35,8 @@ export type Message = {
     senderId: string
     body: string
     status: MessageStatus
-    createdAt: string
-    readAt?: string
+    createdAt: Date
+    readAt?: Date
 }
 
 interface NotiType {
@@ -78,7 +78,7 @@ export interface OfflineNotification {
 }
 
 export interface SendMessagePayload {
-    tempId?: string
+    tempId: string
     receiverId: string
     conversationId: string
     body: string

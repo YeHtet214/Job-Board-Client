@@ -16,3 +16,13 @@ export const ITEMS_PER_PAGE = 10
 
 // Toast durations
 export const TOAST_DURATION = 5000 // 5 seconds
+
+// Socket events
+export const SOCKET_EVENTS = {
+    CONNECTION: 'connect',
+    DISCONNECTION: 'disconnect',
+    NEW_MESSAGE: 'chat:new',
+    PRESECENCE_UPDATE: 'presence:update',
+    NOTIFICATION: 'notification',
+    NOTIFICATION_DISPATCH: 'notification:dispatch',
+}

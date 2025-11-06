@@ -1,45 +1,38 @@
-import React, {
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-    useCallback,
-} from 'react'
+import React, { createContext, useContext, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { Message, Conversation, MessageStatus, SendMessagePayload, Notification, NotiType, RealTimeNoti } from '@/types/messaging'
-import { useAuth } from './authContext'
-import { createSocket } from '@/lib/socket'
 import { Socket } from 'socket.io-client'
+import {
+    Message,
+    Conversation,
+    SendMessagePayload,
+    Notification,
+} from '@/types/messaging'
+import { useAuth } from './authContext'
 import { useToast } from '@/components/ui/use-toast'
 
+// Custom hooks
+import { useSocketConnection } from '@/hooks/useSocketConnection'
+import { useNotificationHandlers } from '@/hooks/useNotificationHandlers'
+import { useMessageHandlers } from '@/hooks/useMessageHandlers'
+import { usePresenceHandlers } from '@/hooks/usePresenceHandlers'
+import { useMessagingOperations } from '@/hooks/useMessagingOperations'
+
 type MessagingContextType = {
+    // Socket connection
     socket: typeof Socket | null
+    isConnected: boolean
+
+    // Real-time state
     realtimeMessages: Map<string, Message[]>
     notifications: Notification[]
-    isConnected: boolean
+
+    // Conversation state
     openConversation: Conversation | null
     setOpenConversation: React.Dispatch<React.SetStateAction<Conversation | null>>
-    sendMessage: ({
-        tempId,
-        receiverId,
-        conversationId,
-        body,
-    }: {
-        tempId: string
-        receiverId: string
-        conversationId: string
-        body: string
-    }) => void
+
+    // Messaging operations
+    sendMessage: (payload: SendMessagePayload) => Promise<void>
     addMessage: (conversationId: string, message: Message) => void
-    updateConversation: (
-        conversationId: string,
-        updater: (conv: Conversation) => Conversation
-    ) => void
-
-    // Get merged conversation with real-time updates
-    getMergedConversation: (conversation: Conversation) => Conversation
-
-    // Optimistic updates
     addOptimisticMessage: (conversationId: string, message: Message) => void
     updateMessageStatus: (
         conversationId: string,
@@ -47,303 +40,111 @@ type MessagingContextType = {
         status: Message['status'],
         serverId?: string
     ) => void
+    updateConversation: (
+        conversationId: string,
+        updater: (conv: Conversation) => Conversation
+    ) => void
+    getMergedConversation: (conversation: Conversation) => Conversation
+
+    // Notification operations
+    clearNotifications: () => void
+    removeNotification: (notificationId: string) => void
+
+    // Presence operations
+    getUserPresence: (userId: string) => any
+    isUserOnline: (userId: string) => boolean
 }
 
 const MessagingContext = createContext<MessagingContextType | undefined>(undefined)
 
-export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({
-    children,
-}) => {
+export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { accessToken, currentUser } = useAuth()
     const queryClient = useQueryClient()
-    const { toast } = useToast();
+    const { toast } = useToast()
 
-    const [socket, setSocket] = useState<typeof Socket | null>(null)
-    const [isConnected, setIsConnected] = useState(false)
-    const [notifications, setNotifications] = useState<Notification[]>([])
-    const [openConversation, setOpenConversation] =
-        useState<Conversation | null>(null)
-    // Map to store real-time messages that haven't been persisted to React Query cache yet
-    const [realtimeMessages, setRealtimeMessages] = useState<
-        Map<string, Message[]>
-    >(new Map())
+    const [openConversation, setOpenConversation] = useState<Conversation | null>(null)
 
-    useEffect(() => {
-        if (!accessToken || !currentUser) {
-            setNotifications([])
-            return
-        }
+    // Socket connection management
+    const { socket, isConnected } = useSocketConnection(
+        accessToken,
+        currentUser?.id || null
+    )
 
-        //create socket with access token
-        const s = createSocket(accessToken)
-        setSocket(s)
+    // Notification handling
+    const { notifications, clearNotifications, removeNotification } =
+        useNotificationHandlers({ socket, toast })
 
-        s.connect()
+    // Message handling
+    const { realtimeMessages, addMessage, updateMessageStatus, clearConversationMessages } = useMessageHandlers({
+        socket,
+        currentUserId: currentUser?.id || null,
+        queryClient,
+    })
 
+    // Presence handling
+    const { getUserPresence, isUserOnline } = usePresenceHandlers(socket)
 
+    // Messaging operations
+    const { sendMessage, addOptimisticMessage, updateConversation, getMergedConversation: getMergedConversationBase } = useMessagingOperations({
+        socket,
+        queryClient,
+        updateMessageStatus,
+        addMessage,
+        toast,
+    })
 
-        // listeners
-        s.on('connection', () => {
-            setIsConnected(true)
-        })
-
-        s.on('disconnect', () => {
-            setIsConnected(false)
-        })
-
-        s.on('presence:update', (data: any) => {
-            console.log('📡 Presence update:', data)
-        })
-
-        // Event handler at the first page load to get all notifications while offline
-        s.on('notification:dispatch', (notis: Notification[]) => {
-
-            console.log("ALL Noti: ", notis);
-
-            // Real time notifications has no id with type === "Realtime_Message"
-            setNotifications(notis);
-
-            notis.map((noti: Notification) => {
-                toast({
-                    title: `${noti.payload.senderName} sent you a message`,
-                    description: noti.payload.snippet,
-                    variant: 'default',
-                })
-            })
-        })
-
-        // Event handler to get notifications while online
-        s.on('notification', (noti: RealTimeNoti) => {
-            console.log('🔔 Notification:', noti)
-
-            toast({
-                title: `${noti.senderName} sent you a message`,
-                description: noti.snippet,
-                variant: 'default',
-            })
-        })
-
-        const handleNewMessage = (message: Message) => {
-            if (currentUser?.id === message.senderId) return
-
-            // Add to real-time messages
-            setRealtimeMessages((prev) => {
-                const updated = new Map(prev)
-                const messages = updated.get(message.conversationId) || []
-                updated.set(message.conversationId, [...messages, message])
-                return updated
-            })
-
-            // Invalidate and refetch the conversations list to update last message
-            queryClient.invalidateQueries({ queryKey: ['conversations'] })
-
-            // Invalidate specific conversation messages if they're being viewed
-            queryClient.invalidateQueries({
-                queryKey: ['conversations', message.conversationId, 'messages'],
-            })
-        }
-
-        s.on('chat:new', handleNewMessage)
-
-        return () => {
-            s.disconnect()
-            setIsConnected(false)
-        }
-    }, [accessToken, currentUser])
-
-    const sendMessage = async ({
-        tempId,
-        receiverId,
-        conversationId,
-        body,
-    }: SendMessagePayload) => {
-        socket?.emit(
-            'chat:send',
-            {
-                receiverId,
-                conversationId,
-                body,
-            },
-            (res: any) => {
-                if (res.ok) {
-                    setRealtimeMessages((prev) => {
-                        const updated = new Map(prev)
-                        const messages = updated.get(conversationId) || []
-                        const newMessages = messages.map((m) => {
-                            if (m.tempId === tempId) {
-                                return {
-                                    ...m,
-                                    status: 'sent' as MessageStatus,
-                                    id: res.messageId,
-                                }
-                            }
-                            return m
-                        })
-                        updated.set(conversationId, newMessages)
-                        return updated
-                    })
-                    // updateMessageStatus(conversationId, tempId, 'sent', res.messageId);
-                } else {
-                    console.error('Send failed:', res.error)
-                    updateMessageStatus(conversationId, tempId, 'failed')
-                }
-            }
-        )
+    // Wrapper to inject realtimeMessages into getMergedConversation
+    const getMergedConversation = (conversation: Conversation): Conversation => {
+        return getMergedConversationBase(conversation, realtimeMessages)
     }
 
-    // Add a message to real-time store
-    const addMessage = useCallback(
-        (conversationId: string, message: Message) => {
-            setRealtimeMessages((prev) => {
-                const updated = new Map(prev)
-                const messages = updated.get(conversationId) || []
-                updated.set(conversationId, [...messages, message])
+    const contextValue: MessagingContextType = {
+        // Socket connection
+        socket,
+        isConnected,
 
-                console.log('Realtime messages updated:', updated)
-                return updated
-            })
-        },
-        []
-    )
+        // Real-time state
+        realtimeMessages,
+        notifications,
 
-    // Add optimistic message (for immediate UI update when sending)
-    const addOptimisticMessage = useCallback(
-        (conversationId: string, message: Message) => {
-            // Add to real-time messages immediately
-            addMessage(conversationId, message)
+        // Conversation state
+        openConversation,
+        setOpenConversation,
 
-            // Optimistically update the React Query cache
-            queryClient.setQueryData<Conversation[]>(
-                ['conversations'],
-                (old) => {
-                    if (!old) return old
+        // Messaging operations
+        sendMessage,
+        addMessage,
+        addOptimisticMessage,
+        updateMessageStatus,
+        updateConversation,
+        getMergedConversation,
 
-                    return old.map((conv) => {
-                        if (conv.id === conversationId) {
-                            return {
-                                ...conv,
-                                lastMessage: message,
-                                messages: [...(conv.messages || []), message],
-                                updatedAt: new Date().toISOString(),
-                            }
-                        }
-                        return conv
-                    })
-                }
-            )
-        },
-        [queryClient]
-    )
+        // Notification operations
+        clearNotifications,
+        removeNotification,
 
-    // Update message status (e.g., from 'sending' to 'sent')
-    const updateMessageStatus = useCallback(
-        (
-            conversationId: string,
-            tempId: string,
-            status: Message['status'],
-            serverId?: string
-        ) => {
-            setRealtimeMessages((prev) => {
-                const updated = new Map(prev)
-                const messages = updated.get(conversationId) || []
-
-                const updatedMessages = messages.map((msg) => {
-                    if (msg.tempId === tempId) {
-                        return {
-                            ...msg,
-                            id: serverId || msg.id,
-                            status,
-                            tempId: serverId ? undefined : msg.tempId, // Remove tempId once we have server id
-                        }
-                    }
-                    return msg
-                })
-
-                updated.set(conversationId, updatedMessages)
-                return updated
-            })
-        },
-        []
-    )
-
-    // Update a conversation in the cache
-    const updateConversation = useCallback(
-        (
-            conversationId: string,
-            udpated: (conv: Conversation) => Conversation
-        ) => {
-            queryClient.setQueryData<Conversation[]>(
-                ['conversations'],
-                (old) => {
-                    if (!old) return old
-
-                    return old.map((conv) => {
-                        if (conv.id === conversationId) {
-                            return udpated(conv)
-                        }
-                        return conv
-                    })
-                }
-            )
-        },
-        [queryClient]
-    )
-
-    // Get merged conversation with real-time updates
-    const getMergedConversation = useCallback(
-        (conversation: Conversation): Conversation => {
-            const rtMessages = realtimeMessages.get(conversation.id) || []
-
-            // Merge messages, avoiding duplicates
-            const existingIds = new Set(conversation.messages.map((m) => m.id))
-            const newMessages = rtMessages.filter((m) => !existingIds.has(m.id))
-
-            if (newMessages.length === 0) {
-                return conversation
-            }
-
-            const allMessages = [...conversation.messages, ...newMessages].sort(
-                (a, b) =>
-                    new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime()
-            )
-
-            const lastMessage = allMessages[allMessages.length - 1]
-
-            return {
-                ...conversation,
-                messages: allMessages,
-                lastMessage: lastMessage || conversation.lastMessage,
-                updatedAt: lastMessage?.createdAt || conversation.updatedAt,
-            }
-        },
-        [realtimeMessages]
-    )
+        // Presence operations
+        getUserPresence,
+        isUserOnline,
+    }
 
     return (
-        <MessagingContext.Provider value={{
-            socket,
-            realtimeMessages,
-            notifications,
-            isConnected,
-            openConversation,
-            setOpenConversation,
-            sendMessage,
-            addMessage,
-            updateConversation,
-            getMergedConversation,
-            addOptimisticMessage,
-            updateMessageStatus,
-        }}>
+        <MessagingContext.Provider value={contextValue}>
             {children}
         </MessagingContext.Provider>
     )
 }
 
+/**
+ * Custom hook to use messaging context
+ * @throws Error if used outside MessagingProvider
+ */
 export const useMessaging = () => {
     const context = useContext(MessagingContext)
+
     if (!context) {
         throw new Error('useMessaging must be used within a MessagingProvider')
     }
+
     return context
 }
