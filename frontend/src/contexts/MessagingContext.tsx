@@ -10,7 +10,6 @@ import {
 import { useAuth } from './authContext'
 import { useToast } from '@/components/ui/use-toast'
 
-// Custom hooks
 import { useSocketConnection } from '@/hooks/useSocketConnection'
 import { useNotificationHandlers } from '@/hooks/useNotificationHandlers'
 import { useMessageHandlers } from '@/hooks/useMessageHandlers'

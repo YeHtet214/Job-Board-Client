@@ -9,6 +9,7 @@ import { Skeleton } from '../ui/skeleton'
 import { useMessaging } from '@/contexts/MessagingContext'
 import { SOCKET_EVENTS } from '@/lib/constants/socketEvents'
 import { JoinConversationResponse } from '@/types/socket'
+import { useAuth } from '@/contexts/authContext'
 
 /**
  * Loading skeleton component
@@ -37,6 +38,16 @@ const ConversationList = () => {
   const [joinedConversations, setJoinedConversations] = useState<Set<string>>(
     new Set()
   )
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <p className="text-jb-text-muted">Please log in to view conversations</p>
+      </div>
+    )
+  }
+
   const handleConversationClick = useCallback(
     (conv: Conversation) => {
       if (conv.id === openConversation?.id) {

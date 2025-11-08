@@ -41,6 +41,8 @@ const CompanyDetailPage: React.FC = () => {
         error: companyError,
     } = useCompany(id || '')
 
+    console.log('Company data:', company)
+
     // Fetch company jobs
     const { data: companyJobs = [], isLoading: isLoadingJobs } =
         useCompanyJobs(id)
@@ -161,7 +163,7 @@ const CompanyDetailPage: React.FC = () => {
                                                 </Button>
                                             </a>
                                         )}
-                                        <Dialog>
+                                        <Dialog key={company.id}>
                                             <DialogTrigger asChild>
                                                 <Button
                                                     variant="outline"
@@ -179,12 +181,13 @@ const CompanyDetailPage: React.FC = () => {
                                             </DialogTrigger>
                                             <DialogContent>
                                                 <ConversationDialog conv={{
+                                                    id: company.id,
                                                     createdAt: new Date(),
                                                     updatedAt: new Date(),
                                                     messages: [],
                                                     lastMessage: null,
                                                     receipent: {
-                                                        id: company.id,
+                                                        id: company.ownerId,
                                                         name: company.name,
                                                         avatar: company.logo || "",
                                                     },

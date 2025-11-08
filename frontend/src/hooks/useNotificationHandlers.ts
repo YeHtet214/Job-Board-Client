@@ -46,8 +46,6 @@ export const useNotificationHandlers = ({
          * Handle real-time notifications while user is online
          */
         const handleRealtimeNotification = (noti: RealTimeNoti) => {
-            console.log('🔔 Received real-time notification:', noti)
-
             toast({
                 title: `${noti.senderName} sent you a message`,
                 description: noti.snippet,

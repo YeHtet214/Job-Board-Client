@@ -113,7 +113,7 @@ export const useMessagingOperations = ({
                                 ...conv,
                                 lastMessage: message,
                                 messages: [...(conv.messages || []), message],
-                                updatedAt: new Date().toISOString(),
+                                updatedAt: new Date(),
                             }
                         }
                         return conv

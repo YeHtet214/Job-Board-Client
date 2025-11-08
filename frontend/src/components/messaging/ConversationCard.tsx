@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/authContext'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { getUserAvatarInitials } from '@/utils/avatarUtils'
 import { memo } from 'react'
+import { useMessaging } from '@/contexts/MessagingContext'
 
 interface ConversationCardProps {
   conv: Conversation
@@ -22,6 +23,7 @@ const ConversationCard = ({
   selectConv,
 }: ConversationCardProps) => {
   const { currentUser } = useAuth()
+  const  { getMergedConversation } = useMessaging()
 
   // Get avatar initials
   const avatarName = getUserAvatarInitials(
@@ -32,6 +34,9 @@ const ConversationCard = ({
     currentUser?.id
   )
 
+  // Get merged conversation with real-time messages
+  const mergedConv = getMergedConversation(conv)
+
   return (
     <li
       className={`flex gap-2 p-3 ${isCurrentOpen ? 'bg-jb-bg' : ''
@@ -41,23 +46,23 @@ const ConversationCard = ({
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          selectConv(conv)
+          selectConv(mergedConv)
         }
       }}
     >
       <Avatar>
-        <AvatarImage src={conv.receipent?.avatar} alt={conv.receipent?.name} />
+        <AvatarImage src={conv.receipent?.avatar} alt={mergedConv.receipent?.name} />
         <AvatarFallback>{avatarName}</AvatarFallback>
       </Avatar>
 
       <div className="flex-1 min-w-0">
         <div className="flex justify-between items-center">
           <span className="font-medium text-jb-text opacity-90 truncate">
-            {conv.receipent?.name}
+            {mergedConv.receipent?.name}
           </span>
         </div>
         <p className="text-sm text-jb-text-muted truncate">
-          {conv.lastMessage?.body || 'No messages yet'}
+          {mergedConv.lastMessage?.body || 'No messages yet'}
         </p>
       </div>
     </li>

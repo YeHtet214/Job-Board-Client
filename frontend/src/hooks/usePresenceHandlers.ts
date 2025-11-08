@@ -34,16 +34,11 @@ export const usePresenceHandlers = (socket: typeof Socket | null) => {
     }
   }, [socket])
 
-  /**
-   * Get presence status for a specific user
-   */
   const getUserPresence = (userId: string): PresenceUpdate | undefined => {
     return presenceMap.get(userId)
   }
 
-  /**
-   * Check if a user is online
-   */
+  /** Check if a user is online **/
   const isUserOnline = (userId: string): boolean => {
     const presence = presenceMap.get(userId)
     return presence?.status === 'online'

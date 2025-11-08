@@ -77,6 +77,8 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
   // Get merged conversation with real-time messages
   const mergedConv = getMergedConversation(conv)
 
+  console.log("merged conv : ", mergedConv);
+
   const handleSubmit = useCallback(
     async (e?: FormEvent) => {
       if (e) {
