@@ -1,56 +1,32 @@
-import { useState } from 'react';
-import ConversationList from '@/components/messaging/ConversationList';
-import { MessageCircleMore, X } from 'lucide-react';
-import { useAuth } from '@/contexts/authContext';
-import { useMessaging } from '@/contexts/MessagingContext';
+import ConversationList from '@/components/messaging/ConversationList'
+import { MessageCircleMore} from 'lucide-react'
+import { useAuth } from '@/contexts/authContext'
+import { useMessaging } from '@/contexts/MessagingContext'
+import { Dialog, DialogContent, DialogTrigger } from '../ui/dialog'
 
 export default function ChatIcon() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { socket } = useMessaging();
-  const { currentUser } = useAuth();
+    const { socket } = useMessaging()
+    const { currentUser } = useAuth()
 
-  const handleOpen = () => {
-    setIsOpen(true);
-  };
+    if (!currentUser) return null
 
-  const handleClose = () => {
-    setIsOpen(false);
-  };
-
-  if (!currentUser) return null;
-
-  return (
-    <div className="fixed bottom-6 right-6 text-jb-text z-100">
-
-      {isOpen ? (
-        <div className="absolute bottom-14 text-jb-text right-0 w-2xl min-h-[300px] bg-jb-bg p-4 rounded-lg shadow-lg">
-          <button onClick={handleClose} className="absolute top-0 right-0 p-2 cursor-pointer hover:text-jb-danger/50 transition">
-            <X />
-          </button>
-          {socket && (
-            <ConversationList
-              // onConversationClick={(conversation: Conversation) => {
-              //   socket.emit(
-              //     'chat:join',
-              //     { conversationId: conversation.id },
-              //     (res: any) => {
-              //       if (res.ok) {
-              //         console.log('Joined conversation:', res.conversationId);
-              //       } else {
-              //         console.error('Failed to join conversation:', res.error);
-              //       }
-              //     }
-              //   );
-              // }}
-
-            />
-          )}
+    return (
+        <div className="fixed bottom-10 right-10 z-100">
+            <Dialog>
+                <DialogTrigger asChild>
+                    <button
+                        className="bg-jb-surface p-2 rounded-full shadow-lg cursor-pointer hover:bg-jb-bg absolute bottom-0 right-0"
+                    >
+                        <MessageCircleMore
+                            size={60}
+                            className="text-jb-primary bg-jb-surface border-1 p-2 rounded-full shadow-lg"
+                        />
+                    </button>
+                </DialogTrigger>
+                <DialogContent className='h-[80vh] flex'>
+                    {socket && <ConversationList />}
+                </DialogContent>
+            </Dialog>
         </div>
-      ) : (
-        <button onClick={handleOpen} className="bg-jb-surface p-2 rounded-full shadow-lg cursor-pointer hover:bg-jb-bg">
-          <MessageCircleMore size={60} className='text-jb-primary bg-jb-surface border-1 p-2 rounded-full shadow-lg' />
-        </button>
-      )}
-    </div>
-  );
+    )
 }

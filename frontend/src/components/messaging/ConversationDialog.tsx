@@ -1,109 +1,202 @@
-import { useAuth } from "@/contexts/authContext"
-import { useMessaging } from "@/contexts/MessagingContext"
-import { Conversation, Message } from "@/types/messaging"
-import { SendHorizontal } from "lucide-react"
-import { FormEvent, useEffect, useState } from "react"
+// components/messaging/ConversationDialog.tsx
+
+import { useAuth } from '@/contexts/authContext'
+import { useMessaging } from '@/contexts/MessagingContext'
+import { Conversation, Message } from '@/types/messaging'
+import { SendHorizontal } from 'lucide-react'
+import { FormEvent, useState, useCallback } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-const ReceipentMessage = ({ conv, message }: { conv: Conversation, message: any }) => {
+/**
+ * Recipient message component
+ */
+const RecipientMessage = ({
+  conv,
+  message,
+}: {
+  conv: Conversation
+  message: Message
+}) => {
   return (
-    <div className="flex items-center my-2 text-left">
-      <img src={conv.receipent?.avatar} alt="profile image" className={`w-10 h-10 object-cover rounded-full`} />
+    <div className="flex items-start my-2">
+      <img
+        src={conv.receipent?.avatar}
+        alt={conv.receipent?.name}
+        className="w-10 h-10 object-cover rounded-full"
+      />
       <div className="ml-2">
-        <p className="text-jb-text">{message.body}</p>
+        <p className="text-jb-text bg-jb-surface rounded-lg px-3 py-2">
+          {message.body}
+        </p>
       </div>
     </div>
   )
 }
 
+/**
+ * Sender message component (current user's messages)
+ */
+const SenderMessage = ({ message }: { message: Message }) => {
+  return (
+    <div className="w-full flex justify-end my-2">
+      <div className="flex flex-col items-end">
+        <p className="text-jb-text bg-jb-primary/10 rounded-lg px-3 py-2 max-w-md break-words">
+          {message.body}
+        </p>
+
+        {/* Message status indicator */}
+        {message.status === 'sending' && (
+          <span className="text-xs text-jb-text-muted mt-1">Sending...</span>
+        )}
+        {message.status === 'failed' && (
+          <span className="text-xs text-red-500 mt-1">Failed to send</span>
+        )}
+        {message.status === 'sent' && (
+          <span className="text-xs text-green-600 mt-1">Sent</span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Conversation dialog component
+ * Displays messages and handles message input
+ */
 const ConversationDialog = ({ conv }: { conv: Conversation }) => {
-  const [input, setInput] = useState<string>('');
-  const { socket, sendMessage, getMergedConversation, realtimeMessages, addOptimisticMessage, updateMessageStatus } = useMessaging();
-  const { currentUser } = useAuth();
+  const [input, setInput] = useState<string>('')
+  const { currentUser } = useAuth()
+  const {
+    socket,
+    sendMessage,
+    getMergedConversation,
+    addOptimisticMessage,
+    updateMessageStatus,
+  } = useMessaging()
 
-  // Get conversation with real-time updates
-  const mergedConv = getMergedConversation(conv);
+  // Get merged conversation with real-time messages
+  const mergedConv = getMergedConversation(conv)
 
-  useEffect(() => {
+  console.log("merged conv : ", mergedConv);
 
-    const pressEnterSendMessage = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        handleSubmit();
+  const handleSubmit = useCallback(
+    async (e?: FormEvent) => {
+      if (e) {
+        e.preventDefault()
       }
-    }
 
-    document.addEventListener('keydown', pressEnterSendMessage);
+      // Validation
+      if (!socket || !input.trim() || !currentUser) {
+        return
+      }
 
-    return () => {
-      document.removeEventListener('keydown', pressEnterSendMessage);
-    }
-  }, [realtimeMessages, conv.id]);
+      const messageBody = input.trim()
+      const tempId = uuidv4()
 
-  const handleSubmit = (e?: FormEvent | null) => {
-    if (e) e.preventDefault();
-    if (!socket || !input.trim()) return;
+      // Create optimistic message
+      const optimisticMessage: Message = {
+        id: tempId,
+        tempId,
+        conversationId: conv.id,
+        senderId: currentUser.id,
+        body: messageBody,
+        status: 'sending',
+        createdAt: new Date(),
+      }
 
-    const tempId = uuidv4();
-    if (!currentUser) return;
-    const optimisticMessage: Message = {
-      id: tempId,
-      tempId,
-      conversationId: conv.id,
-      senderId: currentUser.id,
-      body: input,
-      status: "sending",
-      createdAt: new Date().toISOString()
-    };
+      // Add optimistic message immediately for instant UI feedback
+      addOptimisticMessage(conv.id, optimisticMessage)
 
-    addOptimisticMessage(conv.id, optimisticMessage);
+      // Clear input
+      setInput('')
 
-    try {
-      sendMessage({ tempId, receiverId: conv.receipent?.id || '', conversationId: conv.id, body: input });
-      setInput('');
-    } catch (error) {
-      console.error(error);
-      updateMessageStatus(conv.id, tempId, 'failed');
-    }
-  }
+      // Send message to server
+      try {
+        await sendMessage({
+          tempId,
+          receiverId: conv.receipent?.id || '',
+          conversationId: conv.id,
+          body: messageBody,
+        })
+      } catch (error) {
+        console.error('Error sending message:', error)
+        updateMessageStatus(conv.id, tempId, 'failed')
+      }
+    },
+    [
+      socket,
+      input,
+      currentUser,
+      conv.id,
+      conv.receipent?.id,
+      addOptimisticMessage,
+      sendMessage,
+      updateMessageStatus,
+    ]
+  )
 
   return (
-    <div className={`bg-jb-bg w-full h-full p-2 border-b-1 flex flex-col justify-between`} >
-      <div className={`border-b-1 py-2 border-jb-surface`}>
-        <h6 className="float-end text-jb-text-muted text-xs">{conv.updatedAt || 'A few sec ago'}</h6>
-        <img src={conv.receipent?.avatar} alt="profile image" className={`w-10 h-10 object-cover rounded-full`} />
+    <div className="h-full flex flex-col p-2">
+      {/* Header */}
+      <div className="border-b py-2 border-jb-text/20 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <img
+            src={conv.receipent?.avatar}
+            alt={conv.receipent?.name}
+            className="w-10 h-10 object-cover rounded-full border border-jb-text-muted"
+          />
+          <p className="font-medium text-jb-text">{conv.receipent?.name}</p>
+        </div>
+        <small className="text-jb-text-muted">
+          {conv.updatedAt
+            ? new Date(conv.updatedAt).toLocaleString()
+            : ''}
+        </small>
       </div>
 
-      <div className="flex-1 overflow-y-auto">
-        {mergedConv.messages.map((message: any) => (
-          <div className="flex items-start my-2" key={message.tempId || message.id}>
-            {message.senderId === conv.receipent?.id ? (
-              <ReceipentMessage conv={conv} message={message} />
-            ) : (
-              <div className="w-full flex justify-end">
-                <div className="flex flex-col items-end">
-                  <p className="text-jb-text bg-jb-primary/10 rounded-lg px-3 py-2">{message.body}</p>
-                  {message.status === 'sending' && (
-                    <span className="text-xs text-jb-text-muted mt-1">Sending...</span>
-                  )}
-                  {message.status === 'failed' && (
-                    <span className="text-xs text-red-500 mt-1">Failed to send</span>
-                  )}
-                </div>
-              </div>
-            )}
+      {/* Messages */}
+      <div className="flex-1 overflow-y-auto scrollbar-hidden min-h-[20vh] py-2">
+        {mergedConv.messages.length === 0 ? (
+          <div className="flex items-center justify-center h-full">
+            <p className="text-jb-text-muted">No messages yet</p>
           </div>
-        ))}
+        ) : (
+          mergedConv.messages.map((message: Message) => (
+            <div key={message.tempId || message.id}>
+              {message.senderId === conv.receipent?.id ? (
+                <RecipientMessage conv={conv} message={message} />
+              ) : (
+                <SenderMessage message={message} />
+              )}
+            </div>
+          ))
+        )}
       </div>
 
-      {/* // Send Message INPUT Form */}
-      <form className="w-full relative bg-jb-surface shadow-2xl border-1 rounded-3xl px-4 h-10  outline-none" onSubmit={handleSubmit}>
-        <input type="text" className=" w-[95%] h-full bg-transparent outline-none" autoFocus value={input} onChange={(e) => setInput(e.target.value)} />
-        <button type="submit" className="absolute top-1/2 right-2 text-jb-primary transform -translate-y-1/2 cursor-pointer hover:text-jb-primary/75">
-          <SendHorizontal size={15} />
+      {/* Input form */}
+      <form
+        className="w-full relative bg-jb-surface shadow-2xl border rounded-3xl px-4 h-12 flex items-center"
+        onSubmit={handleSubmit}
+      >
+        <input
+          type="text"
+          className="flex-1 py-2 bg-transparent outline-none text-jb-text"
+          placeholder="Message..."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          disabled={!socket}
+        />
+        <button
+          type="submit"
+          className="ml-2 text-jb-primary hover:text-jb-primary/75 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          disabled={!socket || !input.trim()}
+          aria-label="Send message"
+        >
+          <SendHorizontal size={20} />
         </button>
       </form>
     </div>
   )
 }
 
-export default ConversationDialog;
+export default ConversationDialog

@@ -1,1 +1,1 @@
-export * from './useProfileQueries';
+export * from './useProfileQueries'

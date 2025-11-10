@@ -1,1 +1,1 @@
-export * from './useCompanyQueries';
+export * from './useCompanyQueries'

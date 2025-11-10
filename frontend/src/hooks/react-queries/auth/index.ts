@@ -1,1 +1,1 @@
-export * from './useAuthQueries';
+export * from './useAuthQueries'

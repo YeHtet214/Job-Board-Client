@@ -3,11 +3,11 @@
  */
 
 interface DecodedToken {
-  exp: number;
-  iat: number;
-  sub: string;
-  role: string;
-  [key: string]: any;
+    exp: number
+    iat: number
+    sub: string
+    role: string
+    [key: string]: any
 }
 
 /**
@@ -16,25 +16,27 @@ interface DecodedToken {
  * @returns Decoded token payload or null if invalid
  */
 export const decodeToken = (token: string): DecodedToken | null => {
-  try {
-    // JWT structure: header.payload.signature
-    const base64Url = token.split('.')[1];
-    if (!base64Url) return null;
-    
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join('')
-    );
+    try {
+        // JWT structure: header.payload.signature
+        const base64Url = token.split('.')[1]
+        if (!base64Url) return null
 
-    return JSON.parse(jsonPayload);
-  } catch (error) {
-    console.error('Error decoding token:', error);
-    return null;
-  }
-};
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+        const jsonPayload = decodeURIComponent(
+            atob(base64)
+                .split('')
+                .map(
+                    (c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+                )
+                .join('')
+        )
+
+        return JSON.parse(jsonPayload)
+    } catch (error) {
+        console.error('Error decoding token:', error)
+        return null
+    }
+}
 
 /**
  * Checks if a token is expired
@@ -42,17 +44,17 @@ export const decodeToken = (token: string): DecodedToken | null => {
  * @returns True if token is expired or invalid, false otherwise
  */
 export const isTokenExpired = (token: string | null): boolean => {
-  if (!token) return true;
+    if (!token) return true
 
-  const decodedToken = decodeToken(token);
-  if (!decodedToken) return true;
+    const decodedToken = decodeToken(token)
+    if (!decodedToken) return true
 
-  // Get current time in seconds (JWT exp is in seconds)
-  const currentTime = Math.floor(Date.now() / 1000);
-  
-  // Check if token is expired
-  return decodedToken.exp < currentTime;
-};
+    // Get current time in seconds (JWT exp is in seconds)
+    const currentTime = Math.floor(Date.now() / 1000)
+
+    // Check if token is expired
+    return decodedToken.exp < currentTime
+}
 
 /**
  * Checks if a token will expire within the given buffer time
@@ -61,14 +63,14 @@ export const isTokenExpired = (token: string | null): boolean => {
  * @returns True if token will expire soon, false otherwise
  */
 export const willTokenExpireSoon = (
-  token: string | null, 
-  bufferSeconds: number = 60
+    token: string | null,
+    bufferSeconds: number = 60
 ): boolean => {
-  if (!token) return true;
+    if (!token) return true
 
-  const decodedToken = decodeToken(token);
-  if (!decodedToken) return true;
+    const decodedToken = decodeToken(token)
+    if (!decodedToken) return true
 
-  const currentTime = Math.floor(Date.now() / 1000);
-  return decodedToken.exp < currentTime + bufferSeconds;
-};
+    const currentTime = Math.floor(Date.now() / 1000)
+    return decodedToken.exp < currentTime + bufferSeconds
+}

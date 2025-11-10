@@ -1,1 +1,1 @@
-export * from './useDashboardQueries';
+export * from './useDashboardQueries'
