@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import React, { useMemo, useState } from 'react'
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom'
 import {
     Building,
     MapPin,
@@ -29,10 +29,11 @@ import { Conversation } from '@/types/messaging'
 // Add a custom hook for company jobs
 
 const CompanyDetailPage: React.FC = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const { id } = useParams<{ id: string }>()
     const [activeTab, setActiveTab] = useState('about')
     const { isAuthenticated } = useAuth();
-    const navigate = useNavigate();
 
     // Fetch company data using the custom hook
     const {
@@ -168,7 +169,7 @@ const CompanyDetailPage: React.FC = () => {
                                                 <Button
                                                     variant="outline"
                                                     className="flex items-center gap-2"
-                                                    onClick={() => !isAuthenticated && navigate('/login')}
+                                                    onClick={() => !isAuthenticated && navigate('/login', { state: { from: location }, replace: true } )}
                                                 >
                                                     <Mail className="h-4 w-4" />
                                                     <span className="hidden sm:inline">

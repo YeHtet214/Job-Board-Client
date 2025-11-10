@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '@/contexts/authContext'
 import { LoginRequest } from '@/types/auth'
 import { Formik, FormikHelpers } from 'formik'
@@ -87,6 +87,10 @@ const VerificationAlert = ({
 }
 
 const LoginPage: React.FC = () => {
+    const navigate = useNavigate()
+    const location = useLocation()
+    const from = location.state?.from?.pathname || '/'
+
     const [formError, setFormError] = React.useState<{
         email?: string
         password?: string
@@ -94,7 +98,6 @@ const LoginPage: React.FC = () => {
     }>({})
 
     const { login, googleLogin, resendVerification } = useAuth()
-    const navigate = useNavigate()
     const { toast } = useToast()
 
     // State to track if the user needs email verification
@@ -118,7 +121,7 @@ const LoginPage: React.FC = () => {
 
         try {
             await login(values.email, values.password)
-            navigate('/')
+            navigate(from, { replace: true })
         } catch (err) {
             const errorMessage =
                 err instanceof Error

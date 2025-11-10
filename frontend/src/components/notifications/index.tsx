@@ -11,9 +11,10 @@ import { useMessaging } from "@/contexts/MessagingContext";
 import { Badge } from "../ui/badge";
 import NotiItem from "./NotiItem";
 import { Notification } from "@/types/messaging";
+import { Button } from "../ui/button";
 
 const NotificationsList = () => {
-  const { notifications } = useMessaging()
+  const { notifications, clearNotifications } = useMessaging()
 
   console.log("Notifications: ", notifications)
   if (!notifications) return <h1>No notifications</h1>
@@ -31,9 +32,17 @@ const NotificationsList = () => {
       </SheetTrigger>
       <SheetContent className="w-[400px] sm:w-[540px]">
         <SheetHeader>
-          <SheetTitle className="text-2xl">Notifications</SheetTitle>
-          <h3 className="text-muted-foreground">You have {notifications.length} unread notifications</h3>
-          <SheetDescription className="flex flex-col gap-2 text-foreground">
+          <div className="flex items-start justify-between w-full">
+            <div>
+              <SheetTitle className="text-2xl">Notifications</SheetTitle>
+              <h3 className="text-muted-foreground text-sm">You have {notifications.length} unread notifications</h3>
+            </div>
+            <Button variant="ghost" size="sm" onClick={clearNotifications} className="ml-4">
+              Mark all as read
+            </Button>
+          </div>
+
+          <SheetDescription className="flex flex-col gap-2 text-foreground max-h-[80vh] overflow-y-scroll scrollbar-hidden">
             { notifications.length > 0 && notifications.map((noti: Notification, index: number) => (
               <NotiItem key={noti.id} noti={noti} isLast={index === (notifications.length - 1)} />
             ))}

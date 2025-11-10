@@ -30,16 +30,25 @@ export const useNotificationHandlers = ({
          */
         const handleNotificationDispatch = (notis: Notification[]) => {
             console.log('📬 Received batch notifications:', notis.length)
-            setNotifications(notis)
 
-            // Show toast for each notification (consider limiting this in production)
+            if (notis.length < 0 || !notis) return
+            setNotifications(notis)
+           
+            // Show toast for each notification
             notis.forEach((noti) => {
-                toast({
-                    title: `${noti.payload.senderName} sent you a message`,
-                    description: noti.payload.snippet,
-                    variant: 'default',
-                })
+                if (noti.status !== 'DELIVERED') {
+                    toast({
+                        title: `${noti.payload.senderName} sent you a message`,
+                        description: noti.payload.snippet,
+                        variant: 'default',
+                    })
+                }
             })
+
+             updateNotificationsStatus(
+                notis.map((noti) => noti.id),
+                'DELIVERED'
+            )
         }
 
         /**
@@ -75,6 +84,10 @@ export const useNotificationHandlers = ({
      */
     const clearNotifications = () => {
         setNotifications([])
+        updateNotificationsStatus(
+            notifications.map((noti) => noti.id),
+            'READ'
+        )
     }
 
     /**
@@ -84,6 +97,29 @@ export const useNotificationHandlers = ({
         setNotifications((prev) =>
             prev.filter((noti) => noti.id !== notificationId)
         )
+
+        updateNotificationsStatus([notificationId], 'READ')
+    }
+
+    const updateNotificationsStatus = (
+        ids: string[],
+        status: Notification['status']
+    ) => {
+        const updateNotis = new Map()
+        ids.forEach((id) => updateNotis.set(id, status))
+        setNotifications((prev) =>
+            prev.map((noti) => {
+                if (updateNotis.has(noti.id)) {
+                    return {
+                        ...noti,
+                        status: status,
+                    }
+                }
+                return noti
+            })
+        )
+
+        socket?.emit(SOCKET_EVENTS.NOTIFICATION_STATUS_UPDATE, { ids, status })
     }
 
     return {

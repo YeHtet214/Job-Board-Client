@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet, useLocation } from 'react-router-dom'
 import { routes, RouteConfig } from '@/routes/RouteConfig'
 import MainLayout from '@/components/layouts/MainLayout'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -14,6 +14,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
+    const location = useLocation()
     const { isAuthenticated, currentUser, isLoading } = useAuth()
 
     // Check if tokens exist but we're still waiting for user data
@@ -34,7 +35,7 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
         const hasRequiredRole = allowedRoles.includes(currentUser.role)
         if (!hasRequiredRole) {
             // Redirect to unauthorized page or dashboard based on user role
-            return <Navigate to="/home" replace />
+            return <Navigate to="/home" state={{ from: location }} replace />
         }
     }
 
