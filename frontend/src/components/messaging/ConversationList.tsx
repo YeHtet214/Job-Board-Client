@@ -10,19 +10,21 @@ import { useMessaging } from '@/contexts/MessagingContext'
 import { SOCKET_EVENTS } from '@/lib/constants/socketEvents'
 import { JoinConversationResponse } from '@/types/socket'
 import { useAuth } from '@/contexts/authContext'
+import { MessageCircleMore } from 'lucide-react'
 
 /**
  * Loading skeleton component
  */
 const ConversationSkeleton = () => (
-  <div className="w-full h-full p-2">
-    {[1, 2, 3].map((i) => (
-      <div key={i} className="flex items-center space-x-4 my-2">
+  <div className="w-full h-full p-4 space-y-3">
+    {[1, 2, 3, 4, 5].map((i) => (
+      <div key={i} className="flex items-center gap-3 p-4 rounded-xl border border-jb-text/10">
         <Skeleton className="h-12 w-12 rounded-full" />
         <div className="space-y-2 flex-1">
-          <Skeleton className="h-4 w-3/4" />
-          <Skeleton className="h-4 w-1/2" />
+          <Skeleton className="h-4 w-3/4 rounded" />
+          <Skeleton className="h-3 w-1/2 rounded" />
         </div>
+        <Skeleton className="h-3 w-12 rounded" />
       </div>
     ))}
   </div>
@@ -42,8 +44,12 @@ const ConversationList = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <p className="text-jb-text-muted">Please log in to view conversations</p>
+      <div className="w-full h-full flex flex-col items-center justify-center text-center p-8">
+        <div className="w-20 h-20 bg-jb-surface rounded-full flex items-center justify-center mb-4">
+          <MessageCircleMore className="w-10 h-10 text-jb-text-muted" />
+        </div>
+        <h3 className="text-lg font-semibold text-jb-text mb-2">Welcome to Messages</h3>
+        <p className="text-jb-text-muted max-w-sm">Please log in to start conversations and connect with others.</p>
       </div>
     )
   }
@@ -85,32 +91,42 @@ const ConversationList = () => {
 
   if (!conversations || conversations.length === 0) {
     return (
-      <div className="w-full h-full flex items-center justify-center">
-        <p className="text-jb-text-muted">No conversations found</p>
+      <div className="w-full h-full flex flex-col items-center justify-center text-center p-8">
+        <div className="w-20 h-20 bg-jb-surface rounded-full flex items-center justify-center mb-4">
+          <MessageCircleMore className="w-10 h-10 text-jb-text-muted" />
+        </div>
+        <h3 className="text-lg font-semibold text-jb-text mb-2">No conversations yet</h3>
+        <p className="text-jb-text-muted max-w-sm">Start a conversation by clicking on a job seeker or employer profile.</p>
       </div>
     )
   }
 
   return (
-    <div className="flex justify-between w-full h-full rounded-lg shadow-md overflow-hidden">
-      <ul
-        className={`overflow-y-scroll scrollbar-hidden transition-all ${
-          openConversation ? 'w-1/3 border-r border-jb-text/20' : 'w-full'
+    <div className="flex justify-between h-full bg-white rounded-xl shadow-lg overflow-hidden border border-jb-text/10">
+      <div
+        className={`overflow-y-auto scrollbar-thin scrollbar-thumb-jb-text/20 scrollbar-track-transparent transition-all duration-300 ${
+          openConversation ? 'w-1/3 border-r border-jb-text/10' : 'w-full'
         }`}
       >
-        {conversations.map((conv: Conversation) => (
-          <ConversationCard
-            key={conv.id}
-            conv={conv}
-            isCurrentOpen={openConversation?.id === conv.id}
-            selectConv={handleConversationClick}
-          />
-        ))}
-      </ul>
+        <div className="p-4 border-b border-jb-text/10 bg-jb-surface/30">
+          <h2 className="text-lg font-semibold text-jb-text">Messages</h2>
+          <p className="text-sm text-jb-text-muted">Connect with job seekers and employers</p>
+        </div>
+        <ul className="divide-y divide-jb-text/5">
+          {conversations.map((conv: Conversation) => (
+            <ConversationCard
+              key={conv.id}
+              conv={conv}
+              isCurrentOpen={openConversation?.id === conv.id}
+              selectConv={handleConversationClick}
+            />
+          ))}
+        </ul>
+      </div>
 
       {/* Conversation dialog */}
       <div
-        className={`transition-all ${openConversation ? 'w-2/3' : 'w-0'}`}
+        className={`transition-all duration-300 ${openConversation ? 'w-2/3' : 'w-0'}`}
       >
         {openConversation && <ConversationDialog conv={openConversation} />}
       </div>
