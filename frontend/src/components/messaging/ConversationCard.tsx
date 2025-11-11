@@ -39,8 +39,8 @@ const ConversationCard = ({
 
   return (
     <li
-      className={`flex gap-2 p-3 ${isCurrentOpen ? 'bg-jb-bg' : ''
-        } items-center hover:bg-jb-bg transition cursor-pointer rounded-lg`}
+      className={`flex gap-3 p-4 ${isCurrentOpen ? 'bg-jb-primary/5 border-r-2 border-jb-primary' : 'hover:bg-jb-surface/50'
+        } items-center cursor-pointer rounded-xl transition-all duration-200 border border-transparent hover:border-jb-text/10`}
       onClick={() => selectConv(conv)}
       role="button"
       tabIndex={0}
@@ -50,18 +50,26 @@ const ConversationCard = ({
         }
       }}
     >
-      <Avatar>
-        <AvatarImage src={conv.receipent?.avatar} alt={mergedConv.receipent?.name} />
-        <AvatarFallback>{avatarName}</AvatarFallback>
-      </Avatar>
+      <div className="relative">
+        <Avatar className="w-12 h-12 border-2 border-jb-surface shadow-sm">
+          <AvatarImage src={conv.receipent?.avatar} alt={mergedConv.receipent?.name} />
+          <AvatarFallback className="bg-jb-primary text-white font-semibold">{avatarName}</AvatarFallback>
+        </Avatar>
+        <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
+      </div>
 
       <div className="flex-1 min-w-0">
-        <div className="flex justify-between items-center">
-          <span className="font-medium text-jb-text opacity-90 truncate">
+        <div className="flex justify-between items-start mb-1">
+          <span className="font-semibold text-jb-text truncate text-base">
             {mergedConv.receipent?.name}
           </span>
+          <span className="text-xs text-jb-text-muted flex-shrink-0 ml-2">
+            {mergedConv.lastMessage?.createdAt
+              ? new Date(mergedConv.lastMessage.createdAt).toLocaleDateString()
+              : ''}
+          </span>
         </div>
-        <p className="text-sm text-jb-text-muted truncate">
+        <p className="text-sm text-jb-text-muted truncate leading-relaxed">
           {mergedConv.lastMessage?.body || 'No messages yet'}
         </p>
       </div>

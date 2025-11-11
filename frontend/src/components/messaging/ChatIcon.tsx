@@ -11,20 +11,21 @@ export default function ChatIcon() {
     if (!currentUser) return null
 
     return (
-        <div className="fixed bottom-10 right-10 z-100">
+        <div className="fixed bottom-6 right-6 z-50">
             <Dialog>
                 <DialogTrigger asChild>
                     <button
-                        className="bg-jb-surface p-2 rounded-full shadow-lg cursor-pointer hover:bg-jb-bg absolute bottom-0 right-0"
+                        className="group relative bg-jb-primary hover:bg-jb-primary/90 text-white p-4 rounded-full shadow-xl cursor-pointer transition-all duration-300 hover:scale-110 hover:shadow-2xl border-2 border-white"
+                        aria-label="Open messages"
                     >
-                        <MessageCircleMore
-                            size={60}
-                            className="text-jb-primary bg-jb-surface border-1 p-2 rounded-full shadow-lg"
-                        />
+                        <MessageCircleMore size={24} className="transition-transform group-hover:scale-110" />
+                        <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border border-white animate-pulse"></div>
                     </button>
                 </DialogTrigger>
-                <DialogContent className='h-[80vh] flex'>
-                    {socket && <ConversationList />}
+                <DialogContent className='h-[85vh] p-0 bg-transparent border-none shadow-2xl'>
+                    <div className="h-full bg-white rounded-2xl overflow-hidden">
+                        {socket && <ConversationList />}
+                    </div>
                 </DialogContent>
             </Dialog>
         </div>
