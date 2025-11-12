@@ -8,13 +8,13 @@ import {
     Notification,
 } from '@/types/messaging'
 import { useAuth } from './authContext'
-import { useToast } from '@/components/ui/use-toast'
 
 import { useSocketConnection } from '@/hooks/useSocketConnection'
 import { useNotificationHandlers } from '@/hooks/useNotificationHandlers'
 import { useMessageHandlers } from '@/hooks/useMessageHandlers'
 import { usePresenceHandlers } from '@/hooks/usePresenceHandlers'
 import { useMessagingOperations } from '@/hooks/useMessagingOperations'
+import { useToast } from '@/components/ui/use-toast'
 
 type MessagingContextType = {
     // Socket connection
@@ -70,6 +70,7 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     )
 
     // Notification handling
+    // Pass our sonner-based toast into notification handlers
     const { notifications, clearNotifications, removeNotification } =
         useNotificationHandlers({ socket, toast })
 
