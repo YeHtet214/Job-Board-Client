@@ -65,14 +65,13 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                         }`}
                     >
                         <div
-                            className={`
-              max-w-md p-8 rounded-2xl backdrop-blur-sm
-              ${
-                  imagePosition === 'left'
-                      ? 'bg-gradient-to-l from-transparent to-jb-primary/5'
-                      : 'bg-gradient-to-r from-transparent to-jb-primary/5'
-              }
-            `}
+                            className={`p-8 rounded-2xl backdrop-blur-sm
+                                ${
+                                    imagePosition === 'left'
+                                        ? 'bg-gradient-to-l from-transparent to-jb-primary/5'
+                                        : 'bg-gradient-to-r from-transparent to-jb-primary/5'
+                                }
+                            `}
                         >
                             <h1 className="text-4xl font-bold tracking-tight text-jb-text mb-4">
                                 {title}
@@ -92,7 +91,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({
                                 : 'order-last'
                         }`}
                     >
-                        <div className="max-w-3/5 bg-jb-surface/95 backdrop-blur-md rounded-xl shadow-xl p-6 border border-jb-primary/10">
+                        <div className="bg-jb-surface/95 backdrop-blur-md rounded-xl shadow-xl p-6 border border-jb-primary/10">
                             {children}
                         </div>
                     </div>

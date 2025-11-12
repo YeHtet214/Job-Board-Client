@@ -11,8 +11,7 @@
         "dev": "vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
-        "preview": "vite preview",
-        "prettier-watch": "onchange \"**/*\" -- prettier --write --ignore-unknown {{changed}}"
+        "preview": "vite preview"
     },
     "vitest": {
         "globals": true,
