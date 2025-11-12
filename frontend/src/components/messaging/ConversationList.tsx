@@ -102,7 +102,7 @@ const ConversationList = () => {
   }
 
   return (
-    <div className="flex justify-between h-full bg-white rounded-xl shadow-lg overflow-hidden border border-jb-text/10">
+    <div className="flex justify-between h-full bg-card rounded-xl shadow-lg overflow-hidden border border-jb-text/10">
       <div
         className={`overflow-y-auto scrollbar-thin scrollbar-thumb-jb-text/20 scrollbar-track-transparent transition-all duration-300 ${
           openConversation ? 'w-1/3 border-r border-jb-text/10' : 'w-full'

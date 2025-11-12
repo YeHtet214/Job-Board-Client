@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import type { Company } from '@/types/company'
 import ChatMessage from '../messaging/ChatMessage'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 interface CompanyProfileDisplayProps {
     company: Company
@@ -27,19 +28,18 @@ const CompanyProfileDisplay: React.FC<CompanyProfileDisplayProps> = ({
         <div className="space-y-6">
             <Card>
                 <CardHeader className="pb-4">
+                    <h1>Testing Headers</h1>
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div className="flex items-center gap-4">
-                            {company.logo ? (
-                                <img
+                            <Avatar className="w-10 h-10 border-2 border-jb-surface shadow-sm">
+                                <AvatarImage
                                     src={company.logo}
-                                    alt={`${company.name} logo`}
-                                    className="w-16 h-16 rounded-md object-cover"
+                                    alt={company.name}
                                 />
-                            ) : (
-                                <div className="w-16 h-16 rounded-md flex items-center justify-center text-jb-text-muted">
-                                    {company.name?.charAt(0) || 'C'}
-                                </div>
-                            )}
+                                <AvatarFallback className="bg-jb-primary text-white font-semibold">
+                                    {company.name.slice(0, 2)}
+                                </AvatarFallback>
+                            </Avatar>
                             <div>
                                 <CardTitle className="text-2xl text-jb-text">
                                     {company.name}

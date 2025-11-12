@@ -130,8 +130,8 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                                         size="icon"
                                         className={
                                             savedStatus?.isSaved
-                                                ? 'text-jobboard-purple h-8 w-8 p-0 bg-white/90'
-                                                : 'text-gray-400 hover:text-jobboard-purple h-8 w-8 p-0 bg-white/90'
+                                                ? 'text-jobboard-purple h-8 w-8 p-0 bg-card/90'
+                                                : 'text-gray-400 hover:text-jobboard-purple h-8 w-8 p-0 bg-background/90'
                                         }
                                         onClick={(e) => handleSaveToggle(e)}
                                     >
@@ -186,7 +186,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                     {hasMoreSkills && (
                         <Badge
                             variant="outline"
-                            className="bg-gray-100 text-gray-600 border-none"
+                            className="bg-secondary text-secondary-foreground border-none"
                         >
                             +{job.requiredSkills.length - 3} more
                         </Badge>

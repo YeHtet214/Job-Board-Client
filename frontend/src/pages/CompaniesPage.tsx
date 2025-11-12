@@ -83,19 +83,19 @@ const CompaniesPageContent: React.FC = () => {
                                 </p>
                                 {!isEmployer ? (
                                     <Link to="/register?role=EMPLOYER">
-                                        <Button className="bg-white text-jb-primary hover:bg-gray-100 font-semibold w-full">
+                                        <Button className="bg-background text-jb-primary hover:bg-accent font-semibold w-full">
                                             Register as Employer
                                         </Button>
                                     </Link>
                                 ) : userCompany ? (
                                     <Link to="/employer/company/profile">
-                                        <Button className="bg-white text-jb-primary hover:bg-gray-100 font-semibold w-full">
+                                        <Button className="bg-background text-jb-primary hover:bg-accent font-semibold w-full">
                                             Manage Company Profile
                                         </Button>
                                     </Link>
                                 ) : (
                                     <Link to="/employer/company/profile">
-                                        <Button className="bg-white text-jb-primary hover:bg-gray-100 font-semibold w-full">
+                                        <Button className="bg-background text-jb-primary hover:bg-accent font-semibold w-full">
                                             Create Company Profile
                                         </Button>
                                     </Link>

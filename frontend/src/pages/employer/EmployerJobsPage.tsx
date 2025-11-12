@@ -178,7 +178,7 @@ const EmployerJobsPage: React.FC = () => {
                                     {companyJobs.map((job, index) => (
                                         <motion.div
                                             key={job.id}
-                                            className=" background-primary-500 rounded-lg p-4 hover:border-jobboard-purple transition-all duration-300 shadow-sm hover:shadow-md"
+                                            className=" bg-card rounded-lg p-4 hover:border-jobboard-purple transition-all duration-300 shadow-sm hover:shadow-md"
                                             initial={{ opacity: 0, y: 20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{

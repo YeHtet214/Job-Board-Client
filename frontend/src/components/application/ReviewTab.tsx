@@ -103,7 +103,7 @@ const ReviewTab: React.FC<ReviewTabProps> = ({
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="text-sm">
-                        <div className="max-h-32 overflow-y-auto p-2 bg-gray-50 rounded-md">
+                        <div className="max-h-32 overflow-y-auto p-2 bg-muted rounded-md">
                             {formik.values.coverLetter || (
                                 <span className="text-yellow-600">
                                     No cover letter provided
@@ -141,7 +141,7 @@ const ReviewTab: React.FC<ReviewTabProps> = ({
                                 <span className="text-gray-500">
                                     Additional Information:
                                 </span>
-                                <div className="mt-1 p-2 bg-gray-50 rounded-md">
+                                <div className="mt-1 p-2 bg-muted rounded-md">
                                     {formik.values.additionalInfo}
                                 </div>
                             </div>

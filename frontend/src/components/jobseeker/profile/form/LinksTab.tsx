@@ -138,7 +138,7 @@ const LinksTab = ({
                 <div className="space-y-4">
                     <h3 className="text-lg font-medium">Resume</h3>
 
-                    <div className="border border-dashed rounded-lg p-4 bg-gray-50">
+                    <div className="border border-dashed rounded-lg p-4 bg-muted">
                         {values.resumeUrl ? (
                             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                                 <div className="flex items-center gap-3">
@@ -156,7 +156,7 @@ const LinksTab = ({
                                     href={values.resumeUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="px-4 py-2 bg-white border rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none"
+                                    className="px-4 py-2 bg-card border rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none"
                                 >
                                     View Resume
                                 </a>
@@ -180,7 +180,7 @@ const LinksTab = ({
                     />
                     <label
                       htmlFor="resumeUpload"
-                      className="w-full px-4 py-2 bg-white border rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none cursor-pointer flex items-center justify-center"
+                      className="w-full px-4 py-2 bg-background border rounded-md shadow-sm text-sm font-medium hover:bg-accent focus:outline-none cursor-pointer flex items-center justify-center"
                     >
                       Select File
                     </label> */}

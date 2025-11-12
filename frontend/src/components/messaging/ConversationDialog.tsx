@@ -60,7 +60,7 @@ const SenderMessage = ({ message, isLast }: { message: Message, isLast: boolean 
             </span>
           )}
           {message.status === 'sent' && isLast && (
-            <span className="text-xs text-bg-text-muted flex items-center gap-1">Sent</span>
+            <span className="text-xs text-jb-text-muted">Delivered</span>
           )}
         </div>
       </div>
@@ -69,8 +69,7 @@ const SenderMessage = ({ message, isLast }: { message: Message, isLast: boolean 
 }
 
 /**
- * Conversation dialog component
- * Displays messages and handles message input
+ * Main conversation dialog component
  */
 const ConversationDialog = ({ conv }: { conv: Conversation }) => {
   const [input, setInput] = useState<string>('')
@@ -150,19 +149,18 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
     ]
   )
 
+
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-card">
       {/* Header */}
-      <div className="border-b border-jb-text/10 bg-jb-surface/50 backdrop-blur-sm px-4 py-3 flex justify-between items-center shadow-sm">
-        <div className="flex items-center gap-3">
-          <Avatar className="w-12 h-12 border-2 border-jb-surface shadow-sm">
-            <AvatarImage src={conv.receipent?.avatar} alt={mergedConv.receipent?.name} />
-            <AvatarFallback className="bg-jb-primary text-white font-semibold">{avatarName}</AvatarFallback>
-          </Avatar>
-          <div>
-            <p className="font-semibold text-jb-text text-base">{conv.receipent?.name}</p>
-            <p className="text-xs text-jb-text-muted">Active now</p>
-          </div>
+      <div className="flex items-center gap-3 p-4 border-b border-jb-text/10 bg-jb-surface/30">
+        <Avatar className="w-10 h-10 border-2 border-jb-surface shadow-sm">
+          <AvatarImage src={conv.receipent?.avatar} alt={mergedConv.receipent?.name} />
+          <AvatarFallback className="bg-jb-primary text-white font-semibold">{avatarName}</AvatarFallback>
+        </Avatar>
+        <div className="flex-1">
+          <h3 className="font-semibold text-jb-text">{mergedConv.receipent?.name}</h3>
+          <p className="text-xs text-jb-text-muted">Active now</p>
         </div>
       </div>
 
@@ -192,7 +190,7 @@ const ConversationDialog = ({ conv }: { conv: Conversation }) => {
       {/* Input form */}
       <div className="border-t border-jb-text/10 bg-jb-surface/30 backdrop-blur-sm px-4 py-4">
         <form
-          className="w-full relative bg-white border border-jb-text/20 rounded-2xl shadow-sm px-4 h-12 flex items-center focus-within:border-jb-primary/50 focus-within:ring-2 focus-within:ring-jb-primary/20 transition-all"
+          className="w-full relative bg-background border border-jb-text/20 rounded-2xl shadow-sm px-4 h-12 flex items-center focus-within:border-jb-primary/50 focus-within:ring-2 focus-within:ring-jb-primary/20 transition-all"
           onSubmit={handleSubmit}
         >
           <input

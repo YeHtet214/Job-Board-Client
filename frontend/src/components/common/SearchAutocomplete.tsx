@@ -134,7 +134,7 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
 
             {/* Suggestions dropdown */}
             {showSuggestions && value.length >= 2 && (
-                <div className="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200">
+                <div className="absolute z-10 mt-1 w-full bg-card rounded-md shadow-lg border border-gray-200">
                     {isLoading ? (
                         <div className="p-4 text-center text-gray-500">
                             <Loader2 className="h-5 w-5 animate-spin mx-auto" />
@@ -150,7 +150,7 @@ const SearchAutocomplete: React.FC<SearchAutocompleteProps> = ({
                                     onClick={() =>
                                         handleSuggestionClick(suggestion)
                                     }
-                                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                                    className="px-4 py-2 hover:bg-accent cursor-pointer text-sm"
                                 >
                                     {suggestion}
                                 </li>

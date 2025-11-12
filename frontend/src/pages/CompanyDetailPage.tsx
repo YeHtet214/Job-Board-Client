@@ -25,15 +25,16 @@ import { useAuth } from '@/contexts/authContext'
 import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
 import ConversationDialog from '@/components/messaging/ConversationDialog'
 import { Conversation } from '@/types/messaging'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 // Add a custom hook for company jobs
 
 const CompanyDetailPage: React.FC = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
+    const navigate = useNavigate()
+    const location = useLocation()
     const { id } = useParams<{ id: string }>()
     const [activeTab, setActiveTab] = useState('about')
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated } = useAuth()
 
     // Fetch company data using the custom hook
     const {
@@ -55,7 +56,7 @@ const CompanyDetailPage: React.FC = () => {
             <div className="container mx-auto px-4 sm:px-6 py-8">
                 <div className="max-w-5xl mx-auto">
                     <Skeleton className="h-6 w-48 mb-6" />
-                    <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="bg-card rounded-lg shadow-md overflow-hidden">
                         <div className="h-48 bg-gray-200" />
                         <div className="p-6">
                             <div className="flex items-start">
@@ -117,21 +118,21 @@ const CompanyDetailPage: React.FC = () => {
                 </Link>
 
                 {/* Company Header */}
-                <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8 relative">
+                <div className="bg-card rounded-lg shadow-md overflow-hidden mb-8 relative">
                     <div className="h-48 bg-gradient-to-r from-jb-primary/20 to-jb-success/20" />
                     <div className="p-6 sm:p-8">
                         <div className="flex flex-col sm:flex-row items-start">
-                            <div className="absolute top-36 left-8 w-20 h-20 sm:w-24 sm:h-24 rounded-md border-4 border-white bg-white flex items-center justify-center shadow-md">
-                                {company.logo ? (
-                                    <img
-                                        src={company.logo}
-                                        alt={`${company.name || "logo"}`}
-                                        className="w-full h-full object-contain p-2"
-                                    />
-                                ) : (
-                                    <Building className="h-12 w-12 text-jobboard-purple" />
-                                )}
-                            </div>
+                            {/* <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-md border-4 border-white bg-white flex items-center justify-center shadow-md"> */}
+                            <Avatar className="absolute top-36 left-8 w-20 h-20 border-2 border-jb-surface shadow-sm">
+                                <AvatarImage
+                                    src={company.logo}
+                                    alt={company.name}
+                                />
+                                <AvatarFallback className="bg-jb-primary text-white font-semibold">
+                                    {company.name.toUpperCase().slice(0, 2)}
+                                </AvatarFallback>
+                            </Avatar>
+                            {/* </div> */}
                             <div className="sm:ml-28 flex-1 mt-12 sm:mt-0">
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                                     <div>
@@ -169,7 +170,15 @@ const CompanyDetailPage: React.FC = () => {
                                                 <Button
                                                     variant="outline"
                                                     className="flex items-center gap-2"
-                                                    onClick={() => !isAuthenticated && navigate('/login', { state: { from: location }, replace: true } )}
+                                                    onClick={() =>
+                                                        !isAuthenticated &&
+                                                        navigate('/login', {
+                                                            state: {
+                                                                from: location,
+                                                            },
+                                                            replace: true,
+                                                        })
+                                                    }
                                                 >
                                                     <Mail className="h-4 w-4" />
                                                     <span className="hidden sm:inline">
@@ -181,18 +190,26 @@ const CompanyDetailPage: React.FC = () => {
                                                 </Button>
                                             </DialogTrigger>
                                             <DialogContent>
-                                                <ConversationDialog conv={{
-                                                    id: company.id,
-                                                    createdAt: new Date(),
-                                                    updatedAt: new Date(),
-                                                    messages: [],
-                                                    lastMessage: null,
-                                                    receipent: {
-                                                        id: company.ownerId,
-                                                        name: company.name,
-                                                        avatar: company.logo || "",
-                                                    },
-                                                } as Conversation} />
+                                                <ConversationDialog
+                                                    conv={
+                                                        {
+                                                            id: company.id,
+                                                            createdAt:
+                                                                new Date(),
+                                                            updatedAt:
+                                                                new Date(),
+                                                            messages: [],
+                                                            lastMessage: null,
+                                                            receipent: {
+                                                                id: company.ownerId,
+                                                                name: company.name,
+                                                                avatar:
+                                                                    company.logo ||
+                                                                    '',
+                                                            },
+                                                        } as Conversation
+                                                    }
+                                                />
                                             </DialogContent>
                                         </Dialog>
                                     </div>
@@ -376,13 +393,13 @@ const CompanyDetailPage: React.FC = () => {
                                                     <Badge
                                                         variant={
                                                             job.type ===
-                                                                'FULL_TIME'
+                                                            'FULL_TIME'
                                                                 ? 'default'
                                                                 : 'outline'
                                                         }
                                                         className={
                                                             job.type ===
-                                                                'FULL_TIME'
+                                                            'FULL_TIME'
                                                                 ? 'bg-jobboard-purple'
                                                                 : ''
                                                         }
@@ -400,7 +417,7 @@ const CompanyDetailPage: React.FC = () => {
 
                                                 {job.requiredSkills &&
                                                     job.requiredSkills.length >
-                                                    0 && (
+                                                        0 && (
                                                         <div className="flex flex-wrap gap-2 mt-4">
                                                             {job.requiredSkills
                                                                 .slice(0, 3)
@@ -424,18 +441,18 @@ const CompanyDetailPage: React.FC = () => {
                                                                 )}
                                                             {job.requiredSkills
                                                                 .length > 3 && (
-                                                                    <Badge
-                                                                        variant="outline"
-                                                                        className="bg-jobboard-light/50"
-                                                                    >
-                                                                        +
-                                                                        {job
-                                                                            .requiredSkills
-                                                                            .length -
-                                                                            3}{' '}
-                                                                        more
-                                                                    </Badge>
-                                                                )}
+                                                                <Badge
+                                                                    variant="outline"
+                                                                    className="bg-jobboard-light/50"
+                                                                >
+                                                                    +
+                                                                    {job
+                                                                        .requiredSkills
+                                                                        .length -
+                                                                        3}{' '}
+                                                                    more
+                                                                </Badge>
+                                                            )}
                                                         </div>
                                                     )}
                                             </CardContent>
