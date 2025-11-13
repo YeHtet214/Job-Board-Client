@@ -3,6 +3,7 @@ import companyService from '@/services/company.service'
 import type { CreateCompanyDto, UpdateCompanyDto } from '@/types/company'
 import { toast } from 'react-hot-toast'
 import jobService from '@/services/job.service'
+import { SearchParams } from '@/pages/company/CompaniesPage'
 
 // Query keys
 export const companyKeys = {
@@ -19,16 +20,15 @@ export const companyKeys = {
 export const useCompanies = (filters?: Record<string, any>) => {
     return useQuery({
         queryKey: companyKeys.list(filters || {}),
-        queryFn: async () => {
-            try {
-                const companies = await companyService.getAllCompanies()
-                return companies || []
-            } catch (error) {
-                console.error('Failed to fetch companies:', error)
-                return []
-            }
-        },
+        queryFn: async () => companyService.getAllCompanies(),
+        retry: 3,
     })
+}
+
+export const useCustomQuery = (params: SearchParams) => {
+    console.log('Custom query get update params: ', params)
+
+    return { data: 'custom data : ', params }
 }
 
 export const useCompany = (id: string) => {
@@ -78,7 +78,7 @@ export const useCompanyJobs = (companyId: string | undefined) => {
             const response = await jobService.getJobsByCompany(companyId)
 
             console.log('Jobs query response: ', response)
-            // Ensure we return an array of jobs
+            // Ensuring to return an array of jobs
             return Array.isArray(response.jobs) ? response.jobs : []
         },
         enabled: !!companyId,
@@ -90,9 +90,8 @@ export const useCreateCompany = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (newCompany: CreateCompanyDto) => {
-            return companyService.createCompany(newCompany)
-        },
+        mutationFn: (newCompany: CreateCompanyDto) =>
+            companyService.createCompany(newCompany),
         onSuccess: () => {
             toast.success('Company profile created successfully')
             queryClient.invalidateQueries({ queryKey: companyKeys.all })
@@ -107,9 +106,8 @@ export const useUpdateCompany = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: ({ id, data }: { id: string; data: UpdateCompanyDto }) => {
-            return companyService.updateCompany(id, data)
-        },
+        mutationFn: ({ id, data }: { id: string; data: UpdateCompanyDto }) =>
+            companyService.updateCompany(id, data),
         onSuccess: () => {
             toast.success('Company profile updated successfully')
             queryClient.invalidateQueries({ queryKey: companyKeys.all })
@@ -124,9 +122,7 @@ export const useDeleteCompany = () => {
     const queryClient = useQueryClient()
 
     return useMutation({
-        mutationFn: (id: string) => {
-            return companyService.deleteCompany(id)
-        },
+        mutationFn: (id: string) => companyService.deleteCompany(id),
         onSuccess: () => {
             toast.success('Company deleted successfully')
             queryClient.invalidateQueries({ queryKey: companyKeys.all })

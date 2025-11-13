@@ -10,6 +10,11 @@ class CompanyService extends ApiService {
 
     public async getAllCompanies(): Promise<Company[]> {
         const response = await this.get<Company[]>(this.endpoints.ALL)
+
+        if (!response.data.success) {
+            throw new Error('Failed to fetch companies')
+        }
+
         return response.data.data
     }
 

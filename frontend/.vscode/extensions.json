@@ -1,0 +1,34 @@
+{
+    "recommendations": [
+        // Essential for TypeScript/JavaScript development
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+
+        // TypeScript & React
+        "dsznajder.es7-react-js-snippets",
+        "burkeholland.simple-react-snippets",
+
+        // Path IntelliSense
+        "christian-kohler.path-intellisense",
+        "christian-kohler.npm-intellisense",
+
+        // Tailwind CSS
+        "bradlc.vscode-tailwindcss",
+
+        // Auto Import
+        "steoates.autoimport",
+
+        // Additional helpful extensions
+        "formulahendry.auto-rename-tag",
+        "formulahendry.auto-close-tag",
+        "naumovs.color-highlight",
+        "usernamehw.errorlens",
+        "yoavbls.pretty-ts-errors",
+
+        // Git
+        "eamodio.gitlens",
+
+        // Code Quality
+        "streetsidesoftware.code-spell-checker"
+    ]
+}

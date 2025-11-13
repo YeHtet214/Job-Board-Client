@@ -39,7 +39,6 @@ export const CompaniesProvider: React.FC<CompaniesProviderProps> = ({
     const [selectedIndustries, setSelectedIndustries] = useState<string[]>([])
     const [selectedSizes, setSelectedSizes] = useState<string[]>([])
 
-    // Fetch companies using the custom hook
     const {
         data: companies = [],
         isLoading,

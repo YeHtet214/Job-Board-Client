@@ -1,5 +1,4 @@
-// Direct imports for non-lazy loaded components
-import JobDetailPage from '@/pages/JobDetailPage'
+import JobDetailPage from '@/pages/job/JobDetailPage'
 import React, { lazy } from 'react'
 
 import OAuthCallbackPage from '@/pages/auth/OAuthCallbackPage'
@@ -32,8 +31,10 @@ const ResetPasswordPage = lazy(() => import('@/pages/auth/ResetPasswordPage'))
 const CompanyProfilePage = lazy(
     () => import('@/pages/employer/CompanyProfilePage')
 )
-const CompaniesPage = lazy(() => import('@/pages/CompaniesPage'))
-const CompanyDetailPage = lazy(() => import('@/pages/CompanyDetailPage'))
+const CompaniesPage = lazy(() => import('@/pages/company/CompaniesPage'))
+const CompanyDetailPage = lazy(
+    () => import('@/pages/company/CompanyDetailPage')
+)
 
 // Employer pages
 const CreateJobPage = lazy(() => import('@/pages/employer/CreateJobPage'))
@@ -57,8 +58,10 @@ const HomePage = lazy(() => import('@/pages/HomePage'))
 const AboutPage = lazy(() => import('@/pages/AboutPage'))
 const DashboardPage = lazy(() => import('@/pages/DashboardPage'))
 const ProfilePage = lazy(() => import('@/pages/jobseeker/ProfilePage'))
-const JobsPage = lazy(() => import('@/pages/JobsPage'))
-const ApplicationListPage = lazy(() => import('@/pages/ApplicationsListPage'))
+const JobsPage = lazy(() => import('@/pages/job/JobsPage'))
+const ApplicationListPage = lazy(
+    () => import('@/pages/application/ApplicationsListPage')
+)
 const JobseekerApplicationDetailPage = lazy(
     () => import('@/pages/jobseeker/ApplicationDetailPage')
 )

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Building, Search, MapPin, Briefcase, Users } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -9,7 +9,13 @@ import { Link } from 'react-router-dom'
 import CompanyFilters from '@/components/company/CompanyFilters'
 import { CompaniesProvider, useCompanies } from '@/contexts/CompaniesContext'
 import { useAuth } from '@/contexts/authContext'
-import { useMyCompany } from '@/hooks/react-queries/company'
+import { useCustomQuery, useMyCompany } from '@/hooks/react-queries/company'
+
+export type SearchParams = {
+    searchTerm: string
+    industry: string
+    companySize: string | null
+}
 
 const CompaniesPageContent: React.FC = () => {
     const {
@@ -23,14 +29,20 @@ const CompaniesPageContent: React.FC = () => {
         setSelectedSizes,
     } = useCompanies()
 
+    const [params, setParams] = useState<SearchParams>({
+        searchTerm: '',
+        industry: '',
+        companySize: '',
+    })
+
     // Get current user and check if they have a company
     const { currentUser } = useAuth()
     const isEmployer = currentUser?.role === 'EMPLOYER'
     const { data: userCompany } = isEmployer ? useMyCompany() : { data: null }
 
-    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(e.target.value)
-    }
+    const { data } = useCustomQuery(params)
+
+    console.log('queyr return data: ', data)
 
     return (
         <section>
@@ -45,27 +57,15 @@ const CompaniesPageContent: React.FC = () => {
                     </p>
 
                     {/* Search Bar */}
-                    <div className="relative mb-8 max-w-2xl">
-                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                            <Search className="h-5 w-5 text-jb-text-muted" />
-                        </div>
-                        <Input
-                            type="text"
-                            placeholder="Search companies by name, description or location..."
-                            className="pl-10 py-3 bg-jb-surface text-jb-text border border-jb-surface-muted"
-                            value={searchTerm}
-                            onChange={handleSearch}
-                        />
-                    </div>
+                    {/* <CompanyFilters
+                        updateParams={(value) => setParams(value)}
+                    /> */}
 
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         {/* Sidebar with filters */}
                         <div className="md:col-span-1">
                             <CompanyFilters
-                                selectedIndustries={selectedIndustries}
-                                setSelectedIndustries={setSelectedIndustries}
-                                selectedSizes={selectedSizes}
-                                setSelectedSizes={setSelectedSizes}
+                                updateParams={(value) => setParams(value)}
                             />
 
                             {/* Employer CTA */}
