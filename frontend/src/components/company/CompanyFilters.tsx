@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Label } from '@/components/ui/label'
+import { CardTitle } from '@/components/ui/card'
 import { Building, Search, Users } from 'lucide-react'
 
 import {
@@ -15,7 +13,6 @@ import {
 } from '@/components/ui/select'
 import { Input } from '../ui/input'
 import useDebounce from '@/hooks/useDebounce'
-import { SearchParams } from '@/pages/company/CompaniesPage'
 
 const industries = [
     'Technology',
@@ -109,7 +106,7 @@ const CompanySelect = ({ selectCompanySize }: CompanySelectProps) => {
 }
 
 type CompanyFiltersProps = {
-    updateParams: (value: SearchParams) => void
+    updateParams: (value: Record<string, any>) => void
 }
 
 const CompanyFilters: React.FC<CompanyFiltersProps> = ({ updateParams }) => {

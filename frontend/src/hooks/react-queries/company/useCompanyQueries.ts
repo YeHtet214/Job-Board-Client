@@ -3,7 +3,7 @@ import companyService from '@/services/company.service'
 import type { CreateCompanyDto, UpdateCompanyDto } from '@/types/company'
 import { toast } from 'react-hot-toast'
 import jobService from '@/services/job.service'
-import { SearchParams } from '@/pages/company/CompaniesPage'
+import { CompanySearchParams } from '@/pages/company/CompaniesPage'
 
 // Query keys
 export const companyKeys = {
@@ -16,19 +16,11 @@ export const companyKeys = {
     my: () => [...companyKeys.all, 'my'] as const,
 }
 
-// Queries
-export const useCompanies = (filters?: Record<string, any>) => {
+export const useFetchCompaniesQuery = (params: CompanySearchParams) => {
     return useQuery({
-        queryKey: companyKeys.list(filters || {}),
-        queryFn: async () => companyService.getAllCompanies(),
-        retry: 3,
+        queryKey: companyKeys.list(params || {}),
+        queryFn: () => companyService.getAllCompanies(params),
     })
-}
-
-export const useCustomQuery = (params: SearchParams) => {
-    console.log('Custom query get update params: ', params)
-
-    return { data: 'custom data : ', params }
 }
 
 export const useCompany = (id: string) => {
