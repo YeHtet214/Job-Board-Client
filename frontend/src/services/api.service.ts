@@ -6,6 +6,10 @@ export interface ApiResponse<T> {
     success: boolean
     message: string
     data: T
+    pagination?: {
+        total: number
+        totalPages: number
+    }
 }
 
 export class ApiService {
