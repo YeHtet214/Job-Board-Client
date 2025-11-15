@@ -20,6 +20,7 @@ export const useFetchCompaniesQuery = (params: CompanySearchParams) => {
     return useQuery({
         queryKey: companyKeys.list(params || {}),
         queryFn: () => companyService.getAllCompanies(params),
+        placeholderData: previousValue => previousValue
     })
 }
 

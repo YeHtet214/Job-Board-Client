@@ -44,7 +44,8 @@ const CompanySchema = Yup.object().shape({
         .min(1800, 'Year must be after 1800')
         .max(new Date().getFullYear(), 'Year cannot be in the future')
         .nullable(),
-    size: Yup.string().nullable(),
+    size: Yup.mixed<"1-10" | "11-50" | "51-200" | "201-500" | "500+">()
+        .oneOf(["1-10", "11-50", "51-200", "201-500", "500+"]).nullable(),
     logo: Yup.string().url('Please enter a valid image URL').nullable(),
 })
 
@@ -207,8 +208,8 @@ const CompanyProfileForm = ({
                                         {(errors.name ||
                                             errors.description ||
                                             errors.industry) && (
-                                            <span className="ml-2 h-2 w-2 rounded-full bg-jb-text-primary"></span>
-                                        )}
+                                                <span className="ml-2 h-2 w-2 rounded-full bg-jb-text-primary"></span>
+                                            )}
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="details"
@@ -225,8 +226,8 @@ const CompanyProfileForm = ({
                                             errors.website ||
                                             errors.foundedYear ||
                                             errors.size) && (
-                                            <span className="ml-2 h-2 w-2 rounded-full bg-jb-text-primary"></span>
-                                        )}
+                                                <span className="ml-2 h-2 w-2 rounded-full bg-jb-text-primary"></span>
+                                            )}
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="branding"
