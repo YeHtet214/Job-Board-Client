@@ -1,12 +1,12 @@
 import React from 'react'
 import JobCard from './JobCard'
-import Pagination from './Pagination'
 import { Job } from '@/types/job'
 import { AlertCircle, Search } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import JobSorting from './JobSorting'
 import { useAuth } from '@/contexts/authContext'
 import { useBatchJobSavedStatus, useJobsData } from '@/hooks/react-queries/job'
+import LoadingSpinner from '../ui/LoadingSpinner'
 
 const JobList: React.FC = () => {
     const {
@@ -17,14 +17,13 @@ const JobList: React.FC = () => {
         location,
         jobTypes,
         experienceLevel,
-        totalCount,
     } = useJobsData()
     const { isAuthenticated, currentUser } = useAuth()
+    
+    // Temp value [return from api]
+    const totalCount = 100; 
 
-    // Check if user is a job seeker for saved job functionality
     const isJobSeeker = currentUser?.role === 'JOBSEEKER'
-
-    // Get all job IDs for batch checking saved status
     const jobIds = new Set(jobs.map((job: Job) => job.id))
 
     // Use the batch hook to check if jobs are saved in a single request
@@ -32,17 +31,10 @@ const JobList: React.FC = () => {
         isAuthenticated && isJobSeeker ? [...jobIds] : []
     )
 
-    // Check if any filters are applied
     const hasFilters =
         keyword || location || jobTypes.length > 0 || experienceLevel !== 'ANY'
 
-    if (isLoading) {
-        return (
-            <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-jobboard-purple"></div>
-            </div>
-        )
-    }
+    if (isLoading) <LoadingSpinner />
 
     if (error) {
         return (
@@ -102,7 +94,8 @@ const JobList: React.FC = () => {
                                 <span className="font-semibold">
                                     {totalCount}
                                 </span>{' '}
-                                job{totalCount !== 1 ? 's' : ''} matching your
+                                {/* job{totalCount !== 1 ? 's' : ''} matching your */}
+                                job 100 mach [UPDATE]
                                 search
                                 {keyword && (
                                     <span>
@@ -141,19 +134,16 @@ const JobList: React.FC = () => {
                             savedJobsStatus instanceof Error
                                 ? { isSaved: false, savedJobId: null }
                                 : savedJobsStatus[job.id]
-                                  ? {
+                                    ? {
                                         isSaved: true,
                                         savedJobId:
                                             savedJobsStatus[job.id].savedJobId,
                                     }
-                                  : { isSaved: false, savedJobId: null }
+                                    : { isSaved: false, savedJobId: null }
                         }
                     />
                 ))}
             </div>
-
-            {/* Pagination */}
-            <Pagination />
         </div>
     )
 }

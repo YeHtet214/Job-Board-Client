@@ -1,4 +1,3 @@
-import React from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useJob } from '@/hooks/react-queries/job/useJobQueries'
 import { JobsProvider } from '@/contexts/JobsContext'
@@ -20,8 +19,9 @@ import {
     formatDate,
 } from '@/lib/formatters'
 import { useJobsData } from '@/hooks'
+import { useEffect } from 'react'
 
-const JobDetailContent: React.FC = () => {
+const JobDetailContent = () => {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
     const { handleJobView } = useJobsData()
@@ -31,7 +31,7 @@ const JobDetailContent: React.FC = () => {
     const { data: job, isLoading, error } = useJob(id || '')
 
     // Update recently viewed jobs when the job data is loaded
-    React.useEffect(() => {
+    useEffect(() => {
         if (job) {
             handleJobView(job)
         }

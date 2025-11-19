@@ -1,3 +1,4 @@
+import { SortOption } from '@/contexts/JobsContext'
 import { Dispatch, SetStateAction } from 'react'
 
 export type JobType = 'FULL_TIME' | 'PART_TIME' | 'CONTRACT'
@@ -58,6 +59,9 @@ export interface JobFilterType {
     location: string
     jobTypes: string[]
     experienceLevel: string
+    page?: number
+    limit?: number
+    sortBy?: SortOption
 }
 
 export interface JobFilterProps extends JobFilterType {

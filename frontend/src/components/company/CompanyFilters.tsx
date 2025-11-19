@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CardTitle } from '@/components/ui/card'
-import { Building, Search, Users } from 'lucide-react'
+import { Building, Search } from 'lucide-react'
 
 import {
     Select,
@@ -61,7 +60,7 @@ type CompanySelectProps = {
 
 const IndustrySelect = ({ selectIndustry }: IndustrySelectProps) => {
     const handleIndustrySelectChange = (value: string) => {
-        value !== "null" ? selectIndustry(value) : selectIndustry('')
+        return value !== "null" ? selectIndustry(value) : selectIndustry('')
     }
 
     return (
@@ -90,7 +89,7 @@ const IndustrySelect = ({ selectIndustry }: IndustrySelectProps) => {
 
 const CompanySizeSelect = ({ selectCompanySize }: CompanySelectProps) => {
     const handleSizeSelectChange = (value: string) => {
-        value !== "null" ? selectCompanySize(value) : selectCompanySize('')
+        return value !== "null" ? selectCompanySize(value) : selectCompanySize('')
     }
     return (
         <Select onValueChange={handleSizeSelectChange}>
@@ -115,7 +114,7 @@ const CompanySizeSelect = ({ selectCompanySize }: CompanySelectProps) => {
 }
 
 type CompanyFiltersProps = {
-    updateParams: (value: Record<string, any>) => void
+    updateParams: (value) => void
 }
 
 const CompanyFilters: React.FC<CompanyFiltersProps> = ({ updateParams }) => {
@@ -127,7 +126,7 @@ const CompanyFilters: React.FC<CompanyFiltersProps> = ({ updateParams }) => {
 
     useEffect(() => {
         updateParams({
-            searchTerm: keyword,
+            searchTerm: debouncedValue,
             industry,
             companySize,
         })

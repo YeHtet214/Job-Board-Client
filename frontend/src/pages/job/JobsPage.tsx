@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { Briefcase } from 'lucide-react'
 
@@ -7,7 +6,7 @@ import JobList from '@/components/jobs/JobList'
 import RecentlyViewedJobs from '@/components/jobs/RecentlyViewedJobs'
 import { Button } from '@/components/ui/button'
 
-const JobsPage: React.FC = () => {
+const JobsPage = () => {
     return (
         <>
             {/* Hero Section */}

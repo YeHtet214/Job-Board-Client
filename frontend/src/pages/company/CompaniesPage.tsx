@@ -6,24 +6,25 @@ import { Badge } from '@/components/ui/badge'
 import { Link, useSearchParams } from 'react-router-dom'
 import CompanyFilters from '@/components/company/CompanyFilters'
 import { useFetchCompaniesQuery } from '@/hooks/react-queries/company'
-import ReactPaginate from 'react-paginate'
 import { Company } from '@/types/company'
 import EmployerCTA from '@/components/employer/EmployerCTA'
+import Pagination from '@/components/Pagination'
 
 export interface CompanySearchParams {
     currentPage: number
-    pageSize: number
+    limit: number
     searchTerm: string
     industry: string
     companySize: string | null
 }
 
-const CompaniesPage: React.FC = () => {
-    const pageSize = 10
+const CompaniesPage = () => {
+    const limit = 10
     const [searchParams, setSearchParams] = useSearchParams()
-    const [currentPage, setCurrentpage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1)
     const [params, setParams] = useState<CompanySearchParams>({
-        currentPage, pageSize,
+        currentPage, 
+        limit,
         searchTerm: searchParams.get('searchTerm') || '',
         industry: searchParams.get('industry') || '',
         companySize: searchParams.get('companySize') || null
@@ -33,20 +34,18 @@ const CompaniesPage: React.FC = () => {
     const totalPages = data?.meta?.totalPages || 0
 
     useEffect(() => {
+        console.log("search param update: ", )
         setParams({
             currentPage,
-            pageSize,
+            limit,
             searchTerm: searchParams.get('searchTerm') || '',
             industry: searchParams.get('industry') || '',
             companySize: searchParams.get('companySize') || null
         })
     }, [searchParams, currentPage])
 
-    const handlePageClick = (event) => {
-        console.log(
-            `User requested page number ${event.selected}`
-        )
-        setCurrentpage(event.selected + 1)
+    const handlePageClick = (event: { selected: number }) => {
+        setCurrentPage(event.selected + 1)
     }
 
     return (
@@ -103,7 +102,7 @@ const CompaniesPage: React.FC = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {data?.companies?.map((company: Company) => (
                                             <Link
                                                 to={`/companies/${company.id}`}
@@ -182,16 +181,7 @@ const CompaniesPage: React.FC = () => {
                                             </Link>
                                         ))}
                                     </div>
-                                    <ReactPaginate
-                                        breakLabel="..."
-                                        nextLabel="next >"
-                                        onPageChange={handlePageClick}
-                                        pageRangeDisplayed={5}
-                                        pageCount={totalPages}
-                                        previousLabel="< previous"
-                                        renderOnZeroPageCount={null}
-                                        className='flex gap-4 py-4 items-center justify-center'
-                                    />
+                                    <Pagination handlePageChange={handlePageClick} totalPages={totalPages} />
                                     <div className='md:hidden'>
                                         <EmployerCTA />
                                     </div>

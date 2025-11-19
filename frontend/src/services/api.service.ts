@@ -6,8 +6,9 @@ export interface ApiResponse<T> {
     success: boolean
     message: string
     data: T
-    pagination?: {
-        total: number
+    meta?: {
+        currentPage: number
+        totalCount: number
         totalPages: number
     }
 }
@@ -23,7 +24,6 @@ export class ApiService {
         const isFormData =
             typeof FormData !== 'undefined' && data instanceof FormData
 
-        console.log('is it formm data: ', isFormData)
         return isFormData
             ? customHeaders
             : { 'Content-Type': 'application/json', ...customHeaders }
