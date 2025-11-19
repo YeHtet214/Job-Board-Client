@@ -1,60 +1,51 @@
 import React, { useEffect, useState } from 'react'
 import { Building, MapPin, Briefcase, Users } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { Link, useSearchParams } from 'react-router-dom'
 import CompanyFilters from '@/components/company/CompanyFilters'
-import { CompaniesProvider } from '@/contexts/CompaniesContext'
-import { useAuth } from '@/contexts/authContext'
-import { useFetchCompaniesQuery, useMyCompany } from '@/hooks/react-queries/company'
-import ReactPaginate from 'react-paginate'
+import { useFetchCompaniesQuery } from '@/hooks/react-queries/company'
 import { Company } from '@/types/company'
+import EmployerCTA from '@/components/employer/EmployerCTA'
+import Pagination from '@/components/Pagination'
 
 export interface CompanySearchParams {
     currentPage: number
-    pageSize: number
+    limit: number
     searchTerm: string
     industry: string
     companySize: string | null
 }
 
-const CompaniesPageContent: React.FC = () => {
-    const pageSize = 10
+const CompaniesPage = () => {
+    const limit = 10
     const [searchParams, setSearchParams] = useSearchParams()
-    const [currentPage, setCurrentpage] = useState(1)
+    const [currentPage, setCurrentPage] = useState(1)
     const [params, setParams] = useState<CompanySearchParams>({
-        currentPage, pageSize,
+        currentPage, 
+        limit,
         searchTerm: searchParams.get('searchTerm') || '',
         industry: searchParams.get('industry') || '',
         companySize: searchParams.get('companySize') || null
     })
 
-    // Get current user and check if they have a company
-    const { currentUser } = useAuth()
-    const isEmployer = currentUser?.role === 'EMPLOYER'
-    const { data: userCompany } = isEmployer ? useMyCompany() : { data: null }
-
     const { data, isLoading } = useFetchCompaniesQuery(params)
-
     const totalPages = data?.meta?.totalPages || 0
 
     useEffect(() => {
+        console.log("search param update: ", )
         setParams({
             currentPage,
-            pageSize,
+            limit,
             searchTerm: searchParams.get('searchTerm') || '',
             industry: searchParams.get('industry') || '',
             companySize: searchParams.get('companySize') || null
         })
     }, [searchParams, currentPage])
 
-    const handlePageClick = (event) => {
-        console.log(
-            `User requested page number ${event.selected}`
-        )
-        setCurrentpage(event.selected + 1)
+    const handlePageClick = (event: { selected: number }) => {
+        setCurrentPage(event.selected + 1)
     }
 
     return (
@@ -69,50 +60,16 @@ const CompaniesPageContent: React.FC = () => {
                         profiles, read reviews, and explore job opportunities.
                     </p>
 
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {/* Sidebar with filters */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div className="md:col-span-1">
-                            <CompanyFilters
-                                updateParams={(value) => setSearchParams(value)}
-                            />
-
-                            {/* Employer CTA */}
-                            <div className="mt-8 bg-gradient-to-r from-jb-primary to-jb-surface rounded-lg shadow-lg p-6 text-center">
-                                <Building className="h-12 w-12 mx-auto text-white mb-4" />
-                                <h2 className="text-xl font-bold text-white mb-3">
-                                    Are You an Employer?
-                                </h2>
-                                <p className="text-white/80 mb-6 text-sm">
-                                    {!isEmployer
-                                        ? 'Create your company profile and start posting jobs to find the perfect candidates.'
-                                        : userCompany
-                                            ? 'Manage your company profile and continue posting jobs to find the perfect candidates.'
-                                            : 'Create your company profile and start posting jobs to find the perfect candidates.'}
-                                </p>
-                                {!isEmployer ? (
-                                    <Link to="/register?role=EMPLOYER">
-                                        <Button className="bg-background text-jb-primary hover:bg-accent font-semibold w-full">
-                                            Register as Employer
-                                        </Button>
-                                    </Link>
-                                ) : userCompany ? (
-                                    <Link to="/employer/company/profile">
-                                        <Button className="bg-background text-jb-primary hover:bg-accent font-semibold w-full">
-                                            Manage Company Profile
-                                        </Button>
-                                    </Link>
-                                ) : (
-                                    <Link to="/employer/company/profile">
-                                        <Button className="bg-background text-jb-primary hover:bg-accent font-semibold w-full">
-                                            Create Company Profile
-                                        </Button>
-                                    </Link>
-                                )}
+                            <CompanyFilters updateParams={(value) => setSearchParams(value)} />
+                            <div className='hidden md:block'>
+                                <EmployerCTA />
                             </div>
                         </div>
 
                         {/* Company Listings */}
-                        <div className="md:col-span-3">
+                        <div className="md:col-span-2 lg:col-span-3">
                             {isLoading ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {[...Array(6)].map((_, index) => (
@@ -145,7 +102,7 @@ const CompaniesPageContent: React.FC = () => {
                                 </div>
                             ) : (
                                 <>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {data?.companies?.map((company: Company) => (
                                             <Link
                                                 to={`/companies/${company.id}`}
@@ -224,16 +181,10 @@ const CompaniesPageContent: React.FC = () => {
                                             </Link>
                                         ))}
                                     </div>
-                                    <ReactPaginate
-                                        breakLabel="..."
-                                        nextLabel="next >"
-                                        onPageChange={handlePageClick}
-                                        pageRangeDisplayed={5}
-                                        pageCount={totalPages}
-                                        previousLabel="< previous"
-                                        renderOnZeroPageCount={null}
-                                        className='flex gap-4 py-4 items-center justify-center'
-                                    />
+                                    <Pagination handlePageChange={handlePageClick} totalPages={totalPages} />
+                                    <div className='md:hidden'>
+                                        <EmployerCTA />
+                                    </div>
                                 </>
                             )}
                         </div>
@@ -241,14 +192,6 @@ const CompaniesPageContent: React.FC = () => {
                 </div>
             </div>
         </section>
-    )
-}
-
-const CompaniesPage: React.FC = () => {
-    return (
-        <CompaniesProvider>
-            <CompaniesPageContent />
-        </CompaniesProvider>
     )
 }
 

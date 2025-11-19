@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { CardTitle } from '@/components/ui/card'
-import { Building, Search, Users } from 'lucide-react'
+import { Building, Search } from 'lucide-react'
 
 import {
     Select,
@@ -15,39 +14,39 @@ import { Input } from '../ui/input'
 import useDebounce from '@/hooks/useDebounce'
 
 const industries = [
-    'Technology',
-    'Healthcare',
-    'Finance',
-    'Education',
-    'Manufacturing',
-    'Retail',
-    'Hospitality',
-    'Media',
-    'Transportation',
-    'Construction',
+    { id: 1, type: 'Technology' },
+    { id: 2, type: 'Healthcare' },
+    { id: 3, type: 'Finance' },
+    { id: 4, type: 'Education' },
+    { id: 5, type: 'Manufacturing' },
+    { id: 6, type: 'Retail' },
+    { id: 7, type: 'Hospitality' },
+    { id: 8, type: 'Media' },
+    { id: 9, type: 'Transportation' },
+    { id: 10, type: 'Construction' }
 ]
 
 // Company sizes
 const companySizes = [
     {
         key: 'Startup (1-10)',
-        value: '1',
+        value: '1-10',
     },
     {
         key: 'Small (11-50)',
-        value: '11',
+        value: '11-50',
     },
     {
         key: 'Medium (51-200)',
-        value: '51',
+        value: '51-200',
     },
     {
         key: 'Large (201-500)',
-        value: '201',
+        value: '201-500',
     },
     {
         key: 'Enterprise (500+)',
-        value: '500',
+        value: '500+',
     },
 ]
 
@@ -60,21 +59,26 @@ type CompanySelectProps = {
 }
 
 const IndustrySelect = ({ selectIndustry }: IndustrySelectProps) => {
+    const handleIndustrySelectChange = (value: string) => {
+        return value !== "null" ? selectIndustry(value) : selectIndustry('')
+    }
+
     return (
-        <Select onValueChange={(value) => selectIndustry(value)}>
-            <CardTitle className="text-lg flex items-center">
-                <Building className="h-5 w-5 mr-2 text-jobboard-purple" />
+        <Select onValueChange={handleIndustrySelectChange} >
+            <div className="hidden sm:flex text-md text-nowrap items-center mb-2">
+                <Building className="h-5 w-5 mr-2 text-jb-primary" />
                 Industry
-            </CardTitle>
-            <SelectTrigger className="w-[180px]">
+            </div>
+            <SelectTrigger >
                 <SelectValue placeholder="Select Industry" />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
                     <SelectLabel>Industries</SelectLabel>
+                    <SelectItem value="null" defaultValue="">All Industries</SelectItem>
                     {industries.map((industry) => (
-                        <SelectItem value={industry.toLowerCase()}>
-                            {industry}
+                        <SelectItem key={industry.id} value={industry.type.toLowerCase()}>
+                            {industry.type}
                         </SelectItem>
                     ))}
                 </SelectGroup>
@@ -83,21 +87,25 @@ const IndustrySelect = ({ selectIndustry }: IndustrySelectProps) => {
     )
 }
 
-const CompanySelect = ({ selectCompanySize }: CompanySelectProps) => {
+const CompanySizeSelect = ({ selectCompanySize }: CompanySelectProps) => {
+    const handleSizeSelectChange = (value: string) => {
+        return value !== "null" ? selectCompanySize(value) : selectCompanySize('')
+    }
     return (
-        <Select onValueChange={(value) => selectCompanySize(value)}>
-            <CardTitle className="text-lg flex items-center">
-                <Building className="h-5 w-5 mr-2 text-jobboard-purple" />
+        <Select onValueChange={handleSizeSelectChange}>
+            <div className="hidden sm:flex text-md text-nowrap mb-2 items-center">
+                <Building className="h-5 w-5 mr-2 text-jb-primary" />
                 Company Size
-            </CardTitle>
-            <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Select Industry" />
+            </div>
+            <SelectTrigger className="min-w-[180px]">
+                <SelectValue placeholder="Select Company Size" />
             </SelectTrigger>
             <SelectContent>
                 <SelectGroup>
-                    <SelectLabel>Industries</SelectLabel>
+                    <SelectLabel>Company Size</SelectLabel>
+                    <SelectItem value="null" defaultValue="">All Sizes</SelectItem>
                     {companySizes.map((com) => (
-                        <SelectItem value={com.value}>{com.key}</SelectItem>
+                        <SelectItem key={com.value} value={com.value}>{com.key}</SelectItem>
                     ))}
                 </SelectGroup>
             </SelectContent>
@@ -106,7 +114,7 @@ const CompanySelect = ({ selectCompanySize }: CompanySelectProps) => {
 }
 
 type CompanyFiltersProps = {
-    updateParams: (value: Record<string, any>) => void
+    updateParams: (value) => void
 }
 
 const CompanyFilters: React.FC<CompanyFiltersProps> = ({ updateParams }) => {
@@ -118,7 +126,7 @@ const CompanyFilters: React.FC<CompanyFiltersProps> = ({ updateParams }) => {
 
     useEffect(() => {
         updateParams({
-            searchTerm: keyword,
+            searchTerm: debouncedValue,
             industry,
             companySize,
         })
@@ -139,10 +147,12 @@ const CompanyFilters: React.FC<CompanyFiltersProps> = ({ updateParams }) => {
                 />
             </div>
 
-            <IndustrySelect selectIndustry={(value) => setIndustry(value)} />
-            <CompanySelect
-                selectCompanySize={(value) => setCompanySize(value)}
-            />
+            <div className="flex md:flex-col md:space-y-6 max-w-2xl justify-between">
+                <IndustrySelect selectIndustry={(value) => setIndustry(value)} />
+                <CompanySizeSelect
+                    selectCompanySize={(value) => setCompanySize(value)}
+                />
+            </div>
         </div>
     )
 }

@@ -26,3 +26,11 @@ export interface CreateCompanyDto {
 }
 
 export interface UpdateCompanyDto extends Partial<CreateCompanyDto> {}
+
+export enum CompanySize {
+    "1-10",
+    "11-50",
+    "51-200",
+    "201-500",
+    "500+"
+}

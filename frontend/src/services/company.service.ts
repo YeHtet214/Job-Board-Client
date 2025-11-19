@@ -1,6 +1,7 @@
-import { ApiResponse, ApiService } from './api.service'
+import { ApiService } from './api.service'
 import { Company, CreateCompanyDto, UpdateCompanyDto } from '../types/company'
 import { CompanySearchParams } from '@/pages/company/CompaniesPage'
+import { createSearchParams } from 'react-router-dom'
 
 class CompanyService extends ApiService {
    private endpoints = {
@@ -10,12 +11,9 @@ class CompanyService extends ApiService {
    }
 
    public async getAllCompanies(params: CompanySearchParams) {
-      const { currentPage, pageSize, searchTerm, industry, companySize } =
-         params
-      const response = await this.get<Company[]>(
-         this.endpoints.ALL +
-            `?page=${currentPage}&limit=${pageSize}&searchTerm=${searchTerm}&industry=${industry}&companySize=${companySize}`
-      )
+       const queryParams = createSearchParams(params)
+
+      const response = await this.get<Company[]>(`${this.endpoints.ALL}?${queryParams.toString()}`)
 
       if (!response.data.success) {
          throw new Error('Failed to fetch companies')
@@ -24,8 +22,9 @@ class CompanyService extends ApiService {
       return {
          companies: response.data.data,
          meta: {
-            total: response.data.pagination?.total,
-            totalPages: response.data.pagination?.totalPages,
+            currentPage: response.data.meta?.currentPage,
+            total: response.data.meta?.totalCount,
+            totalPages: response.data.meta?.totalPages,
          },
       }
    }
