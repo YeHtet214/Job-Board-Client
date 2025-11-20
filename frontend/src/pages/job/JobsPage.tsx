@@ -5,8 +5,12 @@ import JobFilters from '@/components/jobs/JobFilters'
 import JobList from '@/components/jobs/JobList'
 import RecentlyViewedJobs from '@/components/jobs/RecentlyViewedJobs'
 import { Button } from '@/components/ui/button'
+import Pagination from '@/components/Pagination'
+import { useJobsData } from '@/hooks'
 
 const JobsPage = () => {
+    const { totalPages, handlePageChange } = useJobsData()
+
     return (
         <>
             {/* Hero Section */}
@@ -46,6 +50,9 @@ const JobsPage = () => {
                         <div className="w-3/4 space-y-6">
                             <div className="bg-jb-surface border border-border rounded-lg shadow-sm p-5">
                                 <JobList />
+                                <Pagination
+                                    handlePageChange={(event: { selected: number }) => handlePageChange(event.selected + 1)}
+                                    totalPages={totalPages} />
                             </div>
 
                             {/* Recently Viewed */}
@@ -88,6 +95,9 @@ const JobsPage = () => {
 
                         <div className="bg-jb-surface border border-border rounded-lg shadow-sm p-5">
                             <JobList />
+                            <Pagination
+                                handlePageChange={(event: { selected: number }) => handlePageChange(event.selected + 1)}
+                                totalPages={totalPages} />
                         </div>
 
                         <div className="bg-jb-surface border border-border rounded-lg shadow-sm p-5">

@@ -1,7 +1,6 @@
 import { ApiService } from './api.service'
 import { Company, CreateCompanyDto, UpdateCompanyDto } from '../types/company'
 import { CompanySearchParams } from '@/pages/company/CompaniesPage'
-import { createSearchParams } from 'react-router-dom'
 
 class CompanyService extends ApiService {
    private endpoints = {
@@ -11,7 +10,7 @@ class CompanyService extends ApiService {
    }
 
    public async getAllCompanies(params: CompanySearchParams) {
-       const queryParams = createSearchParams(params)
+       const queryParams = new URLSearchParams(params)
 
       const response = await this.get<Company[]>(`${this.endpoints.ALL}?${queryParams.toString()}`)
 

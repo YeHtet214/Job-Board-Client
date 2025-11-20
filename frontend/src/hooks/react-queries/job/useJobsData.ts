@@ -8,13 +8,15 @@ interface UseJobsDataReturn {
     jobs: Job[]
     isLoading: boolean
     error: unknown
-    currentPage: number
     recentlyViewedJobs: Job[]
     keyword: string
     location: string
     jobTypes: string[]
     experienceLevel: string
-    sortBy: SortOption
+    sortBy: SortOption,
+    currentPage: number,
+    totalPages: number,
+    totalCount: number,
     setSortBy: (option: SortOption) => void
     handleSearch: (values: JobFilterType) => void
     handleJobView: (job: Job) => void
@@ -54,16 +56,14 @@ export const useJobsData = (page = 1): UseJobsDataReturn => {
 
     const { data, isLoading, error, refetch } = useFetchJobsQuery(filters, true)
 
-    useEffect(() => console.log("Job fetch return data: ", data), [data])
-
     // Memoize refetch to prevent useEffect from running unnecessarily
     const stableRefetch = useCallback(() => {
         refetch()
     }, [refetch])
 
     // Extract values from the response
-    const jobs: Job[] = data?.jobs || []
-    console.log(data?.meta)
+    const jobs = (data?.jobs as Job[] | undefined) || []
+    const { totalPages = 0, totalCount = 0 } = data?.meta || {}
 
     const updateSearchParams = (values: JobFilterType) => {
         if (!values) return
@@ -129,13 +129,15 @@ export const useJobsData = (page = 1): UseJobsDataReturn => {
         jobs,
         isLoading,
         error,
-        currentPage,
         recentlyViewedJobs,
         keyword,
         location,
         jobTypes,
         experienceLevel,
         sortBy,
+        currentPage,
+        totalPages,
+        totalCount,
         setSortBy,
         handleSearch,
         handleJobView,
