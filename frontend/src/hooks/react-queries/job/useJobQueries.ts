@@ -3,7 +3,6 @@ import jobService from '@/services/job.service'
 import type {
    CreateJobDto,
    UpdateJobDto,
-   JobsResponse,
    JobFilterType,
 } from '@/types/job'
 import { useMemo } from 'react'
@@ -61,21 +60,8 @@ export const useFetchJobsQuery = (filters: JobFilterType, isSearch = false) => {
       ? jobKeys.search(normalizedFilters)
       : jobKeys.list(normalizedFilters)
 
-   return useQuery<JobsResponse>({
+   return useQuery({
       queryKey,
-      // queryFn: async () => {
-      //    try {
-      //       return await jobService.getAllJobs(normalizedFilters)
-      //    } catch (error) {
-      //       console.error('Failed to fetch jobs:', error)
-      //       return {
-      //          jobs: [],
-      //          totalPages: 0,
-      //          totalCount: 0,
-      //          currentPage: 1,
-      //       }
-      //    }
-      // },
       queryFn: () => jobService.getAllJobs(normalizedFilters),
       staleTime: 1000 * 60 * 2, // stale time
       gcTime: 1000 * 60 * 10, // cache time

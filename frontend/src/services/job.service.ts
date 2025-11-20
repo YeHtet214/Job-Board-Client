@@ -29,7 +29,7 @@ class JobService extends ApiService {
          jobs: response.data.data,
          meta: {
             currentPage: response.data.meta?.currentPage,
-            total: response.data.meta?.totalCount,
+            totalCount: response.data.meta?.totalCount,
             totalPages: response.data.meta?.totalPages,
          },
       }

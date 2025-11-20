@@ -19,9 +19,9 @@ const JobList: React.FC = () => {
         experienceLevel,
     } = useJobsData()
     const { isAuthenticated, currentUser } = useAuth()
-    
+
     // Temp value [return from api]
-    const totalCount = 100; 
+    const totalCount = 100;
 
     const isJobSeeker = currentUser?.role === 'JOBSEEKER'
     const jobIds = new Set(jobs.map((job: Job) => job.id))
@@ -53,28 +53,32 @@ const JobList: React.FC = () => {
     if (jobs.length === 0) {
         return (
             <div className="bg-jb-surface rounded-lg shadow-md p-6 text-center">
-                {hasFilters ? (
+                {isLoading ? <LoadingSpinner /> : (
                     <>
-                        <div className="flex justify-center mb-4">
-                            <Search className="h-12 w-12 text-gray-400" />
-                        </div>
-                        <h3 className="text-lg font-semibold mb-2">
-                            No matching jobs found
-                        </h3>
-                        <p className="text-gray-600">
-                            We couldn't find any jobs matching your search
-                            criteria. Try adjusting your filters or check back
-                            later.
-                        </p>
-                    </>
-                ) : (
-                    <>
-                        <h3 className="text-3xl font-semibold mb-2">
-                            No jobs available
-                        </h3>
-                        <p className="text-jb-text-muted">
-                            Check back later for new opportunities.
-                        </p>
+                        {hasFilters ? (
+                            <>
+                                <div className="flex justify-center mb-4">
+                                    <Search className="h-12 w-12 text-gray-400" />
+                                </div>
+                                <h3 className="text-lg font-semibold mb-2">
+                                    No matching jobs found
+                                </h3>
+                                <p className="text-gray-600">
+                                    We couldn't find any jobs matching your search
+                                    criteria. Try adjusting your filters or check back
+                                    later.
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <h3 className="text-3xl font-semibold mb-2">
+                                    No jobs available
+                                </h3>
+                                <p className="text-jb-text-muted">
+                                    Check back later for new opportunities.
+                                </p>
+                            </>
+                        )}
                     </>
                 )}
             </div>
