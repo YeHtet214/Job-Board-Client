@@ -1,11 +1,10 @@
-import React from 'react'
 import { useJobsData } from '@/hooks/react-queries/job'
 import JobCard from './JobCard'
 import { Job } from '@/types/job'
 import { History, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-const RecentlyViewedJobs: React.FC = () => {
+const RecentlyViewedJobs = () => {
     const { recentlyViewedJobs } = useJobsData()
 
     if (recentlyViewedJobs.length === 0) {
@@ -36,7 +35,7 @@ const RecentlyViewedJobs: React.FC = () => {
                 <div className="mt-4 text-center">
                     <Link
                         to="/jobs/history"
-                        className="inline-flex items-center text-jobboard-purple hover:text-jobboard-purple/80 text-sm font-medium"
+                        className="inline-flex items-center text-jb-primary hover:text-jb-primary/80 text-sm font-medium"
                     >
                         View all {recentlyViewedJobs.length} recently viewed
                         jobs

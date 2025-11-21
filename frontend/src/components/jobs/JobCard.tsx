@@ -104,15 +104,15 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                         className="w-12 h-12 rounded-md object-cover flex-shrink-0"
                     />
                 ) : (
-                    <div className="w-12 h-12 bg-jobboard-light rounded-md flex items-center justify-center flex-shrink-0">
-                        <span className="text-jobboard-darkblue font-bold">
+                    <div className="w-12 h-12 bg-jb-surface rounded-md flex items-center justify-center flex-shrink-0">
+                        <span className="text-jb-primary font-bold">
                             {companyInitials}
                         </span>
                     </div>
                 )}
 
                 <div className="flex-1 min-w-0 pr-10 space-y-0">
-                    <CardTitle className="text-jobboard-darkblue text-lg truncate">
+                    <CardTitle className="text-jb-primary text-lg line-clamp-2">
                         {job.title}
                     </CardTitle>
                     <CardDescription className="truncate">
@@ -130,8 +130,8 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                                         size="icon"
                                         className={
                                             savedStatus?.isSaved
-                                                ? 'text-jobboard-purple h-8 w-8 p-0 bg-card/90'
-                                                : 'text-gray-400 hover:text-jobboard-purple h-8 w-8 p-0 bg-background/90'
+                                                ? 'text-jb-purple h-8 w-8 p-0 bg-card/90'
+                                                : 'text-gray-400 hover:text-jb-primary h-8 w-8 p-0 bg-background/90'
                                         }
                                         onClick={(e) => handleSaveToggle(e)}
                                     >
@@ -178,7 +178,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                         <Badge
                             key={index}
                             variant="outline"
-                            className="bg-jobboard-light/30 text-jobboard-darkblue border-none"
+                            className="bg-jb-surface/30 text-jb-primary border-none"
                         >
                             {skill}
                         </Badge>
@@ -200,13 +200,13 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                 </div>
             </CardContent>
 
-            <CardFooter className="justify-between items-center pt-3">
+            <CardFooter className="justify-between items-center pt-3 gap-2">
                 <span className="text-green-600 font-medium text-sm">
                     {formattedSalary}
                 </span>
                 <Button
                     size="sm"
-                    className="bg-jobboard-purple hover:bg-jobboard-purple/90"
+                    className="bg-jb-primary hover:bg-jb-primary/90"
                     onClick={(e) => {
                         e.stopPropagation() // Prevent card click
                         navigate(`/jobs/${job.id}`)

@@ -1,6 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useJob } from '@/hooks/react-queries/job/useJobQueries'
-import { JobsProvider } from '@/contexts/JobsContext'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -21,7 +20,7 @@ import {
 import { useJobsData } from '@/hooks'
 import { useEffect } from 'react'
 
-const JobDetailContent = () => {
+const JobDetailPage = () => {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
     const { handleJobView } = useJobsData()
@@ -193,7 +192,7 @@ const JobDetailContent = () => {
                                         <Badge
                                             key={index}
                                             variant="secondary"
-                                            className="bg-jobboard-light text-jobboard-darkblue"
+                                            className="bg-jb-accent "
                                         >
                                             {skill}
                                         </Badge>
@@ -313,15 +312,6 @@ const JobDetailContent = () => {
                 </div>
             </div>
         </div>
-    )
-}
-
-// Wrapper component that provides the JobsContext
-const JobDetailPage: React.FC = () => {
-    return (
-        <JobsProvider>
-            <JobDetailContent />
-        </JobsProvider>
     )
 }
 

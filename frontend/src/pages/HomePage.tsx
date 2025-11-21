@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, FormEvent } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useInView } from 'react-intersection-observer'
 import { motion } from 'framer-motion'
-import { JobsProvider } from '@/contexts/JobsContext'
 import { Button } from '@/components/ui/button'
 
 import SearchSection from '@/components/home/SearchSection'
@@ -12,7 +11,7 @@ import FeaturedCompaniesSection from '@/components/home/FeaturedCompaniesSection
 import { useTheme } from '@/components/ThemeProvider'
 import ChatIcon from '@/components/messaging/ChatIcon'
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
     const navigate = useNavigate()
     const { theme } = useTheme()
     const [searchKeyword, setSearchKeyword] = useState('')
@@ -93,7 +92,7 @@ const HomePage: React.FC = () => {
         }
     }, [])
 
-    const handleSearch = (e: React.FormEvent) => {
+    const handleSearch = (e: FormEvent) => {
         e.preventDefault()
         const searchParams = new URLSearchParams()
         if (searchKeyword) searchParams.append('keyword', searchKeyword)
@@ -202,15 +201,13 @@ const HomePage: React.FC = () => {
                 staggerContainer={staggerContainer}
             />
 
-            <JobsProvider>
-                <FeaturedJobsSection
-                    jobsRef={jobsRef}
-                    jobsInView={jobsInView}
-                    fadeIn={fadeIn}
-                    staggerContainer={staggerContainer}
-                    cardVariants={cardVariants}
-                />
-            </JobsProvider>
+            <FeaturedJobsSection
+                jobsRef={jobsRef}
+                jobsInView={jobsInView}
+                fadeIn={fadeIn}
+                staggerContainer={staggerContainer}
+                cardVariants={cardVariants}
+            />
 
             <FeaturedCompaniesSection
                 companiesRef={companiesRef}

@@ -1,4 +1,3 @@
-import React from 'react'
 import JobCard from './JobCard'
 import { Job } from '@/types/job'
 import { AlertCircle, Search } from 'lucide-react'
@@ -8,7 +7,7 @@ import { useAuth } from '@/contexts/authContext'
 import { useBatchJobSavedStatus, useJobsData } from '@/hooks/react-queries/job'
 import LoadingSpinner from '../ui/LoadingSpinner'
 
-const JobList: React.FC = () => {
+const JobList = () => {
     const {
         jobs,
         isLoading,
@@ -17,11 +16,9 @@ const JobList: React.FC = () => {
         location,
         jobTypes,
         experienceLevel,
+        totalCount
     } = useJobsData()
     const { isAuthenticated, currentUser } = useAuth()
-
-    // Temp value [return from api]
-    const totalCount = 100;
 
     const isJobSeeker = currentUser?.role === 'JOBSEEKER'
     const jobIds = new Set(jobs.map((job: Job) => job.id))
@@ -34,7 +31,7 @@ const JobList: React.FC = () => {
     const hasFilters =
         keyword || location || jobTypes.length > 0 || experienceLevel !== 'ANY'
 
-    if (isLoading) <LoadingSpinner />
+    if (isLoading) return <LoadingSpinner />
 
     if (error) {
         return (
@@ -98,9 +95,7 @@ const JobList: React.FC = () => {
                                 <span className="font-semibold">
                                     {totalCount}
                                 </span>{' '}
-                                {/* job{totalCount !== 1 ? 's' : ''} matching your */}
-                                job 100 mach [UPDATE]
-                                search
+                                Job{totalCount !== 1 ? 's' : ''} Matching You
                                 {keyword && (
                                     <span>
                                         {' '}
@@ -129,7 +124,7 @@ const JobList: React.FC = () => {
             </div>
 
             {/* Job listings - Responsive Grid Layout with !important */}
-            <div className="grid grid-cols-1 lg:!grid-cols-2 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
                 {jobs.map((job: Job) => (
                     <JobCard
                         key={job.id}

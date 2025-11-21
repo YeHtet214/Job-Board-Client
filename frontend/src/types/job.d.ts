@@ -1,4 +1,3 @@
-import { SortOption } from '@/contexts/JobsContext'
 import { Dispatch, SetStateAction } from 'react'
 
 export type JobType = 'FULL_TIME' | 'PART_TIME' | 'CONTRACT'

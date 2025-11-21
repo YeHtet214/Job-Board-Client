@@ -3,11 +3,11 @@ import { Label } from "../ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 const experienceLevelOptions = [
-    { value: 'ANY', label: 'Any Experience' },
-    { value: 'ENTRY_LEVEL', label: 'Entry Level' },
-    { value: 'MID_LEVEL', label: 'Mid Level' },
-    { value: 'SENIOR', label: 'Senior Level' },
-    { value: 'EXECUTIVE', label: 'Executive' },
+    { value: 'Any', label: 'Any Experience' },
+    { value: 'Entry', label: 'Entry Level' },
+    { value: 'Mid', label: 'Mid Level' },
+    { value: 'Senior', label: 'Senior Level' },
+    { value: 'Executive', label: 'Executive' },
 ]
 
 

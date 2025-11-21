@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Briefcase, Clock, MapPin, Star, ChevronRight } from 'lucide-react'
@@ -8,8 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatDistanceToNow } from 'date-fns'
 import { Job, JobType } from '@/types/job'
-import useFeaturedJobs from '@/hooks/react-queries/job/useFeaturedJobs'
-import { useJobsData } from '@/hooks'
+import { useFeaturedJobs, useJobsData } from '@/hooks'
 
 // Mapping for job type display and styles
 const jobTypeConfig: Record<JobType, { label: string; className: string }> = {
@@ -43,13 +42,10 @@ const FeaturedJobsSection: React.FC<FeaturedJobsSectionProps> = ({
     cardVariants,
 }) => {
     const { handleJobView } = useJobsData()
-    const { data: featuredJobs, isLoading } = useFeaturedJobs()
+    const { data, isLoading } = useFeaturedJobs()
+    const featuredJobs = data?.jobs
 
-    useEffect(() => {
-        if (featuredJobs) {
-            console.log('Feature jobs: ', featuredJobs)
-        }
-    }, [featuredJobs])
+    console.log("Featured Jobs: ", featuredJobs)
 
     const renderJobCard = (job: Job) => {
         const typeInfo = jobTypeConfig[job.type] ?? {
@@ -71,7 +67,7 @@ const FeaturedJobsSection: React.FC<FeaturedJobsSectionProps> = ({
                     <Card className="h-full border-none shadow-sm hover:shadow-md transition-shadow duration-300 bg-jb-surface">
                         <CardContent className="p-5 flex flex-col h-full">
                             <div className="flex justify-between items-start mb-3">
-                                <div className="w-10 h-10 bg-jobboard-light rounded-md flex items-center justify-center">
+                                <div className="w-10 h-10 bg-jb-surface rounded-md flex items-center justify-center">
                                     {job.company?.logo ? (
                                         <img
                                             src={job.company.logo}
@@ -192,6 +188,10 @@ const FeaturedJobsSection: React.FC<FeaturedJobsSectionProps> = ({
         </motion.div>
     )
 
+    if (isLoading) {
+        return Array.from({ length: 8 }).map((_, i) => renderSkeletonCard(i))
+    }
+
     return (
         <motion.section
             ref={jobsRef}
@@ -222,11 +222,7 @@ const FeaturedJobsSection: React.FC<FeaturedJobsSectionProps> = ({
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                     variants={staggerContainer}
                 >
-                    {isLoading
-                        ? Array.from({ length: 8 }).map((_, i) =>
-                              renderSkeletonCard(i)
-                          )
-                        : featuredJobs?.jobs.map(renderJobCard)}
+                    { featuredJobs.map(renderJobCard) }
                 </motion.div>
 
                 <div className="mt-10 text-center">

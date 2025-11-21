@@ -1,30 +1,31 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import jobService from '@/services/job.service'
-import type {
+import {
    CreateJobDto,
    UpdateJobDto,
    JobFilterType,
 } from '@/types/job'
 import { useMemo } from 'react'
-import { SortOption } from '@/contexts/JobsContext'
+import { SortOption } from '@/lib/constants/jobs'
 
 // Query keys
 export const jobKeys = {
    all: ['jobs'] as const,
    lists: () => [...jobKeys.all, 'list'] as const,
-   list: (filters: Record<string, any>) =>
+   list: (filters: JobFilterType) =>
       [...jobKeys.lists(), { filters }] as const,
    details: () => [...jobKeys.all, 'detail'] as const,
    detail: (id: string) => [...jobKeys.details(), id] as const,
+   featured: () => [...jobKeys.all, 'featured'] as const,
    company: (companyId: string) =>
       [...jobKeys.all, 'company', companyId] as const,
-   search: (filters: Record<string, any>) =>
+   search: (filters: JobFilterType) =>
       [...jobKeys.all, 'search', { filters }] as const,
 }
 
 // Function to normalize filters for stable query keys
-const normalizeFilters = (filters: JobFilterType): JobFilterType | {} => {
-   const normalized: JobFilterType | Record<string, string | number | string[] > = {}
+const normalizeFilters = (filters: JobFilterType): JobFilterType => {
+   const normalized = {} as JobFilterType
 
    // Only include defined values in the query key
    if (filters.keyword && filters.keyword.trim()) {
@@ -36,7 +37,7 @@ const normalizeFilters = (filters: JobFilterType): JobFilterType | {} => {
    if (filters.jobTypes && filters.jobTypes.length > 0) {
       normalized.jobTypes = [...filters.jobTypes].sort()
    }
-   if (filters.experienceLevel && filters.experienceLevel !== 'ANY') {
+   if (filters.experienceLevel && filters.experienceLevel !== 'Any') {
       normalized.experienceLevel = filters.experienceLevel
    }
    if (filters.page && filters.page > 1) {
@@ -54,7 +55,10 @@ const normalizeFilters = (filters: JobFilterType): JobFilterType | {} => {
 
 export const useFetchJobsQuery = (filters: JobFilterType, isSearch = false) => {
    // Memoize normalized filters to prevent unnecessary re-renders
-   const normalizedFilters = useMemo(() => normalizeFilters(filters) as JobFilterType, [filters])
+   const normalizedFilters = useMemo(
+      () => normalizeFilters(filters) as JobFilterType,
+      [filters]
+   )
 
    const queryKey = isSearch
       ? jobKeys.search(normalizedFilters)
@@ -81,6 +85,23 @@ export const useJob = (id: string) => {
       },
       enabled: !!id, // Only run the query if we have an ID
       staleTime: 1000 * 60 * 5, // 5 minutes
+   })
+}
+
+export const useFeaturedJobs = () => {
+   const params = {
+      keyword: '',
+      location: '',
+      experienceLevel: '',
+      jobTypes: [],
+      sortBy: SortOption.NEWEST,
+      limit: 6,
+      page: 1,
+   }
+   return useQuery({
+      queryKey: jobKeys.featured(),
+      queryFn: () => jobService.getAllJobs(params),
+      staleTime: 5 * 60 * 1000, // Cache for 5 minutes
    })
 }
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import { ArrowUpDown } from 'lucide-react'
 import { useJobsData } from '@/hooks/react-queries/job'
 import {
@@ -9,22 +8,21 @@ import {
     SelectValue,
 } from '@/components/ui/select'
 import { Label } from '@/components/ui/label'
-import { SortOption } from '@/contexts/JobsContext'
+import { SortOption } from '@/lib/constants/jobs'
 
-const JobSorting: React.FC = () => {
-    const { sortBy, setSortBy } = useJobsData()
+type SortOptionItem = { value: SortOption; label: string }
 
-    const sortOptions = [
-        { value: SortOption.RELEVANCE, label: 'Most Relevant' },
-        { value: SortOption.NEWEST, label: 'Newest First' },
-        { value: SortOption.OLDEST, label: 'Oldest First' },
-        { value: SortOption.SALARY_HIGH, label: 'Highest Salary' },
-        { value: SortOption.SALARY_LOW, label: 'Lowest Salary' },
-    ]
+const sortOptions: SortOptionItem[] = [
+    { value: SortOption.RELEVANCE, label: 'Most Relevant' },
+    { value: SortOption.NEWEST, label: 'Latest' },
+    { value: SortOption.OLDEST, label: 'Oldest' },
+    { value: SortOption.SALARY_HIGH, label: 'Highest Salary' },
+    { value: SortOption.SALARY_LOW, label: 'Lowest Salary' },
+]
 
-    const handleSortChange = (value: string) => {
-        setSortBy(value as SortOption)
-    }
+const JobSorting = () => {
+    const { sortBy, updateSorting } = useJobsData()
+
 
     return (
         <div className="flex items-center justify-end mb-4 space-x-2">
@@ -34,13 +32,13 @@ const JobSorting: React.FC = () => {
             >
                 Sort by:
             </Label>
-            <Select value={sortBy} onValueChange={handleSortChange}>
+            <Select value={sortBy} onValueChange={updateSorting}>
                 <SelectTrigger
                     id="sort-select"
                     className="w-auto min-w-[140px] sm:min-w-[180px] text-sm"
                 >
                     <ArrowUpDown className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
-                    <SelectValue placeholder="Sort jobs" />
+                    <SelectValue placeholder="Latest" />
                 </SelectTrigger>
                 <SelectContent>
                     {sortOptions.map((option) => (
