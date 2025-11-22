@@ -11,8 +11,8 @@ const SavedJobsPage: React.FC = () => {
     return (
         <div className="container mx-auto px-4 sm:px-6 py-8">
             <div className="mb-6 flex items-center">
-                <BookmarkIcon className="h-6 w-6 mr-2 text-jobboard-purple" />
-                <h1 className="text-3xl font-bold text-jobboard-darkblue">
+                <BookmarkIcon className="h-6 w-6 mr-2 text-jb-text" />
+                <h1 className="text-3xl font-bold text-jb-text">
                     Saved Jobs
                 </h1>
             </div>

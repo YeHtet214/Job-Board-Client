@@ -19,7 +19,7 @@ interface UseJobsDataReturn {
    totalCount: number
    updateSorting: (option: SortOption) => void
    handleSearch: (values: JobFilterType) => void
-   handleJobView: (job: Job) => void
+   handleJobView: (job: Job, isClearing: boolean) => void
    handlePageChange: (page: number) => void
    updateSearchParams: (values: JobFilterType) => void
    resetFilters: () => void
@@ -104,12 +104,18 @@ export const useJobsData = (
       updateSearchParams(values)
    }
 
-   const handleJobView = useCallback((job: Job) => {
+   const handleJobView = useCallback((job: Job, isClearing = false) => {
+      if (isClearing) {
+         localStorage.removeItem('recentlyViewedJobs')
+         setRecentlyViewedJobs([])
+         return
+      } 
+
       setRecentlyViewedJobs((prev) => {
          const updatedRecentlyViewed = [
             job,
             ...prev.filter((j) => j.id !== job.id),
-         ].slice(0, 4)
+         ]
          localStorage.setItem(
             'recentlyViewedJobs',
             JSON.stringify(updatedRecentlyViewed)

@@ -48,7 +48,7 @@ const SavedJobs: React.FC = () => {
         return (
             <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-2xl font-bold text-jobboard-darkblue">
+                    <h2 className="text-2xl font-bold text-jb-primary">
                         Saved Jobs
                     </h2>
                 </div>
@@ -117,12 +117,12 @@ const SavedJobs: React.FC = () => {
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold text-jobboard-darkblue">
+                <h2 className="text-2xl font-bold text-jb-primary">
                     Saved Jobs
                 </h2>
                 <Badge
                     variant="outline"
-                    className="bg-jobboard-light/30 text-jobboard-darkblue"
+                    className="bg-jb-success/30 text-jb-primary"
                 >
                     {savedJobs.length} {savedJobs.length === 1 ? 'job' : 'jobs'}{' '}
                     saved
@@ -138,7 +138,7 @@ const SavedJobs: React.FC = () => {
                         <CardHeader className="pb-2">
                             <div className="flex justify-between items-start">
                                 <div>
-                                    <CardTitle className="text-lg font-semibold text-jobboard-darkblue">
+                                    <CardTitle className="text-lg font-semibold text-jb-primary">
                                         {savedJob.job.title}
                                     </CardTitle>
                                     <CardDescription>
@@ -153,8 +153,8 @@ const SavedJobs: React.FC = () => {
                                         className="w-10 h-10 rounded-md object-cover"
                                     />
                                 ) : (
-                                    <div className="w-10 h-10 bg-jobboard-light rounded-md flex items-center justify-center">
-                                        <span className="text-jobboard-darkblue font-bold">
+                                    <div className="w-10 h-10 bg-jb-success rounded-md flex items-center justify-center">
+                                        <span className="text-jb-primary font-bold">
                                             {savedJob.job.company?.name
                                                 ?.substring(0, 2)
                                                 .toUpperCase() || 'CO'}
@@ -204,7 +204,7 @@ const SavedJobs: React.FC = () => {
                             <Button
                                 size="sm"
                                 asChild
-                                className="bg-jobboard-purple hover:bg-jobboard-purple/90"
+                                className="bg-jb-accent hover:bg-jb-accent/90"
                             >
                                 <Link to={`/jobs/${savedJob.job.id}`}>
                                     <ExternalLink className="h-4 w-4 mr-1" />
