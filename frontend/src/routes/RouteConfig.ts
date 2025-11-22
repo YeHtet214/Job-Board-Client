@@ -2,6 +2,7 @@ import JobDetailPage from '@/pages/job/JobDetailPage'
 import React, { lazy } from 'react'
 
 import OAuthCallbackPage from '@/pages/auth/OAuthCallbackPage'
+import RecentlyViewedJobsPage from '@/pages/jobseeker/RecentlyViewedJobsPage'
 
 // Define route types
 export interface RouteConfig {
@@ -131,6 +132,11 @@ export const routes: RouteConfig[] = [
         path: '/jobs/:id',
         element: JobDetailPage,
         meta: { title: 'Job Details' },
+    },
+    {
+        path: '/jobs/history',
+        element: RecentlyViewedJobsPage,
+        meta: { title: 'Seeker\'s Recently Viewed Jobs '}
     },
     {
         path: '/companies',
