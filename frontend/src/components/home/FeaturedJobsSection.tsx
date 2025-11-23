@@ -9,20 +9,21 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { formatDistanceToNow } from 'date-fns'
 import { Job, JobType } from '@/types/job'
 import { useFeaturedJobs, useJobsData } from '@/hooks'
+import { useAuth } from '@/contexts/authContext'
 
 // Mapping for job type display and styles
 const jobTypeConfig: Record<JobType, { label: string; className: string }> = {
     FULL_TIME: {
         label: 'Full Time',
-        className: 'bg-green-100 text-green-800 hover:bg-green-100',
+        className: 'bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20',
     },
     PART_TIME: {
         label: 'Part Time',
-        className: 'bg-blue-100 text-blue-800 hover:bg-blue-100',
+        className: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/20',
     },
     CONTRACT: {
         label: 'Contract',
-        className: 'bg-purple-100 text-purple-800 hover:bg-purple-100',
+        className: 'bg-purple-500/10 text-purple-600 dark:text-purple-400 hover:bg-purple-500/20',
     },
 }
 
@@ -43,14 +44,14 @@ const FeaturedJobsSection: React.FC<FeaturedJobsSectionProps> = ({
 }) => {
     const { handleJobView } = useJobsData()
     const { data, isLoading } = useFeaturedJobs()
-    const featuredJobs = data?.jobs
-
-    console.log("Featured Jobs: ", featuredJobs)
+    const { currentUser } = useAuth()
+    const featuredJobs = (data?.jobs || []) as Job[]
+    const userId = currentUser?.id || ''
 
     const renderJobCard = (job: Job) => {
         const typeInfo = jobTypeConfig[job.type] ?? {
             label: job.type,
-            className: 'bg-gray-100 text-gray-800 hover:bg-gray-100', // leave badge as is
+            className: 'bg-gray-100 text-gray-800 hover:bg-gray-100',
         }
 
         return (
@@ -61,7 +62,7 @@ const FeaturedJobsSection: React.FC<FeaturedJobsSectionProps> = ({
             >
                 <Link
                     to={`/jobs/${job.id}`}
-                    onClick={() => handleJobView(job)}
+                    onClick={() => handleJobView(userId, job)}
                     className="block h-full"
                 >
                     <Card className="h-full border-none shadow-sm hover:shadow-md transition-shadow duration-300 bg-jb-surface">
@@ -222,7 +223,7 @@ const FeaturedJobsSection: React.FC<FeaturedJobsSectionProps> = ({
                     className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                     variants={staggerContainer}
                 >
-                    { featuredJobs.map(renderJobCard) }
+                    {featuredJobs?.map(renderJobCard)}
                 </motion.div>
 
                 <div className="mt-10 text-center">

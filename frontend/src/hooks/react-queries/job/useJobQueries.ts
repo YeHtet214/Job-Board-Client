@@ -1,10 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import jobService from '@/services/job.service'
-import {
-   CreateJobDto,
-   UpdateJobDto,
-   JobFilterType,
-} from '@/types/job'
+import { CreateJobDto, UpdateJobDto, JobFilterType } from '@/types/job'
 import { useMemo } from 'react'
 import { SortOption } from '@/lib/constants/jobs'
 
@@ -12,8 +8,7 @@ import { SortOption } from '@/lib/constants/jobs'
 export const jobKeys = {
    all: ['jobs'] as const,
    lists: () => [...jobKeys.all, 'list'] as const,
-   list: (filters: JobFilterType) =>
-      [...jobKeys.lists(), { filters }] as const,
+   list: (filters: JobFilterType) => [...jobKeys.lists(), { filters }] as const,
    details: () => [...jobKeys.all, 'detail'] as const,
    detail: (id: string) => [...jobKeys.details(), id] as const,
    featured: () => [...jobKeys.all, 'featured'] as const,
@@ -108,9 +103,7 @@ export const useFeaturedJobs = () => {
 export const useCompanyJobs = (companyId: string) => {
    return useQuery({
       queryKey: jobKeys.company(companyId),
-      queryFn: async () => {
-         return await jobService.getJobsByCompany(companyId)
-      },
+      queryFn: async () => jobService.getJobsByCompany(companyId),
       enabled: !!companyId, // Only run the query if we have a company ID
       staleTime: 1000 * 60 * 5, // 5 minutes
    })

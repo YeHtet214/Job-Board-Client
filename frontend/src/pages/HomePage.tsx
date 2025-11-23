@@ -113,19 +113,13 @@ const HomePage = () => {
                 initial="hidden"
                 animate={heroInView ? 'visible' : 'hidden'}
                 variants={fadeIn}
-                className="pt-16 md:!pt-24 pb-24 md:!pb-32 relative overflow-hidden"
-                style={{
-                    backgroundImage:
-                        mousePosition.x > 0
-                            ? `radial-gradient(
-                circle 400px at ${mousePosition.x}px ${mousePosition.y}px,
-                ${theme === 'dark' ? 'rgba(75, 85, 99, 0.25)' : 'rgba(243, 244, 246, 1)'} 0%,
-                ${theme === 'dark' ? 'rgba(55, 65, 81, 0.15)' : 'rgba(243, 244, 246, 0.8)'} 30%,
-                ${theme === 'dark' ? 'rgba(31, 41, 55, 0.08)' : 'rgba(243, 244, 246, 0.4)'} 50%,
-                ${theme === 'dark' ? 'rgba(17, 24, 39, 0)' : 'rgba(243, 244, 246, 0)'} 65%
-              )`
-                            : undefined,
-                }}
+                className="pt-16 md:!pt-24 pb-24 md:!pb-32 relative overflow-hidden bg-hero-radial"
+                style={
+                    {
+                        '--mouse-x': `${mousePosition.x}px`,
+                        '--mouse-y': `${mousePosition.y}px`,
+                    } as React.CSSProperties
+                }
             >
                 <div className="container mx-auto px-4 sm:px-6">
                     <ChatIcon />

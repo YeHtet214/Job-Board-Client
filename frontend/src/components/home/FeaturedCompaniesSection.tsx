@@ -1,169 +1,12 @@
-// import React from 'react';
-// import { motion } from 'framer-motion';
-// import { Link } from 'react-router-dom';
-// import { Building, Globe, Users, Trophy, ChevronRight } from 'lucide-react';
-// import { Card, CardContent } from '@/components/ui/card';
-// import { Button } from '@/components/ui/button';
-// import { Skeleton } from '@/components/ui/skeleton';
-// import useFeaturedCompanies from '@/hooks/react-queries/company/useFeaturedCompanies';
-
-// interface FeaturedCompaniesSectionProps {
-//   companiesRef: React.RefCallback<HTMLElement>;
-//   companiesInView: boolean;
-//   fadeIn: any; // Animation variant
-//   staggerContainer: any; // Animation variant
-//   cardVariants: any; // Animation variant
-// }
-
-// const FeaturedCompaniesSection: React.FC<FeaturedCompaniesSectionProps> = ({
-//   companiesRef,
-//   companiesInView,
-//   fadeIn,
-//   staggerContainer,
-//   cardVariants,
-// }) => {
-//   const { data: companiesData, isLoading } = useFeaturedCompanies();
-
-//   const renderCompanies = () => {
-//     if (isLoading) {
-//       return Array(6).fill(0).map((_, index) => (
-//         <motion.div
-//           key={`skeleton-${index}`}
-//           variants={cardVariants}
-//           whileHover="hover"
-//         >
-//           <Card className="border-none shadow-sm h-full">
-//             <CardContent className="p-4 flex flex-col items-center justify-center h-32">
-//               <Skeleton className="w-16 h-16 rounded-md mb-2" />
-//               <Skeleton className="h-4 w-24" />
-//             </CardContent>
-//           </Card>
-//         </motion.div>
-//       ));
-//     }
-
-//     if (!companiesData || companiesData.companies.length === 0) {
-//       // Fallback to placeholder company cards if no data
-//       return Array(6).fill(0).map((_, index) => (
-//         <motion.div
-//           key={`placeholder-${index}`}
-//           variants={cardVariants}
-//           whileHover="hover"
-//         >
-//           <Card className="border-none shadow-sm hover:bg-gray-50 h-full">
-//             <CardContent className="p-4 flex flex-col items-center justify-center h-32">
-//               <div className="w-16 h-16 bg-gradient-to-br from-jobboard-light to-jobboard-teal/30 rounded-md flex items-center justify-center mb-2 shadow-sm">
-//                 {index % 3 === 0 && <Building className="w-6 h-6 md:w-8 md:h-8 text-jobboard-purple/70" />}
-//                 {index % 3 === 1 && <Globe className="w-6 h-6 md:w-8 md:h-8 text-jobboard-purple/70" />}
-//                 {index % 3 === 2 && <Users className="w-6 h-6 md:w-8 md:h-8 text-jobboard-purple/70" />}
-//               </div>
-//               <p className="text-sm font-medium text-gray-700">Company {index + 1}</p>
-//             </CardContent>
-//           </Card>
-//         </motion.div>
-//       ));
-//     }
-
-//     // Render actual company data
-//     return companiesData.companies.map((company) => {
-//       const industryIcons: { [key: string]: React.ReactNode } = {
-//         'Technology': <Globe className="w-6 h-6 md:w-8 md:h-8 text-jobboard-purple/70" />,
-//         'Finance': <Trophy className="w-6 h-6 md:w-8 md:h-8 text-jobboard-purple/70" />,
-//         'Healthcare': <Users className="w-6 h-6 md:w-8 md:h-8 text-jobboard-purple/70" />,
-//         'default': <Building className="w-6 h-6 md:w-8 md:h-8 text-jobboard-purple/70" />
-//       };
-
-//       const industryIcon = industryIcons[company.industry] || industryIcons.default;
-
-//       return (
-//         <motion.div
-//           key={company.id}
-//           variants={cardVariants}
-//           whileHover="hover"
-//         >
-//           <Link to={`/companies/${company.id}`} className="block h-full">
-//             <Card className="border-none shadow-sm hover:bg-gray-50 h-full">
-//               <CardContent className="p-4 flex flex-col items-center justify-center h-32">
-//                 {company.logo ? (
-//                   <img
-//                     src={company.logo}
-//                     alt={company.name}
-//                     className="w-12 h-12 md:w-16 md:h-16 object-contain rounded-md mb-2 shadow-sm"
-//                   />
-//                 ) : (
-//                   <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-jobboard-light to-jobboard-teal/30 rounded-md flex items-center justify-center mb-2 shadow-sm">
-//                     {industryIcon}
-//                   </div>
-//                 )}
-//                 <p className="text-xs md:text-sm font-medium text-gray-700 text-center line-clamp-1">{company.name}</p>
-//                 <p className="text-xs text-gray-500 hidden md:block">{company.industry}</p>
-//               </CardContent>
-//             </Card>
-//           </Link>
-//         </motion.div>
-//       );
-//     });
-//   };
-
-//   return (
-//     <motion.section
-//       ref={companiesRef}
-//       initial="hidden"
-//       animate={companiesInView ? "visible" : "hidden"}
-//       variants={fadeIn}
-//       className="py-12"
-//     >
-//       <div className="container mx-auto px-4 sm:px-6">
-//         <div className="text-center mb-12">
-//           <motion.h2
-//             className="text-2xl font-bold mb-4 inline-block relative"
-//             variants={fadeIn}
-//           >
-//             Featured Companies
-//             <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-jb-primary"></span>
-//           </motion.h2>
-//           <motion.p
-//             className="text-gray-600 max-w-2xl mx-auto mt-4"
-//             variants={fadeIn}
-//           >
-//             Discover top companies that are currently hiring and find your perfect match.
-//           </motion.p>
-//         </div>
-
-//         <motion.div
-//           className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
-//           variants={staggerContainer}
-//         >
-//           {renderCompanies()}
-//         </motion.div>
-
-//         <div className="mt-8 text-center">
-//           <Button
-//             asChild
-//             variant="outline"
-//             className="border-jobboard-purple text-jobboard-purple hover:bg-[#836FFF] hover:text-white transition-all duration-300"
-//           >
-//             <Link to="/companies" className="inline-flex items-center">
-//               View All Companies
-//               <ChevronRight className="w-4 h-4 ml-1" />
-//             </Link>
-//           </Button>
-//         </div>
-//       </div>
-//     </motion.section>
-//   );
-// };
-
-// export default FeaturedCompaniesSection;
-
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { Building, Globe, Users, Trophy, ChevronRight } from 'lucide-react'
+import { Building, Globe, Users, Trophy, ChevronRight, MapPin } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import useFeaturedCompanies from '@/hooks/react-queries/company/useFeaturedCompanies'
+import { Company } from '@/types/company'
+import { useFeaturedCompanies } from '@/hooks/react-queries/company/useCompanyQueries'
 
 interface FeaturedCompaniesSectionProps {
     companiesRef: React.RefCallback<HTMLElement>
@@ -184,18 +27,25 @@ const FeaturedCompaniesSection: React.FC<FeaturedCompaniesSectionProps> = ({
 
     const renderCompanies = () => {
         if (isLoading) {
-            return Array(6)
+            return Array(4)
                 .fill(0)
                 .map((_, index) => (
                     <motion.div
                         key={`skeleton-${index}`}
                         variants={cardVariants}
-                        whileHover="hover"
                     >
-                        <Card className="border-none shadow-sm h-full">
-                            <CardContent className="p-4 flex flex-col items-center justify-center h-32">
-                                <Skeleton className="w-16 h-16 rounded-md mb-2" />
-                                <Skeleton className="h-4 w-24" />
+                        <Card className="h-full border border-jb-border shadow-sm overflow-hidden">
+                            <CardContent className="p-6">
+                                <div className="flex items-start justify-between mb-4">
+                                    <Skeleton className="w-16 h-16 rounded-lg" />
+                                    <Skeleton className="w-20 h-6 rounded-full" />
+                                </div>
+                                <Skeleton className="h-6 w-3/4 mb-2" />
+                                <Skeleton className="h-4 w-1/2 mb-4" />
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-2/3" />
+                                </div>
                             </CardContent>
                         </Card>
                     </motion.div>
@@ -203,50 +53,20 @@ const FeaturedCompaniesSection: React.FC<FeaturedCompaniesSectionProps> = ({
         }
 
         if (!companiesData || companiesData.companies.length === 0) {
-            return Array(6)
-                .fill(0)
-                .map((_, index) => (
-                    <motion.div
-                        key={`placeholder-${index}`}
-                        variants={cardVariants}
-                        whileHover="hover"
-                    >
-                        <Card className="border-none shadow-sm hover:bg-jb-surface h-full">
-                            <CardContent className="p-4 flex flex-col items-center justify-center h-32">
-                                <div className="w-16 h-16 bg-gradient-to-br from-jb-bg to-jb-success/30 rounded-md flex items-center justify-center mb-2 shadow-sm">
-                                    {index % 3 === 0 && (
-                                        <Building className="w-6 h-6 md:w-8 md:h-8 text-jb-primary/70" />
-                                    )}
-                                    {index % 3 === 1 && (
-                                        <Globe className="w-6 h-6 md:w-8 md:h-8 text-jb-primary/70" />
-                                    )}
-                                    {index % 3 === 2 && (
-                                        <Users className="w-6 h-6 md:w-8 md:h-8 text-jb-primary/70" />
-                                    )}
-                                </div>
-                                <p className="text-sm font-medium text-jb-text">
-                                    Company {index + 1}
-                                </p>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                ))
+            return (
+                <div className="col-span-full text-center py-12 bg-jb-surface/30 rounded-lg border border-dashed border-jb-border">
+                    <Building className="w-12 h-12 text-jb-text-muted mx-auto mb-3" />
+                    <p className="text-jb-text-muted">No featured companies available at the moment.</p>
+                </div>
+            )
         }
 
-        return companiesData.companies.map((company) => {
+        return companiesData.companies.map((company: Company) => {
             const industryIcons: { [key: string]: React.ReactNode } = {
-                Technology: (
-                    <Globe className="w-6 h-6 md:w-8 md:h-8 text-jb-primary/70" />
-                ),
-                Finance: (
-                    <Trophy className="w-6 h-6 md:w-8 md:h-8 text-jb-primary/70" />
-                ),
-                Healthcare: (
-                    <Users className="w-6 h-6 md:w-8 md:h-8 text-jb-primary/70" />
-                ),
-                default: (
-                    <Building className="w-6 h-6 md:w-8 md:h-8 text-jb-primary/70" />
-                ),
+                Technology: <Globe className="w-5 h-5" />,
+                Finance: <Trophy className="w-5 h-5" />,
+                Healthcare: <Users className="w-5 h-5" />,
+                default: <Building className="w-5 h-5" />,
             }
 
             const industryIcon =
@@ -256,31 +76,56 @@ const FeaturedCompaniesSection: React.FC<FeaturedCompaniesSectionProps> = ({
                 <motion.div
                     key={company.id}
                     variants={cardVariants}
-                    whileHover="hover"
+                    whileHover={{ y: -5 }}
+                    className="h-full"
                 >
-                    <Link
-                        to={`/companies/${company.id}`}
-                        className="block h-full"
-                    >
-                        <Card className="border-none shadow-sm hover:bg-jb-surface h-full">
-                            <CardContent className="p-4 flex flex-col items-center justify-center h-32">
-                                {company.logo ? (
-                                    <img
-                                        src={company.logo}
-                                        alt={company.name}
-                                        className="w-12 h-12 md:w-16 md:h-16 object-contain rounded-md mb-2 shadow-sm"
-                                    />
-                                ) : (
-                                    <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-br from-jb-bg to-jb-success/30 rounded-md flex items-center justify-center mb-2 shadow-sm">
-                                        {industryIcon}
+                    <Link to={`/companies/${company.id}`} className="block h-full">
+                        <Card className="h-full border border-jb-border hover:border-jb-primary/30 shadow-sm hover:shadow-md transition-all duration-300 bg-card group overflow-hidden relative">
+                            <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-jb-primary to-jb-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                            <CardContent className="p-6 flex flex-col h-full">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className="w-16 h-16 rounded-xl bg-jb-surface flex items-center justify-center border border-jb-border overflow-hidden">
+                                        {company.logo ? (
+                                            <img
+                                                src={company.logo}
+                                                alt={company.name}
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="text-jb-primary/60">
+                                                {industryIcon}
+                                            </div>
+                                        )}
                                     </div>
-                                )}
-                                <p className="text-xs md:text-sm font-medium text-jb-text text-center line-clamp-1">
-                                    {company.name}
-                                </p>
-                                <p className="text-xs text-jb-text-muted hidden md:block">
-                                    {company.industry}
-                                </p>
+                                    <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-jb-primary/10 text-jb-primary border border-jb-primary/20">
+                                        {company.industry}
+                                    </span>
+                                </div>
+
+                                <div className="mb-4 flex-grow">
+                                    <h3 className="text-lg font-bold text-jb-text group-hover:text-jb-primary transition-colors duration-200 line-clamp-1 mb-1">
+                                        {company.name}
+                                    </h3>
+                                    <div className="flex items-center text-sm text-jb-text-muted mb-3">
+                                        <MapPin className="w-3.5 h-3.5 mr-1.5 flex-shrink-0" />
+                                        <span className="line-clamp-1">{company.location}</span>
+                                    </div>
+                                    <p className="text-sm text-jb-text-muted/80 line-clamp-2">
+                                        {company.description}
+                                    </p>
+                                </div>
+
+                                <div className="pt-4 border-t border-jb-border flex items-center justify-between text-xs text-jb-text-muted mt-auto">
+                                    <div className="flex items-center">
+                                        <Users className="w-3.5 h-3.5 mr-1.5" />
+                                        <span>{company.size || 'N/A'}</span>
+                                    </div>
+                                    <div className="flex items-center text-jb-primary font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-x-2 group-hover:translate-x-0">
+                                        View Profile
+                                        <ChevronRight className="w-3.5 h-3.5 ml-0.5" />
+                                    </div>
+                                </div>
                             </CardContent>
                         </Card>
                     </Link>
@@ -295,45 +140,54 @@ const FeaturedCompaniesSection: React.FC<FeaturedCompaniesSectionProps> = ({
             initial="hidden"
             animate={companiesInView ? 'visible' : 'hidden'}
             variants={fadeIn}
-            className="py-12"
+            className="py-20 bg-gradient-to-b from-transparent to-jb-surface/30"
         >
             <div className="container mx-auto px-4 sm:px-6">
-                <div className="text-center mb-12">
-                    <motion.h2
-                        className="text-2xl font-bold mb-4 inline-block relative"
-                        variants={fadeIn}
-                    >
-                        Featured Companies
-                        <span className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-jb-primary"></span>
-                    </motion.h2>
-                    <motion.p
-                        className="text-jb-text-muted max-w-2xl mx-auto mt-4"
-                        variants={fadeIn}
-                    >
-                        Discover top companies that are currently hiring and
-                        find your perfect match.
-                    </motion.p>
+                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+                    <div className="max-w-2xl">
+                        <motion.h2
+                            className="text-3xl font-bold mb-3 text-jb-text"
+                            variants={fadeIn}
+                        >
+                            Featured Companies
+                        </motion.h2>
+                        <motion.p
+                            className="text-jb-text-muted text-lg"
+                            variants={fadeIn}
+                        >
+                            Discover top employers hiring now. Research company profiles, read reviews, and explore opportunities.
+                        </motion.p>
+                    </div>
+                    <motion.div variants={fadeIn}>
+                        <Button
+                            asChild
+                            variant="outline"
+                            className="hidden md:inline-flex border-jb-border hover:bg-jb-surface text-jb-text"
+                        >
+                            <Link to="/companies" className="flex items-center gap-2">
+                                View All Companies
+                                <ChevronRight className="w-4 h-4" />
+                            </Link>
+                        </Button>
+                    </motion.div>
                 </div>
 
                 <motion.div
-                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
                     variants={staggerContainer}
                 >
                     {renderCompanies()}
                 </motion.div>
 
-                <div className="mt-8 text-center">
+                <div className="mt-8 text-center md:hidden">
                     <Button
                         asChild
                         variant="outline"
-                        className="border-jb-primary text-jb-primary hover:bg-jb-primary hover:text-white transition-all duration-300"
+                        className="w-full border-jb-border hover:bg-jb-surface text-jb-text"
                     >
-                        <Link
-                            to="/companies"
-                            className="inline-flex items-center"
-                        >
+                        <Link to="/companies" className="flex items-center justify-center gap-2">
                             View All Companies
-                            <ChevronRight className="w-4 h-4 ml-1" />
+                            <ChevronRight className="w-4 h-4" />
                         </Link>
                     </Button>
                 </div>

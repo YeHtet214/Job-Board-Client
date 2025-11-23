@@ -9,10 +9,18 @@ class CompanyService extends ApiService {
       MY_COMPANY: '/companies/my-company',
    }
 
-   public async getAllCompanies(params: CompanySearchParams) {
-       const queryParams = new URLSearchParams(params)
+   public async getAllCompanies(params: Partial<CompanySearchParams>) {
+      const queryParams = new URLSearchParams()
 
-      const response = await this.get<Company[]>(`${this.endpoints.ALL}?${queryParams.toString()}`)
+      Object.entries(params).forEach(([key, value]) => {
+         if (value !== undefined && value !== null && value !== '') {
+            queryParams.append(key, value.toString())
+         }
+      })
+
+      const response = await this.get<Company[]>(
+         `${this.endpoints.ALL}?${queryParams.toString()}`
+      )
 
       if (!response.data.success) {
          throw new Error('Failed to fetch companies')

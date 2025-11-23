@@ -31,11 +31,16 @@ const JobList = () => {
     const hasFilters =
         keyword || location || jobTypes.length > 0 || experienceLevel !== 'ANY'
 
-    if (isLoading) return <LoadingSpinner />
+    if (isLoading) return (
+        <div className="flex flex-col items-center justify-center py-20">
+            <LoadingSpinner />
+            <p className="text-jb-text-muted mt-4">Finding the best jobs for you...</p>
+        </div>
+    )
 
     if (error) {
         return (
-            <Alert variant="destructive" className="mb-6">
+            <Alert variant="destructive" className="mb-6 border-red-200 bg-red-50 dark:bg-red-900/20 dark:border-red-900">
                 <AlertCircle className="h-4 w-4" />
                 <AlertTitle>Error</AlertTitle>
                 <AlertDescription>
@@ -49,33 +54,31 @@ const JobList = () => {
 
     if (jobs.length === 0) {
         return (
-            <div className="bg-jb-surface rounded-lg shadow-md p-6 text-center">
-                {isLoading ? <LoadingSpinner /> : (
+            <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="w-20 h-20 bg-jb-surface-muted rounded-full flex items-center justify-center mb-6">
+                    <Search className="h-10 w-10 text-jb-text-muted" />
+                </div>
+
+                {hasFilters ? (
                     <>
-                        {hasFilters ? (
-                            <>
-                                <div className="flex justify-center mb-4">
-                                    <Search className="h-12 w-12 text-gray-400" />
-                                </div>
-                                <h3 className="text-lg font-semibold mb-2">
-                                    No matching jobs found
-                                </h3>
-                                <p className="text-gray-600">
-                                    We couldn't find any jobs matching your search
-                                    criteria. Try adjusting your filters or check back
-                                    later.
-                                </p>
-                            </>
-                        ) : (
-                            <>
-                                <h3 className="text-3xl font-semibold mb-2">
-                                    No jobs available
-                                </h3>
-                                <p className="text-jb-text-muted">
-                                    Check back later for new opportunities.
-                                </p>
-                            </>
-                        )}
+                        <h3 className="text-xl font-bold text-jb-text mb-2">
+                            No matching jobs found
+                        </h3>
+                        <p className="text-jb-text-muted max-w-md mx-auto">
+                            We couldn't find any jobs matching your search
+                            criteria. Try adjusting your filters or check back
+                            later.
+                        </p>
+                    </>
+                ) : (
+                    <>
+                        <h3 className="text-xl font-bold text-jb-text mb-2">
+                            No jobs available
+                        </h3>
+                        <p className="text-jb-text-muted max-w-md mx-auto">
+                            There are currently no job listings available.
+                            Please check back later for new opportunities.
+                        </p>
                     </>
                 )}
             </div>
@@ -85,46 +88,30 @@ const JobList = () => {
     return (
         <div>
             {/* Search results and sorting controls */}
-            <div className="mb-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <div className="mb-8 pb-6 border-b border-jb-border">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                     {/* Search results summary */}
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-jb-text-muted">
+                        <span className="font-semibold text-jb-text text-lg mr-1">{totalCount}</span>
+                        Job{totalCount !== 1 ? 's' : ''} Found
+
                         {hasFilters && (
-                            <p>
-                                Found{' '}
-                                <span className="font-semibold">
-                                    {totalCount}
-                                </span>{' '}
-                                Job{totalCount !== 1 ? 's' : ''} Matching You
+                            <span className="ml-1">
                                 {keyword && (
-                                    <span>
-                                        {' '}
-                                        for{' '}
-                                        <span className="font-semibold">
-                                            "{keyword}"
-                                        </span>
-                                    </span>
+                                    <> for <span className="font-medium text-jb-text">"{keyword}"</span></>
                                 )}
                                 {location && (
-                                    <span>
-                                        {' '}
-                                        in{' '}
-                                        <span className="font-semibold">
-                                            {location}
-                                        </span>
-                                    </span>
+                                    <> in <span className="font-medium text-jb-text">{location}</span></>
                                 )}
-                            </p>
+                            </span>
                         )}
                     </div>
 
-                    {/* Sorting controls */}
                     <JobSorting />
                 </div>
             </div>
 
-            {/* Job listings - Responsive Grid Layout with !important */}
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-6 mb-8">
                 {jobs.map((job: Job) => (
                     <JobCard
                         key={job.id}

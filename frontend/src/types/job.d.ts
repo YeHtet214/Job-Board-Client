@@ -1,4 +1,5 @@
 import { Dispatch, SetStateAction } from 'react'
+import { Company } from './company'
 
 export type JobType = 'FULL_TIME' | 'PART_TIME' | 'CONTRACT'
 
@@ -18,11 +19,7 @@ export interface Job {
    isActive: boolean
    createdAt: string
    updatedAt: string
-   company?: {
-      name: string
-      logo?: string
-      industry?: string
-   }
+   company?: Partial<Company>
    postedBy?: {
       firstName: string
       lastName: string

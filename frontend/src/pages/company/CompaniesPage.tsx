@@ -11,7 +11,7 @@ import EmployerCTA from '@/components/employer/EmployerCTA'
 import Pagination from '@/components/Pagination'
 
 export interface CompanySearchParams {
-    currentPage: number
+    page: number
     limit: number
     searchTerm: string
     industry: string
@@ -21,9 +21,9 @@ export interface CompanySearchParams {
 const CompaniesPage = () => {
     const limit = 10
     const [searchParams, setSearchParams] = useSearchParams()
-    const [currentPage, setCurrentPage] = useState(1)
+    const [page, setPage] = useState(1)
     const [params, setParams] = useState<CompanySearchParams>({
-        currentPage, 
+        page,
         limit,
         searchTerm: searchParams.get('searchTerm') || '',
         industry: searchParams.get('industry') || '',
@@ -34,18 +34,17 @@ const CompaniesPage = () => {
     const totalPages = data?.meta?.totalPages || 0
 
     useEffect(() => {
-        console.log("search param update: ", )
         setParams({
-            currentPage,
+            page,
             limit,
             searchTerm: searchParams.get('searchTerm') || '',
             industry: searchParams.get('industry') || '',
             companySize: searchParams.get('companySize') || null
         })
-    }, [searchParams, currentPage])
+    }, [searchParams, page])
 
     const handlePageClick = (event: { selected: number }) => {
-        setCurrentPage(event.selected + 1)
+        setPage(event.selected + 1)
     }
 
     return (

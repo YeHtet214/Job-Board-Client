@@ -35,15 +35,13 @@ class JobService extends ApiService {
       }
    }
 
-   public async searchJobs(params: JobFilterType): Promise<JobsResponse> {
-      const queryParams = this.createQueryParams(params)
-      const url = `${this.endpoints.SEARCH}?${queryParams.toString()}`
-      const response = await this.get<JobsResponse>(url)
-      return response.data.data
-   }
-
-   public async getJobById(id: string): Promise<Job> {
+   public async getJobById(id: string) {
       const response = await this.get<Job>(this.endpoints.DETAIL(id))
+
+      if (!response.data.success) {
+         throw new Error('Failed to fetch job')
+      }
+
       return response.data.data
    }
 
