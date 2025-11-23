@@ -19,7 +19,8 @@ interface UseJobsDataReturn {
    totalCount: number
    updateSorting: (option: SortOption) => void
    handleSearch: (values: JobFilterType) => void
-   handleJobView: (job: Job, isClearing: boolean) => void
+   handleJobView: (authenticatedUserId: string, job: Job, isClearing?: boolean) => void
+   isViewedByCurrentUser: (authenticatedUserId: string) => boolean
    handlePageChange: (page: number) => void
    updateSearchParams: (values: JobFilterType) => void
    resetFilters: () => void
@@ -104,35 +105,50 @@ export const useJobsData = (
       updateSearchParams(values)
    }
 
-   const handleJobView = useCallback((job: Job, isClearing = false) => {
-      if (isClearing) {
-         localStorage.removeItem('recentlyViewedJobs')
-         setRecentlyViewedJobs([])
-         return
-      } 
+   const handleJobView = useCallback(
+      (authenticatedUserId: string, job: Job, isClearing = false) => {
+         if (!authenticatedUserId) return
 
-      setRecentlyViewedJobs((prev) => {
-         const updatedRecentlyViewed = [
-            job,
-            ...prev.filter((j) => j.id !== job.id),
-         ]
-         localStorage.setItem(
-            'recentlyViewedJobs',
-            JSON.stringify(updatedRecentlyViewed)
-         )
-         return updatedRecentlyViewed
-      })
-   }, [])
+         if (isClearing) {
+            localStorage.removeItem('recentlyViewedJobs')
+            setRecentlyViewedJobs([])
+            return
+         }
 
-   const handlePageChange = useCallback((page: number) => {
-      setSearchParams((prev) => {
-         const newParams = new URLSearchParams(prev)
-         newParams.set('page', page.toString())
-         return newParams
-      })
-      // React Query will automatically refetch when the page changes
-      window.scrollTo(0, 0)
-   }, [currentPage])
+         setRecentlyViewedJobs((prev) => {
+            const updatedRecentlyViewed = [
+               job,
+               ...prev.filter((j) => j.id !== job.id),
+            ]
+            localStorage.setItem(
+               'recentlyViewedJobs',
+               JSON.stringify({ authenticatedUserId, recentJobs: updatedRecentlyViewed })
+            )
+            return updatedRecentlyViewed
+         })
+      },
+      []
+   )
+
+   const isViewedByCurrentUser = (authenticatedUserId: string) => {
+      const userIdViewedJobs = JSON.parse(
+         localStorage.getItem('recentlyViewedJobs') as string
+      )?.userId
+      return userIdViewedJobs === authenticatedUserId
+   }
+
+   const handlePageChange = useCallback(
+      (page: number) => {
+         setSearchParams((prev) => {
+            const newParams = new URLSearchParams(prev)
+            newParams.set('page', page.toString())
+            return newParams
+         })
+         // React Query will automatically refetch when the page changes
+         window.scrollTo(0, 0)
+      },
+      [currentPage]
+   )
 
    const updateSorting = (option: SortOption) => {
       setSearchParams((prev) => {
@@ -163,6 +179,7 @@ export const useJobsData = (
       updateSorting,
       handleSearch,
       handleJobView,
+      isViewedByCurrentUser,
       handlePageChange,
       resetFilters,
       updateSearchParams,
