@@ -3,6 +3,7 @@ import JobCard from './JobCard'
 import { Job } from '@/types/job'
 import { History, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '@/contexts/authContext'
 
 const RecentlyViewedJobs = () => {
     const { recentlyViewedJobs } = useJobsData()

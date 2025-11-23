@@ -7,10 +7,14 @@ import RecentlyViewedJobs from '@/components/jobs/RecentlyViewedJobs'
 import { Button } from '@/components/ui/button'
 import Pagination from '@/components/Pagination'
 import { useJobsData } from '@/hooks'
+import { useAuth } from '@/contexts/authContext'
+import { useCallback } from 'react'
 
 const JobsPage = () => {
-    const { totalPages, handlePageChange } = useJobsData()
-
+    const { currentUser } = useAuth()
+    const { totalPages, handlePageChange, isViewedByCurrentUser } = useJobsData()
+    const isViewedByUser = (useCallback(() => currentUser ? isViewedByCurrentUser(currentUser?.id) : false, [currentUser]))()
+   
     return (
         <>
             {/* Hero Section */}
@@ -56,12 +60,16 @@ const JobsPage = () => {
                             </div>
 
                             {/* Recently Viewed */}
-                            <div className="bg-jb-surface border border-border rounded-lg shadow-sm p-5">
-                                <h2 className="text-lg font-semibold text-jb-text mb-4">
-                                    Recently Viewed Jobs
-                                </h2>
-                                <RecentlyViewedJobs />
-                            </div>
+                            {
+                                isViewedByUser && (
+                                    <div className="bg-jb-surface border border-border rounded-lg shadow-sm p-5">
+                                        <h2 className="text-lg font-semibold text-jb-text mb-4">
+                                            Recently Viewed Jobs
+                                        </h2>
+                                        <RecentlyViewedJobs />
+                                    </div>
+                                )
+                            }
 
                             {/* CTA for Employers */}
                             <div className="bg-gradient-to-r from-jb-primary to-jb-success rounded-lg shadow-md p-6 text-center">
