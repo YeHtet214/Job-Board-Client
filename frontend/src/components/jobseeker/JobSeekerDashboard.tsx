@@ -219,7 +219,6 @@ const JobSeekerDashboard: React.FC = () => {
                                         <CardFooter className="flex justify-center">
                                             <Button
                                                 variant="outline"
-                                                className="text-jb-primary border-jb-primary hover:bg-jb-primary"
                                                 onClick={() =>
                                                     navigate('/applications')
                                                 }
@@ -250,7 +249,6 @@ const JobSeekerDashboard: React.FC = () => {
                                     <CardFooter className="flex justify-center">
                                         <Button
                                             variant="outline"
-                                            className="text-jb-primary border-jb-primary hover:bg-jb-primary"
                                             onClick={() =>
                                                 navigate('/saved-jobs')
                                             }

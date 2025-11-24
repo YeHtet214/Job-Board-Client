@@ -114,7 +114,14 @@ const ApplicationDetailPage = () => {
                     </AlertDescription>
                 </Alert>
                 <div className="mt-4">
-                    <Button onClick={() => navigate('/dashboard/applications')}>
+                    <Button
+                        variant="ghost"
+                        className="pl-0 hover:bg-transparent hover:text-jb-primary mb-2"
+                        onClick={() =>
+                            navigate('/applications')
+                        }
+                    >
+                        <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Applications
                     </Button>
                 </div>
@@ -133,7 +140,14 @@ const ApplicationDetailPage = () => {
                     </AlertDescription>
                 </Alert>
                 <div className="mt-4">
-                    <Button onClick={() => navigate('/dashboard/applications')}>
+                    <Button
+                        variant="ghost"
+                        className="pl-0 hover:bg-transparent hover:text-jb-primary mb-2"
+                        onClick={() =>
+                            navigate('/applications')
+                        }
+                    >
+                        <ArrowLeft className="mr-2 h-4 w-4" />
                         Back to Applications
                     </Button>
                 </div>
@@ -151,6 +165,16 @@ const ApplicationDetailPage = () => {
 
     return (
         <div className="container mx-auto py-8 px-4 sm:px-6">
+            <Button
+                variant="ghost"
+                className="pl-0 hover:bg-transparent hover:text-jb-primary mb-2"
+                onClick={() =>
+                    navigate('/applications')
+                }
+            >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Applications
+            </Button>
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-6">
                 <div>
                     <h1 className="">
@@ -227,20 +251,6 @@ const ApplicationDetailPage = () => {
                                         </div>
                                     </div>
 
-                                    {/* {application.answers && application.answers.length > 0 && (
-                    <div>
-                      <h3 className="font-medium mb-2">Additional Questions</h3>
-                      <div className="space-y-4">
-                        {application.answers.map((answer, index) => (
-                          <div key={index} className="bg-muted p-4 rounded-md">
-                            <p className="font-medium mb-1">{answer.question}</p>
-                            <p>{answer.answer}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )} */}
-
                                     {application.resumeUrl && (
                                         <div className="overflow-hidden">
                                             <h3 className="font-medium mb-2 flex items-center gap-2">
@@ -261,16 +271,6 @@ const ApplicationDetailPage = () => {
                                     )}
                                 </CardContent>
                                 <CardFooter className="flex justify-between border-t p-6">
-                                    <Button
-                                        variant="ghost"
-                                        className="pl-0 hover:bg-transparent hover:text-jb-primary mb-2"
-                                        onClick={() =>
-                                            navigate('/applications')
-                                        }
-                                    >
-                                        <ArrowLeft className="mr-2 h-4 w-4" />
-                                        Back to Applications
-                                    </Button>
                                     {application.status === 'PENDING' && (
                                         <CancelConfirmAlert
                                             buttonContent="Withdraw Application"
@@ -321,18 +321,6 @@ const ApplicationDetailPage = () => {
                                             {formattedLastUpdated}
                                         </span>
                                     </div>
-
-                                    {/* {application.feedback && (
-                    <>
-                      <Separator />
-                      <div>
-                        <span className="text-sm text-muted-foreground block mb-1">Employer Feedback</span>
-                        <p className="text-sm bg-muted p-3 rounded-md">
-                          {application.feedback}
-                        </p>
-                      </div>
-                    </>
-                  )} */}
                                 </CardContent>
                             </Card>
 
@@ -475,14 +463,12 @@ const ApplicationDetailPage = () => {
                         </CardContent>
                         <CardFooter className="border-t p-6">
                             <Button
-                                variant="ghost"
-                                className="pl-0 hover:bg-transparent hover:text-jb-primary mb-2"
+                                variant="outline"
                                 onClick={() =>
-                                    navigate('/dashboard/applications')
+                                    navigate(`/jobs/${application.job?.id}`)
                                 }
                             >
-                                <ArrowLeft className="mr-2 h-4 w-4" />
-                                Back to Applications
+                                Job Details
                             </Button>
                         </CardFooter>
                     </Card>

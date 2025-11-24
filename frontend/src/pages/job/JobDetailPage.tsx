@@ -214,9 +214,9 @@ const JobDetailPage = () => {
                             </CardContent>
                         </Card>
 
-                        <Card className="border-jb-border shadow-sm">
+                        <Card className="border-jb-border shadow-sm p-0 overflow-hidden">
                             <CardHeader className="bg-jb-surface border-b border-jb-border">
-                                <CardTitle className="text-xl">Required Skills</CardTitle>
+                                <CardTitle className="text-xl translate-y-1/2">Required Skills</CardTitle>
                             </CardHeader>
                             <CardContent className="p-6">
                                 <div className="flex flex-wrap gap-2">
@@ -238,7 +238,7 @@ const JobDetailPage = () => {
                     <div className="lg:col-span-1 space-y-6">
                         <Card className="border-jb-border shadow-sm overflow-hidden p-0">
                             <CardHeader className="bg-jb-surface border-b border-jb-border pb-4">
-                                <CardTitle className="text-lg translate-y-1/2">About the Company</CardTitle>
+                                <CardTitle className="text-xl translate-y-1/2">About the Company</CardTitle>
                             </CardHeader>
                             <CardContent className="p-6">
                                 <div className="flex items-center mb-6">
@@ -252,7 +252,7 @@ const JobDetailPage = () => {
                                         )}
                                     </div>
                                     <div>
-                                        <h3 className="font-bold text-jb-text text-lg">
+                                        <h3 className="font-bold text-jb-text text-xl">
                                             {job.company?.name || 'Company Name'}
                                         </h3>
                                         <Link to={`/companies/${job.companyId}`} className="text-sm text-jb-primary hover:underline flex items-center">
