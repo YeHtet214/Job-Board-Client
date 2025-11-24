@@ -5,7 +5,6 @@ import type {
     RegisterRequest,
     VerifiedEmailResponse,
 } from '@/types/auth'
-import { User } from '@/types/user'
 
 // Query keys
 export const authKeys = {
@@ -21,13 +20,10 @@ export const authKeys = {
 export const useLogin = () => {
     const queryClient = useQueryClient()
 
-    return useMutation<User, Error, LoginRequest>({
-        mutationFn: (credentials: LoginRequest) =>
-            authService.login(credentials),
+    return useMutation({
+        mutationFn: (credentials: LoginRequest) => authService.login(credentials),
         onSuccess: (user) => {
-            // Update cached user data
             queryClient.setQueryData(authKeys.currentUser(), user)
-            // Invalidate any queries that might depend on authentication state
             queryClient.invalidateQueries({ queryKey: authKeys.all })
         },
         onError: (error) => {
@@ -40,13 +36,10 @@ export const useLogin = () => {
 export const useRegister = () => {
     const queryClient = useQueryClient()
 
-    return useMutation<User, Error, RegisterRequest>({
-        mutationFn: (userData: RegisterRequest) =>
-            authService.register(userData),
+    return useMutation({
+        mutationFn: (userData: RegisterRequest) => authService.register(userData),
         onSuccess: (user) => {
-            // Update cached user data
             queryClient.setQueryData(authKeys.currentUser(), user)
-            // Invalidate any queries that might depend on authentication state
             queryClient.invalidateQueries({ queryKey: authKeys.all })
         },
         onError: (error) => {
@@ -59,7 +52,7 @@ export const useRegister = () => {
 export const useLogout = () => {
     const queryClient = useQueryClient()
 
-    return useMutation<void, Error, void>({
+    return useMutation({
         mutationFn: () => authService.logout(),
         onSuccess: () => {
             // Clear user data from cache
@@ -103,7 +96,7 @@ export const useGoogleLogin = () => {
 export const useGoogleCallback = () => {
     const queryClient = useQueryClient()
 
-    return useMutation<User, Error, string>({
+    return useMutation({
         mutationFn: (code: string) => authService.handleGoogleCallback(code),
         onSuccess: (user) => {
             queryClient.setQueryData(authKeys.currentUser(), user)

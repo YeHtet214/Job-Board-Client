@@ -12,19 +12,21 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { Trash2 } from 'lucide-react'
+import { Trash } from 'lucide-react'
 import { formatDate } from '@/utils/dashboard.utils'
 import { SavedJobWithDetails } from '@/types/saved-job'
 
 interface SavedJobsListProps {
     savedJobs: SavedJobWithDetails[]
     onRemoveSavedJob?: (job: SavedJobWithDetails) => void
+    isRemovingSavedJob: boolean
     emptyStateMessage?: string
 }
 
 const SavedJobsList: React.FC<SavedJobsListProps> = ({
     savedJobs,
     onRemoveSavedJob,
+    isRemovingSavedJob,
     emptyStateMessage = "You haven't saved any jobs yet.",
 }) => {
     const navigate = useNavigate()
@@ -57,6 +59,7 @@ const SavedJobsList: React.FC<SavedJobsListProps> = ({
                                     <Button
                                         size="sm"
                                         variant="outline"
+                                        disabled={isRemovingSavedJob}
                                         onClick={() =>
                                             navigate(`/jobs/${savedJob.job.id}`)
                                         }
@@ -70,9 +73,9 @@ const SavedJobsList: React.FC<SavedJobsListProps> = ({
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"
-                                                    className="text-red-500 hover:text-red-700"
+                                                    className="text-jb-danger hover:text-jb-danger/80"
                                                 >
-                                                    <Trash2 className="h-4 w-4" />
+                                                    <Trash className="h-4 w-4" />
                                                 </Button>
                                             </AlertDialogTrigger>
                                             <AlertDialogContent>
@@ -96,12 +99,9 @@ const SavedJobsList: React.FC<SavedJobsListProps> = ({
                                                         Cancel
                                                     </AlertDialogCancel>
                                                     <AlertDialogAction
-                                                        onClick={() =>
-                                                            onRemoveSavedJob(
-                                                                savedJob
-                                                            )
-                                                        }
+                                                        onClick={() => onRemoveSavedJob(savedJob)}
                                                         className="bg-red-500 hover:bg-red-600"
+                                                        disabled={isRemovingSavedJob}
                                                     >
                                                         Remove
                                                     </AlertDialogAction>

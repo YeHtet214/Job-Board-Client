@@ -4,6 +4,7 @@ import React, {
     useState,
     useEffect,
     ReactNode,
+    useCallback,
 } from 'react'
 import {
     useLogin as useLoginQuery,
@@ -16,15 +17,16 @@ import { useCurrentUser } from '@/hooks/react-queries/user'
 import authService from '@/services/auth.service'
 import { User } from '@/types/user'
 import { isTokenExpired } from '@/utils/jwt'
+import { RegisterRequest } from '@/types/auth'
 
 interface AuthContextType {
     currentUser: User | null
     isAuthenticated: boolean
     accessToken: string
     isLoading: boolean
-    refetchUser: () => Promise<any>
+    refetchUser: () => Promise<User>
     login: (email: string, password: string) => Promise<void>
-    register: (userData: any) => Promise<void>
+    register: (userData: RegisterRequest) => Promise<void>
     logout: () => Promise<void>
     verifyEmail: (token: string) => Promise<any>
     resendVerification: (email: string) => Promise<any>
@@ -40,34 +42,21 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-        // Initialize authentication state based on token validity
-        const accessToken = localStorage.getItem('accessToken')
-        const refreshToken = localStorage.getItem('refreshToken')
-        return !!(accessToken && refreshToken && !isTokenExpired(accessToken))
-    })
-    const [showSessionExpiredDialog, setShowSessionExpiredDialog] =
-        useState(false)
-    const [accessToken, setAccesstoken] = useState<string>('')
-
-    // Use React Query hooks
-    const {
-        data: currentUser,
-        isLoading: isUserLoading,
-        isError,
-        refetch: refetchUser,
-    } = useCurrentUser()
-
+    const { data: currentUser, isLoading: isUserLoading, refetch: refetchUser } = useCurrentUser()
     const loginMutation = useLoginQuery()
     const registerMutation = useRegisterQuery()
     const logoutMutation = useLogoutQuery()
     const googleLoginMutation = useGoogleLoginQuery()
     const googleCallbackMutation = useGoogleCallbackQuery()
 
+    const [showSessionExpiredDialog, setShowSessionExpiredDialog] = useState(false)
+    const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || '')
+
+    const isAuthenticated = useCallback(() => !!accessToken && !isTokenExpired(accessToken), [accessToken])
+
     // Handle session expiration events
     useEffect(() => {
         const handleSessionExpired = () => {
-            setIsAuthenticated(false)
             setShowSessionExpiredDialog(true)
         }
 
@@ -81,46 +70,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     }, [])
 
-    // Update authentication state based on tokens and user data
-    useEffect(() => {
-        const accessToken = localStorage.getItem('accessToken')
-        const refreshToken = localStorage.getItem('refreshToken')
-
-        // Check if tokens exist and are valid
-        const tokensValid =
-            accessToken &&
-            refreshToken &&
-            !isTokenExpired(accessToken) &&
-            !isTokenExpired(refreshToken)
-
-        if (tokensValid) {
-            setIsAuthenticated(true)
-            setAccesstoken(accessToken)
-
-            // If we have valid tokens but no user data, refetch the user
-            if (!currentUser && !isUserLoading) {
-                refetchUser()
-            }
-        } else if (!tokensValid) {
-            // If tokens are invalid, ensure we're logged out
-            setIsAuthenticated(false)
-            // Only show expired dialog if we previously had a valid session
-            if (accessToken || refreshToken) {
-                localStorage.removeItem('accessToken')
-                localStorage.removeItem('refreshToken')
-            }
-        }
-
-        // If the user query failed due to auth error, ensure we're logged out
-        if (isError) {
-            setIsAuthenticated(false)
-        }
-    }, [currentUser, isError, isUserLoading, refetchUser])
-
     const login = async (email: string, password: string): Promise<void> => {
         try {
-            await loginMutation.mutateAsync({ email, password })
-            setIsAuthenticated(true)
+            const user = await loginMutation.mutateAsync({ email, password })
+            setAccessToken(user.accessToken)
+            localStorage.setItem('accessToken', user.accessToken)
             refetchUser() // Refresh user data after login
         } catch (error) {
             console.error('Login failed:', error)
@@ -128,10 +82,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
     }
 
-    const register = async (userData: any): Promise<void> => {
+    const register = async (userData: RegisterRequest): Promise<void> => {
         try {
             await registerMutation.mutateAsync(userData)
-            setIsAuthenticated(true)
             refetchUser() // Refresh user data after registration
         } catch (error) {
             console.error('Registration failed:', error)
@@ -151,11 +104,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const logout = async () => {
         try {
             await logoutMutation.mutateAsync()
-            setIsAuthenticated(false)
+            localStorage.removeItem('accessToken')
+            setAccessToken('')
+            refetchUser()
         } catch (error) {
             console.error('Logout error:', error)
-            // Even if the API call fails, we should log out locally
-            setIsAuthenticated(false)
         }
     }
 
@@ -193,7 +146,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         googleCallbackMutation.isPending
 
     const value = {
-        currentUser: currentUser || null,
+        currentUser,
         isAuthenticated,
         accessToken,
         isLoading,

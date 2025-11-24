@@ -8,12 +8,14 @@ import CancelConfirmAlert from '../common/CancelConfirmAlert'
 interface ApplicationsTableProps {
     applications: JobApplication[]
     onWithdrawApplication?: (application: JobApplication) => void
+    isWithdrawingApplication: boolean
     emptyStateMessage?: string
 }
 
 const ApplicationsTable: React.FC<ApplicationsTableProps> = ({
     applications,
     onWithdrawApplication,
+    isWithdrawingApplication,
     emptyStateMessage = "You haven't applied to any jobs yet.",
 }) => {
     const navigate = useNavigate()
@@ -41,48 +43,18 @@ const ApplicationsTable: React.FC<ApplicationsTableProps> = ({
                                         <Button
                                             size="sm"
                                             variant="outline"
-                                            onClick={() =>
-                                                navigate(
-                                                    `/jobs/${application.jobId}`
-                                                )
-                                            }
+                                            onClick={() => navigate(`/jobs/${application.jobId}`)}
                                         >
                                             View
                                         </Button>
 
                                         {onWithdrawApplication && (
-                                            // <AlertDialog>
-                                            //   <AlertDialogTrigger asChild>
-                                            //     <Button size="sm" variant="ghost" className="text-jb-danger hover:text-jb-danger/80">
-                                            //       <X className="h-4 w-4" />
-                                            //     </Button>
-                                            //   </AlertDialogTrigger>
-                                            //   <AlertDialogContent>
-                                            //     <AlertDialogHeader>
-                                            //       <AlertDialogTitle>Withdraw Application</AlertDialogTitle>
-                                            //       <AlertDialogDescription>
-                                            //         Are you sure you want to withdraw your application for {application.jobTitle} at {application.companyName}?
-                                            //         This action cannot be undone.
-                                            //       </AlertDialogDescription>
-                                            //     </AlertDialogHeader>
-                                            //     <AlertDialogFooter>
-                                            //       <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                            //       <AlertDialogAction
-                                            //         onClick={() => onWithdrawApplication(application)}
-                                            //         className="bg-jb-danger hover:bg-jb-danger/80"
-                                            //       >
-                                            //         Withdraw
-                                            //       </AlertDialogAction>
-                                            //     </AlertDialogFooter>
-                                            //   </AlertDialogContent>
-                                            // </AlertDialog>
                                             <CancelConfirmAlert
                                                 alertTitle="Withdraw Application"
-                                                alertDescription="Are you sure you want to withdraw your application for {application.jobTitle} at {application.companyName}? This action cannot be undone."
+                                                alertDescription={`Are you sure you want to withdraw your application for ${application.jobTitle} at ${application.companyName}? This action cannot be undone.`}
                                                 cancelItem={application}
-                                                onWithdraw={
-                                                    onWithdrawApplication
-                                                }
+                                                onWithdraw={onWithdrawApplication}
+                                                isLoading={isWithdrawingApplication}
                                             />
                                         )}
                                     </div>

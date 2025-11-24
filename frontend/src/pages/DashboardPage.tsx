@@ -5,6 +5,8 @@ import EmployerDashboard from '@/components/employer/EmployerDashboard'
 const DashboardPage = () => {
     const { currentUser } = useAuth()
 
+    console.log("Current User", currentUser)
+
     // If the user doesn't have a valid role
     if (
         !currentUser ||

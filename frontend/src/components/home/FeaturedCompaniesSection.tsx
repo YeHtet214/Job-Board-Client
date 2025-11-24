@@ -162,7 +162,7 @@ const FeaturedCompaniesSection: React.FC<FeaturedCompaniesSectionProps> = ({
                         <Button
                             asChild
                             variant="outline"
-                            className="hidden md:inline-flex border-jb-border hover:bg-jb-surface text-jb-text"
+                            className="hidden md:inline-flex border-jb-border hover:bg-jb-primary text-jb-text"
                         >
                             <Link to="/companies" className="flex items-center gap-2">
                                 View All Companies

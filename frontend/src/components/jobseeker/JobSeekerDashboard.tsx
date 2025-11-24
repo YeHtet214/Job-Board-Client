@@ -39,8 +39,8 @@ const JobSeekerDashboard: React.FC = () => {
     const { currentUser } = useAuth()
     const { toast } = useToast()
 
-    const { mutate: withdrawApplication } = useWithdrawApplication()
-    const { mutate: removeSavedJob } = useRemoveSavedJob()
+    const { mutate: withdrawApplication, isPending: isWithdrawingApplication } = useWithdrawApplication()
+    const { mutate: removeSavedJob, isPending: isRemovingSavedJob } = useRemoveSavedJob()
     const {
         data: profile,
         isLoading: isProfileLoading,
@@ -71,13 +71,13 @@ const JobSeekerDashboard: React.FC = () => {
                 const basic =
                     profile.bio !== ''
                         ? {
-                              completed: true,
-                              text: 'Basic information completed',
-                          }
+                            completed: true,
+                            text: 'Basic information completed',
+                        }
                         : {
-                              completed: false,
-                              text: 'Basic information completed',
-                          }
+                            completed: false,
+                            text: 'Basic information completed',
+                        }
                 const skills =
                     profile.skills?.length >= 3
                         ? { completed: true, text: 'Added 3 skills' }
@@ -108,15 +108,7 @@ const JobSeekerDashboard: React.FC = () => {
                             title: 'Job removed',
                             description: `${savedJob.job.title} has been removed from your saved jobs.`,
                         })
-                    },
-                    onError: () => {
-                        toast({
-                            title: 'Error',
-                            description:
-                                'Failed to remove job. Please try again.',
-                            variant: 'destructive',
-                        })
-                    },
+                    }
                 }
             )
         },
@@ -163,8 +155,8 @@ const JobSeekerDashboard: React.FC = () => {
                 <DashboardStatCard
                     title="Interviews"
                     value={dashboardData?.stats?.interviews || 0}
-                    icon={<Calendar className="h-6 w-6 text-jb-secondary" />}
-                    borderColorClass="border-l-jb-secondary"
+                    icon={<Calendar className="h-6 w-6 text-jb-accent" />}
+                    borderColorClass="border-l-jb-accent"
                 />
                 <DashboardStatCard
                     title="Offers"
@@ -185,17 +177,17 @@ const JobSeekerDashboard: React.FC = () => {
                 {/* Tabs Section */}
                 <div>
                     <Tabs defaultValue="applications" className="w-full">
-                        <TabsList className="grid grid-cols-2 w-full bg-jb-surface text-jb-text">
+                        <TabsList className="grid grid-cols-2 w-full bg-jb-surface">
                             <TabsTrigger
                                 value="applications"
-                                className="flex items-center justify-center gap-2 py-2"
+                                className="flex items-center justify-center gap-2 cursor-pointer hover:text-jb-text"
                             >
                                 <FileText className="h-4 w-4" />
                                 <span>Applications</span>
                             </TabsTrigger>
                             <TabsTrigger
                                 value="saved"
-                                className="flex items-center justify-center gap-2 py-2"
+                                className="flex items-center justify-center gap-2 cursor-pointer hover:text-jb-text"
                             >
                                 <Bookmark className="h-4 w-4" />
                                 <span>Saved Jobs</span>
@@ -203,7 +195,7 @@ const JobSeekerDashboard: React.FC = () => {
                         </TabsList>
 
                         <TabsContent value="applications">
-                            <Card className="bg-jb-surface text-jb-text">
+                            <Card className="bg-jb-surface">
                                 <CardHeader>
                                     <CardTitle>Your Applications</CardTitle>
                                     <CardDescription className="text-jb-text-muted">
@@ -219,22 +211,23 @@ const JobSeekerDashboard: React.FC = () => {
                                         onWithdrawApplication={
                                             handleWithdrawApplication
                                         }
+                                        isWithdrawingApplication={isWithdrawingApplication}
                                     />
                                 </CardContent>
                                 {(dashboardData?.applications?.length ?? 0) >
                                     0 && (
-                                    <CardFooter className="flex justify-center">
-                                        <Button
-                                            variant="outline"
-                                            className="text-jb-primary border-jb-primary hover:bg-jb-primary/10"
-                                            onClick={() =>
-                                                navigate('/applications')
-                                            }
-                                        >
-                                            View All Applications
-                                        </Button>
-                                    </CardFooter>
-                                )}
+                                        <CardFooter className="flex justify-center">
+                                            <Button
+                                                variant="outline"
+                                                className="text-jb-primary border-jb-primary hover:bg-jb-primary"
+                                                onClick={() =>
+                                                    navigate('/applications')
+                                                }
+                                            >
+                                                View All Applications
+                                            </Button>
+                                        </CardFooter>
+                                    )}
                             </Card>
                         </TabsContent>
 
@@ -250,13 +243,14 @@ const JobSeekerDashboard: React.FC = () => {
                                     <SavedJobsList
                                         savedJobs={savedJobs || []}
                                         onRemoveSavedJob={handleRemoveSavedJob}
+                                        isRemovingSavedJob={isRemovingSavedJob}
                                     />
                                 </CardContent>
-                                {(savedJobs?.length ?? 0) > 0 && (
+                                {savedJobs?.length > 0 && (
                                     <CardFooter className="flex justify-center">
                                         <Button
                                             variant="outline"
-                                            className="text-jb-primary border-jb-primary hover:bg-jb-primary/10"
+                                            className="text-jb-primary border-jb-primary hover:bg-jb-primary"
                                             onClick={() =>
                                                 navigate('/saved-jobs')
                                             }
