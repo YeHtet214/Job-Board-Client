@@ -29,58 +29,36 @@ const onTokenRefreshed = (newToken: string) => {
 axiosInstance.interceptors.request.use(
    async (config) => {
       const accessToken = localStorage.getItem('accessToken')
-      const refreshToken = localStorage.getItem('refreshToken')
 
       // Skip auth header for auth endpoints except logout
-      const isAuthEndpoint =
-         config.url?.includes('/auth/') && !config.url?.includes('/auth/logout')
+      const isAuthEndpoint = config.url?.includes('/auth/') && !config.url?.includes('/auth/logout')
 
       if (accessToken && !isAuthEndpoint) {
          if (willTokenExpireSoon(accessToken, 120)) {
             // expire in 2 minutes
             try {
                // Only start a refresh if another request isn't already refreshing
-               if (
-                  !isRefreshing &&
-                  refreshToken &&
-                  !isTokenExpired(refreshToken)
-               ) {
+               if (!isRefreshing) {
                   isRefreshing = true
 
                   // Make refresh request directly without going through interceptors
-                  const response = await axios.post(
-                     `${axiosInstance.defaults.baseURL}/auth/refresh-token`,
-                     {
-                        refreshToken,
-                     }
-                  )
+                  const response = await axiosInstance.post('/auth/refresh-token')
 
-                  const {
-                     accessToken: newAccessToken,
-                     refreshToken: newRefreshToken,
-                  } = response.data.data
+                  const { accessToken: newAccessToken } = response.data.data
 
                   localStorage.setItem('accessToken', newAccessToken)
-                  localStorage.setItem('refreshToken', newRefreshToken)
 
-                  // Update the current request with new token
                   config.headers.Authorization = `Bearer ${newAccessToken}`
-
-                  // Notify all waiting requests
                   onTokenRefreshed(newAccessToken)
                   isRefreshing = false
                } else if (isRefreshing) {
-                  // If we're already refreshing, wait for the new token
                   const newToken = await new Promise<string>((resolve) => {
                      subscribeTokenRefresh((token) => resolve(token))
                   })
-
-                  // Apply new token to this request
                   config.headers.Authorization = `Bearer ${newToken}`
                }
             } catch (error) {
                console.error('Error refreshing token:', error)
-               // If refresh fails, clear tokens and let the response interceptor handle the error
             }
          } else {
             // Token is still valid, use it

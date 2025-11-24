@@ -16,7 +16,7 @@ interface CancelConfirmAlertProps {
     buttonContent?: string
     alertTitle: string
     alertDescription: string
-    isLoading: boolean
+    isLoading?: boolean
     cancelItem: any
     onWithdraw: (cancelItem: any) => void
 }
@@ -25,14 +25,14 @@ const CancelConfirmAlert: React.FC<CancelConfirmAlertProps> = ({
     buttonContent,
     alertTitle,
     alertDescription,
-    isLoading,
+    isLoading = false,
     cancelItem,
     onWithdraw,
 }) => {
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="ghost" disabled={isLoading}>
+                <Button variant="destructive" disabled={isLoading} className='hover:opacity-90'>
                     {buttonContent ? buttonContent : <Trash className="h-4 w-4 text-jb-danger" />}
                 </Button>
             </AlertDialogTrigger>

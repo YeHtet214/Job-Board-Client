@@ -10,26 +10,28 @@ const PersonalInfoTab: React.FC = () => {
             </p>
 
             <div className="grid gap-4 py-4">
-                {/* Full Name */}
-                <div className="grid gap-2">
-                    <InputFieldWithLabel
-                        name="fullName"
-                        label="Full Name"
-                        required={true}
-                        formik={true}
-                        placeholder="Enter your full name"
-                    />
-                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Full Name */}
+                    <div className="grid gap-2">
+                        <InputFieldWithLabel
+                            name="fullName"
+                            label="Full Name"
+                            required={true}
+                            formik={true}
+                            placeholder="Enter your full name"
+                        />
+                    </div>
 
-                {/* Email */}
-                <div className="grid gap-2">
-                    <InputFieldWithLabel
-                        name="email"
-                        label="Email Address"
-                        required={true}
-                        formik={true}
-                        placeholder="Enter your email address"
-                    />
+                    {/* Email */}
+                    <div className="grid gap-2">
+                        <InputFieldWithLabel
+                            name="email"
+                            label="Email Address"
+                            required={true}
+                            formik={true}
+                            placeholder="Enter your email address"
+                        />
+                    </div>
                 </div>
 
                 {/* Phone Number */}

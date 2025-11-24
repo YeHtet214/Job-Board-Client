@@ -178,8 +178,8 @@ const ReviewTab: React.FC<ReviewTabProps> = ({
                     <div className="flex items-center space-x-2">
                         <CheckboxField
                             name="acceptTerms"
-                            label="I confirm that all the information provided is accurate and complete"
-                            formik={true}
+                            label="Accept Terms and Conditions"
+                            description="I confirm that all the information provided is accurate and complete"
                         />
                     </div>
                 </div>

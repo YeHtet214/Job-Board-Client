@@ -148,13 +148,13 @@ const JobDetailPage = () => {
                                     </Button>
                                     {canApply ? (
                                         <Link to={`/jobs/${job.id}/apply`} className="w-full sm:w-auto">
-                                            <Button className="w-full bg-jb-primary hover:bg-jb-primary/90 text-white px-8">
+                                            <Button className="w-full bg-jb-primary hover:bg-jb-primary/80 text-white px-8">
                                                 Apply Now
                                             </Button>
                                         </Link>
                                     ) : !isAuthenticated ? (
                                         <Link to={`/login?redirect=/jobs/${job.id}`} className="w-full sm:w-auto">
-                                            <Button className="w-full bg-jb-primary hover:bg-jb-primary/90 text-white px-8">
+                                            <Button className="w-full bg-jb-primary hover:bg-jb-primary/80 text-white px-8">
                                                 Login to Apply
                                             </Button>
                                         </Link>

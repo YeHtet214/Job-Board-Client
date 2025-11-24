@@ -11,6 +11,7 @@ import {
     Calendar,
     CheckCircle2,
     XCircle,
+    ArrowLeft,
 } from 'lucide-react'
 import { format } from 'date-fns'
 
@@ -261,17 +262,16 @@ const ApplicationDetailPage = () => {
                                 </CardContent>
                                 <CardFooter className="flex justify-between border-t p-6">
                                     <Button
-                                        variant="outline"
+                                        variant="ghost"
+                                        className="pl-0 hover:bg-transparent hover:text-jb-primary mb-2"
                                         onClick={() =>
                                             navigate('/applications')
                                         }
                                     >
+                                        <ArrowLeft className="mr-2 h-4 w-4" />
                                         Back to Applications
                                     </Button>
                                     {application.status === 'PENDING' && (
-                                        // <Button variant="destructive" onClick={handleWithdraw}>
-                                        //   Withdraw Application
-                                        // </Button>
                                         <CancelConfirmAlert
                                             buttonContent="Withdraw Application"
                                             alertTitle="Withdraw Application"
@@ -475,11 +475,13 @@ const ApplicationDetailPage = () => {
                         </CardContent>
                         <CardFooter className="border-t p-6">
                             <Button
-                                variant="outline"
+                                variant="ghost"
+                                className="pl-0 hover:bg-transparent hover:text-jb-primary mb-2"
                                 onClick={() =>
                                     navigate('/dashboard/applications')
                                 }
                             >
+                                <ArrowLeft className="mr-2 h-4 w-4" />
                                 Back to Applications
                             </Button>
                         </CardFooter>

@@ -57,7 +57,7 @@ const CompanyDetailPage: React.FC = () => {
                 <div className="max-w-5xl mx-auto">
                     <Skeleton className="h-6 w-48 mb-6" />
                     <div className="bg-card rounded-lg shadow-md overflow-hidden">
-                        <div className="h-48 bg-gray-200" />
+                        <div className="h-48 bg-jb-surface" />
                         <div className="p-6">
                             <div className="flex items-start">
                                 <Skeleton className="h-20 w-20 rounded-md mr-6" />
@@ -393,13 +393,13 @@ const CompanyDetailPage: React.FC = () => {
                                                     <Badge
                                                         variant={
                                                             job.type ===
-                                                            'FULL_TIME'
+                                                                'FULL_TIME'
                                                                 ? 'default'
                                                                 : 'outline'
                                                         }
                                                         className={
                                                             job.type ===
-                                                            'FULL_TIME'
+                                                                'FULL_TIME'
                                                                 ? 'bg-jobboard-purple'
                                                                 : ''
                                                         }
@@ -417,7 +417,7 @@ const CompanyDetailPage: React.FC = () => {
 
                                                 {job.requiredSkills &&
                                                     job.requiredSkills.length >
-                                                        0 && (
+                                                    0 && (
                                                         <div className="flex flex-wrap gap-2 mt-4">
                                                             {job.requiredSkills
                                                                 .slice(0, 3)
@@ -441,18 +441,18 @@ const CompanyDetailPage: React.FC = () => {
                                                                 )}
                                                             {job.requiredSkills
                                                                 .length > 3 && (
-                                                                <Badge
-                                                                    variant="outline"
-                                                                    className="bg-jobboard-light/50"
-                                                                >
-                                                                    +
-                                                                    {job
-                                                                        .requiredSkills
-                                                                        .length -
-                                                                        3}{' '}
-                                                                    more
-                                                                </Badge>
-                                                            )}
+                                                                    <Badge
+                                                                        variant="outline"
+                                                                        className="bg-jobboard-light/50"
+                                                                    >
+                                                                        +
+                                                                        {job
+                                                                            .requiredSkills
+                                                                            .length -
+                                                                            3}{' '}
+                                                                        more
+                                                                    </Badge>
+                                                                )}
                                                         </div>
                                                     )}
                                             </CardContent>

@@ -32,7 +32,6 @@ const ResumeTab: React.FC = () => {
                     name="coverLetter"
                     label="Cover Letter"
                     placeholder="Write your cover letter here..."
-                    formik={true}
                     required={true}
                 />
 
