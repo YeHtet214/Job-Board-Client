@@ -22,10 +22,15 @@ class DashboardService extends ApiService {
     }
 
     // Job seeker dashboard methods
-    public async getJobSeekerDashboardData(): Promise<JobSeekerDashboardData> {
+    public async getJobSeekerDashboardData() {
         const response = await this.get<JobSeekerDashboardData>(
             this.endpoints.JOBSEEKER_DASHBOARD
         )
+
+        if (!response.data.success) {
+            throw new Error(response.data.message)
+        }
+
         return response.data.data
     }
 

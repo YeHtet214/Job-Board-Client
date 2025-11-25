@@ -1,22 +1,22 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Button } from '@/components/ui/button'
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { formatDate, getEmployerStatusBadge } from '@/utils/dashboard.utils'
-import { ReceivedApplication } from '@/types/dashboard'
+} from "@/components/ui/dropdown-menu";
+import { formatDate, getEmployerStatusBadge } from "@/utils/dashboard.utils";
+import { ReceivedApplication } from "@/types/dashboard";
 
 interface ReceivedApplicationsListProps {
-    applications: ReceivedApplication[]
+    applications: ReceivedApplication[];
     onUpdateApplicationStatus?: (
         application: ReceivedApplication,
-        status: ReceivedApplication['status']
-    ) => void
-    emptyStateMessage?: string
+        status: ReceivedApplication["status"],
+    ) => void;
+    emptyStateMessage?: string;
 }
 
 const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
@@ -24,17 +24,17 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
     onUpdateApplicationStatus,
     emptyStateMessage = "You haven't received any applications yet.",
 }) => {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const statusOptions: {
-        label: string
-        value: ReceivedApplication['status']
+        label: string;
+        value: ReceivedApplication["status"];
     }[] = [
-        { label: 'Mark as Reviewing', value: 'REVIEWING' },
-        { label: 'Schedule Interview', value: 'INTERVIEW' },
-        { label: 'Reject Application', value: 'REJECTED' },
-        { label: 'Accept Candidate', value: 'ACCEPTED' },
-    ]
+            { label: "Mark as Reviewing", value: "REVIEWING" },
+            { label: "Schedule Interview", value: "INTERVIEW" },
+            { label: "Reject Application", value: "REJECTED" },
+            { label: "Accept Candidate", value: "ACCEPTED" },
+        ];
 
     return (
         <div>
@@ -56,10 +56,9 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
                                             <Button
                                                 size="sm"
                                                 variant="outline"
+                                                className="text-jb-primary hover:text-white"
                                                 onClick={() =>
-                                                    navigate(
-                                                        `/employer/applications/${application.id}`
-                                                    )
+                                                    navigate(`/employer/applications/${application.id}`)
                                                 }
                                             >
                                                 View
@@ -70,39 +69,31 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
                                                     <DropdownMenuTrigger>
                                                         <Button
                                                             size="sm"
-                                                            variant="secondary"
+                                                            variant="outline"
+                                                            className="text-jb-text"
                                                         >
-                                                            Update Status
+                                                            Update
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent
                                                         align="end"
-                                                        className="bg-jb-surface text-jb-textbg-jb-surface shadow p-2"
+                                                        className="text-jb-text bg-jb-surface shadow p-2"
                                                     >
-                                                        {statusOptions.map(
-                                                            (option) => (
-                                                                <DropdownMenuItem
-                                                                    key={
-                                                                        option.value
-                                                                    }
-                                                                    disabled={
-                                                                        application.status ===
-                                                                        option.value
-                                                                    }
-                                                                    className="hover:text-jb-primary/90"
-                                                                    onClick={() =>
-                                                                        onUpdateApplicationStatus(
-                                                                            application,
-                                                                            option.value
-                                                                        )
-                                                                    }
-                                                                >
-                                                                    {
-                                                                        option.label
-                                                                    }
-                                                                </DropdownMenuItem>
-                                                            )
-                                                        )}
+                                                        {statusOptions.map((option) => (
+                                                            <DropdownMenuItem
+                                                                key={option.value}
+                                                                disabled={application.status === option.value}
+                                                                className="hover:text-jb-primary/90"
+                                                                onClick={() =>
+                                                                    onUpdateApplicationStatus(
+                                                                        application,
+                                                                        option.value,
+                                                                    )
+                                                                }
+                                                            >
+                                                                {option.label}
+                                                            </DropdownMenuItem>
+                                                        ))}
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             )}
@@ -115,12 +106,9 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
 
                                     <div className="flex items-center gap-3 mt-2">
                                         <span className="text-xs text-jb-text-muted">
-                                            Received{' '}
-                                            {formatDate(application.applied)}
+                                            Received {formatDate(application.applied)}
                                         </span>
-                                        {getEmployerStatusBadge(
-                                            application.status
-                                        )}
+                                        {getEmployerStatusBadge(application.status)}
                                     </div>
                                 </div>
                             </div>
@@ -129,11 +117,9 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
                 </div>
             ) : (
                 <div className="text-center py-10">
-                    <p className="text-jb-text-muted mb-4">
-                        {emptyStateMessage}
-                    </p>
+                    <p className="text-jb-text-muted mb-4">{emptyStateMessage}</p>
                     <Button
-                        onClick={() => navigate('/employer/jobs/create')}
+                        onClick={() => navigate("/employer/jobs/create")}
                         className="bg-jb-primary hover:bg-jb-primary/90 text-white"
                     >
                         Post a Job
@@ -141,7 +127,7 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
                 </div>
             )}
         </div>
-    )
-}
+    );
+};
 
-export default ReceivedApplicationsList
+export default ReceivedApplicationsList;

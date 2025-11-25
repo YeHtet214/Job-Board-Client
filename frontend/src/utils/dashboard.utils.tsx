@@ -183,3 +183,44 @@ export const getEmployerActivityIcon = (type: string) => {
             return null
     }
 }
+
+// Application Status Maps
+import {
+    Clock as ClockIcon,
+    MailOpen,
+    Calendar as CalendarIcon,
+    CheckCircle2,
+    XCircle,
+} from 'lucide-react'
+import { ApplicationStatus } from '@/types/application'
+
+export const statusIconMap = {
+    PENDING: <ClockIcon className="h-5 w-5 text-yellow-500" />,
+    REVIEWING: <MailOpen className="h-5 w-5 text-blue-500" />,
+    INTERVIEW: <CalendarIcon className="h-5 w-5 text-purple-500" />,
+    ACCEPTED: <CheckCircle2 className="h-5 w-5 text-green-500" />,
+    REJECTED: <XCircle className="h-5 w-5 text-red-500" />,
+}
+
+export const statusTextMap = {
+    PENDING: 'Pending Review',
+    REVIEWING: 'Under Review',
+    INTERVIEW: 'Interview Scheduled',
+    ACCEPTED: 'Application Accepted',
+    REJECTED: 'Application Rejected',
+}
+
+export const statusColorMap = {
+    PENDING: 'bg-yellow-100 text-yellow-800',
+    REVIEWING: 'bg-blue-100 text-blue-800',
+    INTERVIEW: 'bg-purple-100 text-purple-800',
+    ACCEPTED: 'bg-green-100 text-green-800',
+    REJECTED: 'bg-red-100 text-red-800',
+}
+
+export const statusOptions: { label: string; value: ApplicationStatus }[] = [
+    { label: 'Mark as Reviewing', value: 'REVIEWING' },
+    { label: 'Schedule Interview', value: 'INTERVIEW' },
+    { label: 'Accept Applicant', value: 'ACCEPTED' },
+    { label: 'Reject Application', value: 'REJECTED' },
+]

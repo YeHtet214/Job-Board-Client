@@ -31,7 +31,8 @@ axiosInstance.interceptors.request.use(
       const accessToken = localStorage.getItem('accessToken')
 
       // Skip auth header for auth endpoints except logout
-      const isAuthEndpoint = config.url?.includes('/auth/') && !config.url?.includes('/auth/logout')
+      const isAuthEndpoint =
+         config.url?.includes('/auth/') && !config.url?.includes('/auth/logout')
 
       if (accessToken && !isAuthEndpoint) {
          if (willTokenExpireSoon(accessToken, 120)) {
@@ -42,7 +43,9 @@ axiosInstance.interceptors.request.use(
                   isRefreshing = true
 
                   // Make refresh request directly without going through interceptors
-                  const response = await axiosInstance.post('/auth/refresh-token')
+                  const response = await axiosInstance.post(
+                     '/auth/refresh-token'
+                  )
 
                   const { accessToken: newAccessToken } = response.data.data
 
@@ -85,13 +88,16 @@ axiosInstance.interceptors.response.use(
       }
 
       // Don't trigger session expired events for auth endpoints (login, register, etc.)
-      //   const isAuthEndpoint =
-      //      originalRequest.url?.includes('/auth/') &&
-      //      !originalRequest.url?.includes('/auth/refresh-token') &&
-      //      !originalRequest.url?.includes('/auth/logout')
+      const isAuthEndPoint =
+         originalRequest.url?.includes('/auth/') &&
+         !originalRequest.url?.includes('/auth/refresh-token') &&
+         !originalRequest.url?.includes('/auth/logout')
 
       // Handle 401 Unauthorized errors (but not for login/register attempts)
       if (error.response.status === 401 && !originalRequest._retry) {
+         if (isAuthEndPoint) {
+            return Promise.reject(error)
+         }
          if (isRefreshing) {
             try {
                const newToken = await new Promise<string>((resolve) => {
