@@ -16,7 +16,7 @@ import {
     formatDate,
 } from '@/lib/formatters'
 import { useJobsData } from '@/hooks'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import {
     MapPin,
     Briefcase,
@@ -29,12 +29,19 @@ import {
     Bookmark,
     ExternalLink
 } from 'lucide-react'
+import { useJobSeekerDashboard } from '@/hooks/react-queries/dashboard'
 
 const JobDetailPage = () => {
     const { id } = useParams<{ id: string }>()
     const navigate = useNavigate()
     const { handleJobView } = useJobsData()
     const { isAuthenticated, currentUser } = useAuth()
+    const { data: seekerData } = useJobSeekerDashboard()
+
+    const isJobApplied = useCallback(() => {
+        const applications = seekerData?.applications
+        return applications?.some((application) => application.jobId === id)
+    }, [seekerData, id])()
 
     // Fetch job details using the useJob hook
     const { data: job, isLoading, error } = useJob(id || '')
@@ -134,27 +141,47 @@ const JobDetailPage = () => {
                         <div className="flex flex-col sm:flex-row gap-3 mt-2 md:mt-0">
                             {canEdit ? (
                                 <Link to={`/jobs/${job.id}/edit`}>
-                                    <Button variant="outline" className="w-full sm:w-auto border-jb-primary text-jb-primary hover:bg-jb-primary/5">
+                                    <Button variant="outline" className="w-full sm:w-auto border-jb-primary text-jb-primary hover:bg-jb-primary hover:text-white transition-colors">
                                         Edit Job
                                     </Button>
                                 </Link>
                             ) : (
                                 <>
-                                    <Button variant="outline" size="icon" className="hidden sm:flex">
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="hidden sm:flex border-jb-border text-jb-text-muted hover:text-jb-primary hover:border-jb-primary hover:bg-jb-primary/5 transition-colors"
+                                    >
                                         <Share2 className="w-4 h-4" />
                                     </Button>
-                                    <Button variant="outline" size="icon" className="hidden sm:flex">
+                                    <Button
+                                        variant="outline"
+                                        size="icon"
+                                        className="hidden sm:flex border-jb-border text-jb-text-muted hover:text-jb-primary hover:border-jb-primary hover:bg-jb-primary/5 transition-colors"
+                                    >
                                         <Bookmark className="w-4 h-4" />
                                     </Button>
+
                                     {canApply ? (
-                                        <Link to={`/jobs/${job.id}/apply`} className="w-full sm:w-auto">
-                                            <Button className="w-full bg-jb-primary hover:bg-jb-primary/80 text-white px-8">
-                                                Apply Now
-                                            </Button>
-                                        </Link>
+                                        <>
+                                            {isJobApplied ? (
+                                                <Button
+                                                    variant="outline"
+                                                    className="px-8 border-green-500/50 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/10 hover:bg-green-50 dark:hover:bg-green-900/10 cursor-default"
+                                                >
+                                                    Applied
+                                                </Button>
+                                            ) : (
+                                                <Link to={`/jobs/${job.id}/apply`} className="w-full sm:w-auto">
+                                                    <Button className="w-full sm:w-auto px-8 bg-jb-primary text-white hover:bg-jb-primary/90 shadow-lg shadow-jb-primary/20 transition-all hover:scale-[1.02]">
+                                                        Apply Now
+                                                    </Button>
+                                                </Link>
+                                            )}
+                                        </>
                                     ) : !isAuthenticated ? (
                                         <Link to={`/login?redirect=/jobs/${job.id}`} className="w-full sm:w-auto">
-                                            <Button className="w-full bg-jb-primary hover:bg-jb-primary/80 text-white px-8">
+                                            <Button className="w-full sm:w-auto px-8 bg-jb-primary text-white hover:bg-jb-primary/90 shadow-lg shadow-jb-primary/20 transition-all hover:scale-[1.02]">
                                                 Login to Apply
                                             </Button>
                                         </Link>
@@ -298,7 +325,7 @@ const JobDetailPage = () => {
                                 </p>
 
                                 <Link to={`/companies/${job.companyId}`}>
-                                    <Button variant="outline" className="w-full border-jb-border hover:bg-jb-primary/80">
+                                    <Button variant="outline" className="w-full border-jb-border text-jb-text hover:border-jb-primary hover:text-jb-primary hover:bg-jb-primary/5 transition-colors">
                                         View Full Profile
                                     </Button>
                                 </Link>
@@ -313,7 +340,7 @@ const JobDetailPage = () => {
                                     Keep looking! We have thousands of other job opportunities waiting for you.
                                 </p>
                                 <Link to="/jobs">
-                                    <Button className="w-full bg-jb-surface text-jb-text border border-jb-border hover:bg-jb-surface">
+                                    <Button variant="outline" className="w-full bg-transparent border-jb-border text-jb-text hover:border-jb-primary hover:text-jb-primary hover:bg-jb-primary/5 transition-colors">
                                         Browse All Jobs
                                     </Button>
                                 </Link>

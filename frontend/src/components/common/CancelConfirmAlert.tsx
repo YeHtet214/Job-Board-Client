@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Trash } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface CancelConfirmAlertProps {
     buttonContent?: string
@@ -32,8 +33,8 @@ const CancelConfirmAlert: React.FC<CancelConfirmAlertProps> = ({
     return (
         <AlertDialog>
             <AlertDialogTrigger asChild>
-                <Button variant="destructive" disabled={isLoading} className='hover:opacity-90'>
-                    {buttonContent ? buttonContent : <Trash className="h-4 w-4 text-jb-danger" />}
+                <Button variant="ghost" disabled={isLoading} className='text-jb-danger hover:text-jb-danger/80'>
+                    {buttonContent ? buttonContent : <DeleteToolTip isLoading={isLoading} />}
                 </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -55,6 +56,19 @@ const CancelConfirmAlert: React.FC<CancelConfirmAlertProps> = ({
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
+    )
+}
+
+const DeleteToolTip = ({ isLoading }: { isLoading: boolean }) => {
+    return (
+        <Tooltip>
+            <TooltipTrigger asChild>
+                <Button variant="ghost" disabled={isLoading} className='hover:opacity-80'><Trash className="w-4 h-4 text-jb-danger" /></Button>
+            </TooltipTrigger>
+            <TooltipContent>
+                <p>Withdraw</p>
+            </TooltipContent>
+        </Tooltip>
     )
 }
 

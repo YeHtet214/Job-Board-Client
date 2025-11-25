@@ -73,7 +73,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({ application }) => {
             <CardHeader className="pb-2">
                 <div className="flex justify-between items-start">
                     <div>
-                        <CardTitle className="text-xl text-jobboard-darkblue">
+                        <CardTitle className="text-xl text-jb-text">
                             {application.job?.title || 'Unnamed Position'}
                         </CardTitle>
                         <CardDescription className="flex items-center mt-1">

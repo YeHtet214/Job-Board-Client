@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [showSessionExpiredDialog, setShowSessionExpiredDialog] = useState(false)
     const [accessToken, setAccessToken] = useState(localStorage.getItem('accessToken') || '')
 
-    const isAuthenticated = useCallback(() => !!accessToken && !isTokenExpired(accessToken), [accessToken])
+    const isAuthenticated = useCallback(() => !!currentUser && !!accessToken && !isTokenExpired(accessToken), [currentUser, accessToken])
 
     // Handle session expiration events
     useEffect(() => {

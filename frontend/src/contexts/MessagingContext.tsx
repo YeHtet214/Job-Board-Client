@@ -69,8 +69,20 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         currentUser?.id || null
     )
 
+    // Create a wrapper function to match the customToast signature
+    // const customToast = (options: {
+    //     title: string
+    //     description: string
+    //     variant?: 'default' | 'destructive'
+    // }) => {
+    //     toast({
+    //         title: options.title,
+    //         description: options.description,
+    //         variant: options.variant,
+    //     })
+    // }
+
     // Notification handling
-    // Pass our sonner-based toast into notification handlers
     const { notifications, clearNotifications, removeNotification } =
         useNotificationHandlers({ socket, toast })
 

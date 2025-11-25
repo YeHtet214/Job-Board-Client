@@ -33,8 +33,8 @@ export const useNotificationHandlers = ({
 
             if (notis.length < 0 || !notis) return
             setNotifications(notis)
-           
-            // Show toast for each notification
+
+            // Show customToast for each notification
             notis.forEach((noti) => {
                 if (noti.status !== 'DELIVERED') {
                     toast({
@@ -45,7 +45,7 @@ export const useNotificationHandlers = ({
                 }
             })
 
-             updateNotificationsStatus(
+            updateNotificationsStatus(
                 notis.map((noti) => noti.id),
                 'DELIVERED'
             )
@@ -62,12 +62,21 @@ export const useNotificationHandlers = ({
             })
         }
 
+        const handleApplicationNotification = (noti: any) => {
+            toast({
+                title: noti.title || 'Application updated!',
+                description: noti.snippet || noti.message || 'Your application status has changed',
+                variant: 'default',
+            })
+        }
+
         // Register event handlers
         socket.on(
             SOCKET_EVENTS.NOTIFICATION_DISPATCH,
             handleNotificationDispatch
         )
-        socket.on(SOCKET_EVENTS.NOTIFICATION, handleRealtimeNotification)
+        socket.on(SOCKET_EVENTS.NEW_MESSAGE, handleRealtimeNotification)
+        socket.on(SOCKET_EVENTS.NOTIFICATION_APPLICATION, handleApplicationNotification)
 
         // Cleanup
         return () => {
@@ -75,7 +84,8 @@ export const useNotificationHandlers = ({
                 SOCKET_EVENTS.NOTIFICATION_DISPATCH,
                 handleNotificationDispatch
             )
-            socket.off(SOCKET_EVENTS.NOTIFICATION, handleRealtimeNotification)
+            socket.off(SOCKET_EVENTS.NEW_MESSAGE, handleRealtimeNotification)
+            socket.off(SOCKET_EVENTS.NOTIFICATION_APPLICATION, handleApplicationNotification)
         }
     }, [socket, toast])
 

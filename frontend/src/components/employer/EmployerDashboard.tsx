@@ -218,6 +218,7 @@ const EmployerDashboard: React.FC = () => {
                                     <CardFooter className="flex justify-center">
                                         <Button
                                             variant="outline"
+                                            className="text-jb-primary hover:text-white"
                                             onClick={() =>
                                                 navigate('/employer/jobs')
                                             }
@@ -250,6 +251,7 @@ const EmployerDashboard: React.FC = () => {
                                     <CardFooter className="flex justify-center">
                                         <Button
                                             variant="outline"
+                                            className="text-jb-primary hover:text-white"
                                             onClick={() =>
                                                 navigate(
                                                     '/employer/applications'

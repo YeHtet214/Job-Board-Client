@@ -10,7 +10,8 @@ export const SOCKET_EVENTS = {
     NOTIFICATION_DISPATCH: 'notification:dispatch',
     NOTIFICATION_STATUS_UPDATE: 'notification:update',
     NOTIFICATION_RECEIVED: 'notification:received',
-    NOTIFICATION: 'notification',
+    NOTIFICATION_APPLICATION: 'notification:application',
+    NEW_MESSAGE: 'new:message',
 
     // Chat events
     CHAT_NEW: 'chat:new',

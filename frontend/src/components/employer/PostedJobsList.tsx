@@ -66,6 +66,7 @@ const PostedJobsList: React.FC<PostedJobsListProps> = ({
                                     <Button
                                         size="sm"
                                         variant="outline"
+                                        className="text-jb-primary hover:text-white"
                                         onClick={() =>
                                             navigate(`/jobs/${job.id}`)
                                         }

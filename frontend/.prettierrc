@@ -1,7 +1,8 @@
 {
     "trailingComma": "es5",
-    "tabWidth": 3,
+    "tabWidth": 4,
     "semi": false,
-    "singleQuote": true,
-    "endOfLine": "auto"
+    "singleQuote": false,
+    "endOfLine": "crlf",
+    "formatOnSave": true
 }

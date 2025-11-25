@@ -122,28 +122,41 @@ const EmployerApplicationListPage: React.FC = () => {
     const handleUpdateStatus = (status: ReceivedApplication['status']) => {
         if (!selectedApplication) return
 
+        // 1. Snapshot previous state
+        const previousApplications = [...applications]
+        const previousFilteredApplications = [...filteredApplications]
+
+        // 2. Optimistically update local state
+        const updatedApplications = applications.map((app) =>
+            app.id === selectedApplication.id ? { ...app, status } : app
+        )
+
+        // Also update filtered list to reflect changes immediately in the UI
+        const updatedFilteredApplications = filteredApplications.map((app) =>
+            app.id === selectedApplication.id ? { ...app, status } : app
+        )
+
+        setApplications(updatedApplications)
+        setFilteredApplications(updatedFilteredApplications)
+
+        // 3. Close dialog and show success message immediately
+        setStatusDialogOpen(false)
+        setSelectedApplication(null)
+
+        toast({
+            title: 'Status updated',
+            description: `Application status updated to ${status.toLowerCase()}.`,
+        })
+
+        // 4. Perform mutation
         updateApplicationStatus(
             { id: selectedApplication.id, statusData: { status } },
             {
-                onSuccess: () => {
-                    toast({
-                        title: 'Status updated',
-                        description: `Application status updated to ${status.toLowerCase()}.`,
-                    })
-
-                    // Update local state
-                    const updatedApplications = applications.map((app) =>
-                        app.id === selectedApplication.id
-                            ? { ...app, status }
-                            : app
-                    )
-                    setApplications(updatedApplications)
-
-                    // Close dialog
-                    setStatusDialogOpen(false)
-                    setSelectedApplication(null)
-                },
                 onError: () => {
+                    // 5. Revert on error
+                    setApplications(previousApplications)
+                    setFilteredApplications(previousFilteredApplications)
+
                     toast({
                         title: 'Error',
                         description:
@@ -151,6 +164,8 @@ const EmployerApplicationListPage: React.FC = () => {
                         variant: 'destructive',
                     })
                 },
+                // On success, the query invalidation in the hook will eventually sync with server,
+                // but our local state is already correct.
             }
         )
     }
@@ -396,7 +411,7 @@ const EmployerApplicationListPage: React.FC = () => {
                                         <Button
                                             variant={
                                                 selectedApplication?.status ===
-                                                option.value
+                                                    option.value
                                                     ? 'default'
                                                     : 'outline'
                                             }
@@ -408,17 +423,17 @@ const EmployerApplicationListPage: React.FC = () => {
                                             }
                                             disabled={
                                                 selectedApplication?.status ===
-                                                    option.value ||
+                                                option.value ||
                                                 updateApplicationStatusLoading
                                             }
                                         >
                                             {option.label}
                                             {selectedApplication?.status ===
                                                 option.value && (
-                                                <Badge className="ml-2 bg-green-100 text-green-800 border-green-200">
-                                                    Current
-                                                </Badge>
-                                            )}
+                                                    <Badge className="ml-2 bg-green-100 text-green-800 border-green-200">
+                                                        Current
+                                                    </Badge>
+                                                )}
                                         </Button>
                                     </div>
                                 ))}

@@ -26,7 +26,7 @@ const ApplicationListPage = () => {
     return (
         <div className="container mx-auto px-4 sm:px-6 py-8">
             <div className="mb-6 flex items-center">
-                <h1 className="text-3xl font-bold text-jobboard-darkblue">
+                <h1 className="text-3xl font-bold text-jb-text">
                     Applications
                 </h1>
             </div>
