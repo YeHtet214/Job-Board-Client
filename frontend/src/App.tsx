@@ -13,7 +13,7 @@ import { MessagingProvider } from './contexts/MessagingContext'
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            staleTime: 1 * 60 * 1000, // 1 minutes
+            staleTime: 3 * 60 * 1000, // 3 minutes
             retry: 3,
         },
     },

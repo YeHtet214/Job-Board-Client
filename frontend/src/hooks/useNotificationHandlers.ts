@@ -29,7 +29,6 @@ export const useNotificationHandlers = ({
          * These are notifications that were sent while the user was offline
          */
         const handleNotificationDispatch = (notis: Notification[]) => {
-            console.log('📬 Received batch notifications:', notis.length)
 
             if (notis.length < 0 || !notis) return
             setNotifications(notis)
@@ -37,11 +36,19 @@ export const useNotificationHandlers = ({
             // Show customToast for each notification
             notis.forEach((noti) => {
                 if (noti.status !== 'DELIVERED') {
-                    toast({
-                        title: `${noti.payload.senderName} sent you a message`,
-                        description: noti.payload.snippet,
-                        variant: 'default',
-                    })
+                    if (noti.type === 'New_Message' || noti.type === 'Realtime_Message') {
+                        toast({
+                            title: `${noti.payload.senderName} sent you a message`,
+                            description: noti.payload.snippet,
+                            variant: 'default',
+                        })
+                    } else if (noti.type === 'Job_Application' || noti.type === 'Application_Status_Update') {
+                        toast({
+                            title: noti.payload.title,
+                            description: noti.payload.message || noti.payload.snippet || 'Status updated',
+                            variant: 'default',
+                        })
+                    }
                 }
             })
 
@@ -64,7 +71,7 @@ export const useNotificationHandlers = ({
 
         const handleApplicationNotification = (noti: any) => {
             toast({
-                title: noti.title || 'Application updated!',
+                title: noti.title,
                 description: noti.snippet || noti.message || 'Your application status has changed',
                 variant: 'default',
             })
@@ -100,9 +107,6 @@ export const useNotificationHandlers = ({
         )
     }
 
-    /**
-     * Remove a specific notification
-     */
     const removeNotification = (notificationId: string) => {
         setNotifications((prev) =>
             prev.filter((noti) => noti.id !== notificationId)
@@ -122,7 +126,7 @@ export const useNotificationHandlers = ({
                 if (updateNotis.has(noti.id)) {
                     return {
                         ...noti,
-                        status: status,
+                        status
                     }
                 }
                 return noti

@@ -18,8 +18,6 @@ export const usePresenceHandlers = (socket: typeof Socket | null) => {
     if (!socket) return
 
     const handlePresenceUpdate = (data: PresenceUpdate) => {
-      console.log('📡 Presence update:', data)
-
       setPresenceMap((prev) => {
         const updated = new Map(prev)
         updated.set(data.userId, data)

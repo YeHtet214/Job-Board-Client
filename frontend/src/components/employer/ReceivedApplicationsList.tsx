@@ -55,8 +55,6 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
                                         <div className="flex items-center gap-2">
                                             <Button
                                                 size="sm"
-                                                variant="outline"
-                                                className="text-jb-primary hover:text-white"
                                                 onClick={() =>
                                                     navigate(`/employer/applications/${application.id}`)
                                                 }
@@ -70,7 +68,6 @@ const ReceivedApplicationsList: React.FC<ReceivedApplicationsListProps> = ({
                                                         <Button
                                                             size="sm"
                                                             variant="outline"
-                                                            className="text-jb-text"
                                                         >
                                                             Update
                                                         </Button>

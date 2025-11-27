@@ -39,7 +39,7 @@ const NotificationsList = () => {
 
             </div>
 
-            <SheetDescription className="flex flex-col gap-2 text-foreground max-h-[80vh] overflow-y-scroll scrollbar-hidden">
+            <SheetDescription className="flex flex-col gap-2 text-foreground max-h-[75vh] overflow-y-scroll scrollbar-hidden">
               {notifications.length > 0 && notifications.map((noti: Notification, index: number) => (
                 <NotiItem key={noti.id} noti={noti} isLast={index === (notifications.length - 1)} />
               ))}

@@ -9,32 +9,7 @@ import {
     CardTitle,
 } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from '@/components/ui/table'
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog'
-import { Search, Filter, X, UserCheck, ClipboardList, Eye } from 'lucide-react'
+import { ClipboardList } from 'lucide-react'
 
 import { useToast } from '@/components/ui/use-toast'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
@@ -44,7 +19,10 @@ import {
     useUpdateApplicationStatus,
 } from '@/hooks/react-queries/dashboard'
 import { useAuth } from '@/contexts/authContext'
-import { formatDate, getEmployerStatusBadge } from '@/utils/dashboard.utils'
+
+import ApplicationFilters from '@/components/employer/applications/ApplicationFilters'
+import ApplicationTable from '@/components/employer/applications/ApplicationTable'
+import ApplicationStatusDialog from '@/components/employer/applications/ApplicationStatusDialog'
 
 const EmployerApplicationListPage: React.FC = () => {
     const navigate = useNavigate()
@@ -118,15 +96,13 @@ const EmployerApplicationListPage: React.FC = () => {
         setStatusDialogOpen(true)
     }
 
-    // Handle application status update
     const handleUpdateStatus = (status: ReceivedApplication['status']) => {
         if (!selectedApplication) return
 
-        // 1. Snapshot previous state
         const previousApplications = [...applications]
         const previousFilteredApplications = [...filteredApplications]
 
-        // 2. Optimistically update local state
+        // Optimistically update local state
         const updatedApplications = applications.map((app) =>
             app.id === selectedApplication.id ? { ...app, status } : app
         )
@@ -139,7 +115,6 @@ const EmployerApplicationListPage: React.FC = () => {
         setApplications(updatedApplications)
         setFilteredApplications(updatedFilteredApplications)
 
-        // 3. Close dialog and show success message immediately
         setStatusDialogOpen(false)
         setSelectedApplication(null)
 
@@ -148,12 +123,10 @@ const EmployerApplicationListPage: React.FC = () => {
             description: `Application status updated to ${status.toLowerCase()}.`,
         })
 
-        // 4. Perform mutation
         updateApplicationStatus(
             { id: selectedApplication.id, statusData: { status } },
             {
                 onError: () => {
-                    // 5. Revert on error
                     setApplications(previousApplications)
                     setFilteredApplications(previousFilteredApplications)
 
@@ -164,8 +137,6 @@ const EmployerApplicationListPage: React.FC = () => {
                         variant: 'destructive',
                     })
                 },
-                // On success, the query invalidation in the hook will eventually sync with server,
-                // but our local state is already correct.
             }
         )
     }
@@ -187,14 +158,6 @@ const EmployerApplicationListPage: React.FC = () => {
             </div>
         )
     }
-
-    const statusOptions = [
-        { value: 'PENDING', label: 'Pending' },
-        { value: 'REVIEWING', label: 'Reviewing' },
-        { value: 'INTERVIEW', label: 'Interview' },
-        { value: 'REJECTED', label: 'Rejected' },
-        { value: 'ACCEPTED', label: 'Accepted' },
-    ]
 
     return (
         <div className="container mx-auto max-w-6xl py-10 px-4 sm:px-6">
@@ -231,133 +194,27 @@ const EmployerApplicationListPage: React.FC = () => {
                             <div>
                                 <CardTitle>Job Applications</CardTitle>
                                 <CardDescription>
-                                    {filteredApplications.length} applications
-                                    found
+                                    {filteredApplications.length} applications found
                                 </CardDescription>
                             </div>
-                            <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
-                                <div className="relative">
-                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
-                                    <Input
-                                        type="text"
-                                        placeholder="Search by name or job title..."
-                                        className="pl-9 w-full sm:w-[250px]"
-                                        value={searchTerm}
-                                        onChange={(e) =>
-                                            setSearchTerm(e.target.value)
-                                        }
-                                    />
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <Select
-                                        value={statusFilter}
-                                        onValueChange={setStatusFilter}
-                                    >
-                                        <SelectTrigger className="w-full sm:w-[180px]">
-                                            <div className="flex items-center">
-                                                <Filter className="h-4 w-4 mr-2 text-gray-400" />
-                                                <SelectValue placeholder="Filter by status" />
-                                            </div>
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="ALL">
-                                                All Statuses
-                                            </SelectItem>
-                                            {statusOptions.map((option) => (
-                                                <SelectItem
-                                                    key={option.value}
-                                                    value={option.value}
-                                                >
-                                                    {option.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    {(searchTerm || statusFilter !== 'ALL') && (
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={clearFilters}
-                                            title="Clear filters"
-                                        >
-                                            <X className="h-4 w-4" />
-                                        </Button>
-                                    )}
-                                </div>
-                            </div>
+                            <ApplicationFilters
+                                searchTerm={searchTerm}
+                                onSearchChange={setSearchTerm}
+                                statusFilter={statusFilter}
+                                onStatusFilterChange={setStatusFilter}
+                                onClearFilters={clearFilters}
+                            />
                         </div>
                     </CardHeader>
                     <CardContent>
                         {filteredApplications.length > 0 ? (
-                            <div className="overflow-x-auto rounded-md border">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Applicant</TableHead>
-                                            <TableHead>Job Title</TableHead>
-                                            <TableHead>Date Applied</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead className="text-right">
-                                                Actions
-                                            </TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {filteredApplications.map(
-                                            (application) => (
-                                                <TableRow key={application.id}>
-                                                    <TableCell className="font-medium">
-                                                        {
-                                                            application.applicantName
-                                                        }
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {application.jobTitle}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {formatDate(
-                                                            application.applied
-                                                        )}
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        {getEmployerStatusBadge(
-                                                            application.status
-                                                        )}
-                                                    </TableCell>
-                                                    <TableCell className="text-right">
-                                                        <div className="flex justify-end gap-2">
-                                                            <Button
-                                                                variant="outline"
-                                                                size="sm"
-                                                                onClick={() =>
-                                                                    navigate(
-                                                                        `/employer/applications/${application.id}`
-                                                                    )
-                                                                }
-                                                            >
-                                                                <Eye className="h-4 w-4 mr-2" />
-                                                                View
-                                                            </Button>
-                                                            <Button
-                                                                variant="secondary"
-                                                                size="sm"
-                                                                onClick={() =>
-                                                                    openStatusDialog(
-                                                                        application
-                                                                    )
-                                                                }
-                                                            >
-                                                                <UserCheck className="h-4 w-4 mr-2" />
-                                                                Update Status
-                                                            </Button>
-                                                        </div>
-                                                    </TableCell>
-                                                </TableRow>
-                                            )
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </div>
+                            <ApplicationTable
+                                applications={filteredApplications}
+                                onViewApplication={(id) =>
+                                    navigate(`/employer/applications/${id}`)
+                                }
+                                onUpdateStatus={openStatusDialog}
+                            />
                         ) : (
                             <div className="text-center py-12">
                                 <ClipboardList className="h-12 w-12 text-gray-300 mx-auto mb-4" />
@@ -392,64 +249,13 @@ const EmployerApplicationListPage: React.FC = () => {
                 </Card>
             </motion.div>
 
-            {/* Status Update Dialog */}
-            <Dialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Update Application Status</DialogTitle>
-                        <DialogDescription>
-                            Change the status for{' '}
-                            {selectedApplication?.applicantName}'s application
-                            for {selectedApplication?.jobTitle}
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <div className="col-span-4 space-y-3">
-                                {statusOptions.map((option) => (
-                                    <div key={option.value}>
-                                        <Button
-                                            variant={
-                                                selectedApplication?.status ===
-                                                    option.value
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
-                                            className="w-full justify-start"
-                                            onClick={() =>
-                                                handleUpdateStatus(
-                                                    option.value as ReceivedApplication['status']
-                                                )
-                                            }
-                                            disabled={
-                                                selectedApplication?.status ===
-                                                option.value ||
-                                                updateApplicationStatusLoading
-                                            }
-                                        >
-                                            {option.label}
-                                            {selectedApplication?.status ===
-                                                option.value && (
-                                                    <Badge className="ml-2 bg-green-100 text-green-800 border-green-200">
-                                                        Current
-                                                    </Badge>
-                                                )}
-                                        </Button>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => setStatusDialogOpen(false)}
-                        >
-                            Cancel
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <ApplicationStatusDialog
+                open={statusDialogOpen}
+                onOpenChange={setStatusDialogOpen}
+                selectedApplication={selectedApplication}
+                onUpdateStatus={handleUpdateStatus}
+                isUpdating={updateApplicationStatusLoading}
+            />
         </div>
     )
 }

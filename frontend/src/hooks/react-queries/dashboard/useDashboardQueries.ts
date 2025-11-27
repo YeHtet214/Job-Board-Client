@@ -80,7 +80,7 @@ export const useWithdrawApplication = () => {
                             totalApplications: Math.max(
                                 0,
                                 previousDashboardData.stats.totalApplications -
-                                    1
+                                1
                             ),
                         },
                     }
@@ -121,13 +121,11 @@ export const useEmployerDashboard = (
         queryFn: async () => {
             try {
                 return await DashboardService.getEmployerDashboardData()
-            } catch (error) {
+            } catch (error) {   
                 console.error("Error fetching employer dashboard data:", error)
                 throw error
             }
         },
-        retry: 2,
-        staleTime: 5 * 60 * 1000, // 5 minutes
         ...options,
     })
 }
@@ -144,7 +142,6 @@ export const useUpdateApplicationStatus = () => {
             statusData: UpdateApplicationDto
         }) => ApplicationService.updateApplication(id, statusData),
         onSuccess: (updatedApplication: Application) => {
-            // Invalidate employer dashboard and specific application
             queryClient.invalidateQueries({ queryKey: dashboardKeys.employer })
             queryClient.invalidateQueries({
                 queryKey: dashboardKeys.receivedApplications,

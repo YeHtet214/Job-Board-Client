@@ -38,8 +38,8 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
             <CardContent>
                 <div className="space-y-4">
                     {activities.length > 0 ? (
-                        activities.map((activity) => (
-                            <div key={activity.id} className="flex gap-3">
+                        activities.map((activity, index) => (
+                            <div key={`${activity.id}-${index}`} className="flex gap-3">
                                 <div className="mt-1">
                                     <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
                                         {getActivityIcon(activity.type)}

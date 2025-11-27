@@ -37,16 +37,6 @@ const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
 }) => {
     const navigate = useNavigate()
 
-    console.log('ProfileCompletionCard Props: ', {
-        title,
-        description,
-        completionPercentage,
-        completionItems,
-        profilePath,
-        buttonText,
-        isJobSeeker,
-    })
-
     return (
         <Card>
             <CardHeader>
