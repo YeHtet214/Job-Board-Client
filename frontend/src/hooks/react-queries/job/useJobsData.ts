@@ -41,7 +41,12 @@ export const useJobsData = (
    const jobTypes = searchParams.get('types')?.split(',') || []
    const sortBy = (searchParams.get('sort') as SortOption) || ''
    const currentPage = Number(searchParams.get('page')) || page || 1
-   const [recentlyViewedJobs, setRecentlyViewedJobs] = useState<Job[]>([])
+   const [recentlyViewedJobs, setRecentlyViewedJobs] = useState<Job[]>(() => {
+      const stored = localStorage.getItem('recentlyViewedJobs')
+      if (!stored) return []
+      const parsed = JSON.parse(stored)
+      return Array.isArray(parsed?.jobs) ? parsed.jobs : []
+   })
 
    const ITEMS_PER_PAGE = 10
 
@@ -87,13 +92,18 @@ export const useJobsData = (
       setSearchParams(params)
    }
 
-   // Load recently viewed jobs from localStorage
+   // Load recently viewed jobs from localStorage when component mounts
    useEffect(() => {
       const recentlyViewed = localStorage.getItem('recentlyViewedJobs')
       if (recentlyViewed) {
          try {
             const parsed = JSON.parse(recentlyViewed)
-            setRecentlyViewedJobs(Array.isArray(parsed) ? parsed : [])
+            // Check if the data structure has the expected format
+            if (parsed && Array.isArray(parsed.jobs)) {
+               setRecentlyViewedJobs(parsed.jobs)
+            } else {
+               setRecentlyViewedJobs([])
+            }
          } catch (e) {
             console.error('Error parsing recently viewed jobs:', e)
             setRecentlyViewedJobs([])
@@ -116,13 +126,17 @@ export const useJobsData = (
          }
 
          setRecentlyViewedJobs((prev) => {
-            const updatedRecentlyViewed = [
-               job,
-               ...prev.filter((j) => j.id !== job.id),
-            ]
+            // Remove the job if it already exists and add it to the front
+            const filteredJobs = prev.filter((j) => j.id !== job.id)
+            const updatedRecentlyViewed = [job, ...filteredJobs]
+
+            // Store with consistent structure: { userId, jobs }
             localStorage.setItem(
                'recentlyViewedJobs',
-               JSON.stringify({ authenticatedUserId, recentJobs: updatedRecentlyViewed })
+               JSON.stringify({
+                  userId: authenticatedUserId,
+                  jobs: updatedRecentlyViewed
+               })
             )
             return updatedRecentlyViewed
          })

@@ -45,17 +45,12 @@ const JobSeekerDashboard: React.FC = () => {
         data: profile,
         isLoading: isProfileLoading,
         error: profileError,
-    } = useProfile()
+    } = useProfile("me")
 
-    // Fetch saved jobs directly for more real-time updates
     const { data: savedJobs = [] } = useSavedJobs()
 
-    // Only using state for profile completion items since they're derived from profile data
-    const [completionItems, setCompletionItems] = useState<
-        ProfileCompletionItemType[]
-    >([])
+    const [completionItems, setCompletionItems] = useState<ProfileCompletionItemType[]>([])
 
-    // Job seeker query and mutations - only fetch if user is a JOBSEEKER
     const {
         data: dashboardData,
         isLoading,
@@ -97,7 +92,6 @@ const JobSeekerDashboard: React.FC = () => {
         settingCompletionItems()
     }, [profile])
 
-    // Handle job seeker actions
     const handleRemoveSavedJob = useCallback(
         (savedJob: SavedJobWithDetails) => {
             removeSavedJob(

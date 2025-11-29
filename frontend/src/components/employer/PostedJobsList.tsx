@@ -76,7 +76,7 @@ const PostedJobsList: React.FC<PostedJobsListProps> = ({
 
                                     {onDeleteJob && (
                                         <DropdownMenu>
-                                            <DropdownMenuTrigger>
+                                            <DropdownMenuTrigger asChild>
                                                 <Button
                                                     size="sm"
                                                     variant="ghost"

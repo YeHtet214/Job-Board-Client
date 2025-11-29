@@ -7,6 +7,7 @@ import {
 import { profileService } from '@/services/profile.service'
 import { CreateProfileDto, Profile, UpdateProfileDto } from '@/types/profile'
 import { useToast } from '@/components/ui/use-toast'
+import { mapProfileData } from '@/utils/profileMapper'
 
 // Query keys
 export const profileKeys = {
@@ -22,17 +23,13 @@ export const profileKeys = {
  * @param options - Optional query options
  * @returns Query result with profile data
  */
-export const useProfile = (
-    options?: Omit<
-        UseQueryOptions<Profile | null, Error>,
-        'queryKey' | 'queryFn'
-    >
-) => {
+export const useProfile = (param: string, options?: Omit<UseQueryOptions<Profile | null, Error>, 'queryKey' | 'queryFn'>) => {
     return useQuery<Profile | null, Error>({
         queryKey: profileKeys.details(),
         queryFn: async () => {
             try {
-                return await profileService.getMyProfile()
+                const profile = await profileService.getProfile(param)
+                return mapProfileData(profile)
             } catch (error: any) {
                 // If profile doesn't exist yet, return null instead of throwing error
                 if (error.response?.status === 404) {

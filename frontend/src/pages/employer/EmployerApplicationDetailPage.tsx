@@ -40,6 +40,8 @@ const EmployerApplicationDetailPage: React.FC = () => {
         refetch,
     } = useApplicationById(id || '')
 
+    console.log("Application detail data: ", application)
+
     // Mutation for updating application status
     const { mutate: updateApplication, isPending: isUpdating } =
         useUpdateApplication()

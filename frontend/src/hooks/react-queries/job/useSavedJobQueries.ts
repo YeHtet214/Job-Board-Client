@@ -36,7 +36,7 @@ export const useSavedJobs = () => {
 
 /**
  * Hook to check if multiple jobs are saved by the current user
- * @param jobIds - Array of job IDs to check
+ * Array of job IDs to check
  * @returns Map of job IDs to their saved status
  */
 export const useBatchJobSavedStatus = (jobIds: string[] = []) => {
@@ -44,15 +44,7 @@ export const useBatchJobSavedStatus = (jobIds: string[] = []) => {
 
    return useQuery<Record<string, JobSavedStatus> | Error>({
       queryKey: savedJobKeys.batch(uniqueJobIds),
-      queryFn: async () => {
-         try {
-            return await savedJobService.areJobsSaved(uniqueJobIds)
-         } catch (error) {
-            console.error('Error checking saved job status:', error)
-            // Return empty object instead of throwing to prevent cascade failures
-            return {}
-         }
-      },
+      queryFn: () => savedJobService.areJobsSaved(uniqueJobIds),
       enabled: uniqueJobIds.length > 0,
    })
 }
@@ -64,15 +56,7 @@ export const useBatchJobSavedStatus = (jobIds: string[] = []) => {
 export const useIsJobSaved = (jobId: string) => {
    return useQuery<JobSavedStatus>({
       queryKey: savedJobKeys.single(jobId),
-      queryFn: async () => {
-         try {
-            return await savedJobService.isJobSaved(jobId)
-         } catch (error) {
-            console.error('Error checking job saved status:', error)
-            // Return a default "not saved" status instead of throwing
-            return { isSaved: false, savedJobId: null }
-         }
-      },
+      queryFn: () => savedJobService.isJobSaved(jobId),
       enabled: !!jobId,
    })
 }

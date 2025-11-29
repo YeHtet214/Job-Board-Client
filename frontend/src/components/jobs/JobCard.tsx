@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Job } from '@/types/job'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -48,8 +48,12 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
     const isJobSeeker = currentUser?.role === 'JOBSEEKER'
 
     // Use mutations for saving/removing jobs
-    const saveJobMutation = useSaveJob()
-    const removeSavedJobMutation = useRemoveSavedJob()
+    const { mutate: saveJobMutation, isPending: isSavingJob } = useSaveJob()
+    const { mutate: removeSavedJobMutation, isPending: isRemovingJob } = useRemoveSavedJob()
+
+    const [isSaved, setIsSaved] = useState<boolean>(() => !!savedStatus?.isSaved && !!savedStatus?.savedJobId)
+
+    const isLoading = isSavingJob || isRemovingJob
 
     // Format data for display
     const companyInitials =
@@ -63,15 +67,19 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
     const displaySkills = job.requiredSkills.slice(0, 3)
     const hasMoreSkills = job.requiredSkills.length > 3
 
-    const handleCardClick = () => {
-        handleJobView(job)
+    const handleView = () => {
+        // Only track viewed jobs for authenticated users
+        if (isAuthenticated() && currentUser?.id) {
+            handleJobView(currentUser.id, job)
+        }
         navigate(`/jobs/${job.id}`)
     }
 
     const handleSaveToggle = (e: React.MouseEvent) => {
-        e.stopPropagation() // Prevent card click
+        e.stopPropagation()
+        setIsSaved(prev => !prev)
 
-        if (!isAuthenticated || !isJobSeeker) {
+        if (!isAuthenticated() || !isJobSeeker) {
             toast({
                 title: 'Authentication Required',
                 description: 'Please login as a job seeker to save jobs',
@@ -81,21 +89,18 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
             return
         }
 
-        if (savedStatus?.isSaved && savedStatus?.savedJobId) {
-            removeSavedJobMutation.mutate({
+        if (savedStatus?.isSaved && savedStatus?.savedJobId === job.id) {
+            removeSavedJobMutation({
                 savedJobId: savedStatus.savedJobId,
                 jobId: job.id,
             })
         } else if (job.id) {
-            saveJobMutation.mutate(job.id)
+            saveJobMutation(job.id)
         }
     }
 
     return (
-        <Card
-            className="h-full flex flex-col hover:shadow-md transition-all duration-200 cursor-pointer"
-            onClick={handleCardClick}
-        >
+        <Card className="h-full flex flex-col hover:shadow-md transition-all duration-200 cursor-pointer">
             <CardHeader className="flex flex-row items-start gap-3 relative pb-3">
                 {job.company?.logo ? (
                     <img
@@ -129,14 +134,15 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                                         variant="ghost"
                                         size="icon"
                                         className={
-                                            savedStatus?.isSaved
+                                            isSaved
                                                 ? 'text-jb-purple h-8 w-8 p-0 bg-card/90'
                                                 : 'text-gray-400 hover:text-jb-primary h-8 w-8 p-0 bg-background/90'
                                         }
                                         onClick={(e) => handleSaveToggle(e)}
+                                        disabled={isLoading}
                                     >
-                                        {savedStatus?.isSaved ? (
-                                            <BookmarkCheck className="h-5 w-5" />
+                                        {isSaved ? (
+                                            <BookmarkCheck className="h-7 w-7 text-jb-primary" />
                                         ) : (
                                             <Bookmark className="h-5 w-5" />
                                         )}
@@ -144,7 +150,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                                 </TooltipTrigger>
                                 <TooltipContent>
                                     <p>
-                                        {savedStatus?.isSaved
+                                        {isSaved
                                             ? 'Remove from saved jobs'
                                             : 'Save job'}
                                     </p>
@@ -207,10 +213,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, savedStatus }) => {
                 <Button
                     size="sm"
                     className="bg-jb-primary hover:bg-jb-primary/90"
-                    onClick={(e) => {
-                        e.stopPropagation() // Prevent card click
-                        navigate(`/jobs/${job.id}`)
-                    }}
+                    onClick={handleView}
                 >
                     View Details
                 </Button>

@@ -94,7 +94,7 @@ const Header: React.FC = () => {
                                 </Link>
                             </NavigationMenuItem>
 
-                            {!isLoading && isAuthenticated && (
+                            {!isLoading && isAuthenticated() && (
                                 <>
                                     <NavigationMenuItem>
                                         <Link
@@ -121,7 +121,7 @@ const Header: React.FC = () => {
                                     {currentUser?.role === 'JOBSEEKER' && (
                                         <NavigationMenuItem>
                                             <Link
-                                                to="/profile/:id"
+                                                to="/profile/me"
                                                 className={`${navigationMenuTriggerStyle()} ${linkBaseClasses} ${isActivePage === 'profile' ? activeLinkClasses : ''}`}
                                             >
                                                 <User className="h-4 w-4" />
@@ -149,7 +149,7 @@ const Header: React.FC = () => {
 
                     {/* Desktop Auth Buttons */}
                     <div className="hidden md:flex items-center gap-4">
-                        {!isLoading && !isAuthenticated && (
+                        {!isLoading && !isAuthenticated() && (
                             <>
                                 <Link
                                     to="/login"
@@ -210,7 +210,7 @@ const Header: React.FC = () => {
                                     )
                                 })}
 
-                                {!isLoading && isAuthenticated && (
+                                {!isLoading && isAuthenticated() && (
                                     <>
                                         <Link
                                             to="/dashboard"
@@ -257,7 +257,7 @@ const Header: React.FC = () => {
                                     </>
                                 )}
 
-                                {!isLoading && !isAuthenticated && (
+                                {!isLoading && !isAuthenticated() && (
                                     // <div className="flex flex-col gap-3 mt-2">
                                     // </div>
                                     <>

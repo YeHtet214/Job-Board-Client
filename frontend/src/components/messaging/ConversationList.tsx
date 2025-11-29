@@ -43,7 +43,7 @@ const ConversationList = () => {
     )
     const { isAuthenticated } = useAuth()
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated()) {
         return (
             <div className="w-full h-full flex flex-col items-center justify-center text-center p-8">
                 <div className="w-20 h-20 bg-jb-surface rounded-full flex items-center justify-center mb-4">
@@ -123,11 +123,10 @@ const ConversationList = () => {
     return (
         <div className="flex justify-between h-full bg-card rounded-xl shadow-lg overflow-hidden border border-jb-text/10">
             <div
-                className={`overflow-y-auto scrollbar-thin scrollbar-thumb-jb-text/20 scrollbar-track-transparent transition-all duration-300 ${
-                    openConversation
+                className={`overflow-y-auto scrollbar-thin scrollbar-thumb-jb-text/20 scrollbar-track-transparent transition-all duration-300 ${openConversation
                         ? 'w-1/3 border-r border-jb-text/10'
                         : 'w-full'
-                }`}
+                    }`}
             >
                 <div className="p-4 border-b border-jb-text/10 bg-jb-surface/30">
                     <h2 className="text-lg font-semibold text-jb-text">

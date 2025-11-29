@@ -3,12 +3,14 @@ import JobCard from './JobCard'
 import { Job } from '@/types/job'
 import { History, ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '@/contexts/authContext'
 
 const RecentlyViewedJobs = () => {
     const { recentlyViewedJobs } = useJobsData()
 
-    if (recentlyViewedJobs.length === 0) {
+    // Ensure recentlyViewedJobs is always an array
+    const viewedJobs = Array.isArray(recentlyViewedJobs) ? recentlyViewedJobs : []
+
+    if (viewedJobs.length === 0) {
         return (
             <div className="text-center py-6">
                 <History className="w-12 h-12 text-gray-300 mx-auto mb-3" />
@@ -21,8 +23,8 @@ const RecentlyViewedJobs = () => {
     }
 
     // Only show up to 4 recently viewed jobs
-    const displayJobs = recentlyViewedJobs.slice(0, 4)
-    const hasMoreJobs = recentlyViewedJobs.length > 4
+    const displayJobs = viewedJobs.slice(0, 4)
+    const hasMoreJobs = viewedJobs.length > 4
 
     return (
         <div>
@@ -38,7 +40,7 @@ const RecentlyViewedJobs = () => {
                         to="/jobs/history"
                         className="inline-flex items-center text-jb-primary hover:text-jb-primary/80 text-sm font-medium"
                     >
-                        View all {recentlyViewedJobs.length} recently viewed
+                        View all {viewedJobs.length} recently viewed
                         jobs
                         <ArrowRight className="ml-1 w-4 h-4" />
                     </Link>

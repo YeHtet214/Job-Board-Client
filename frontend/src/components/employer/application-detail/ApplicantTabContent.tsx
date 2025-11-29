@@ -1,7 +1,8 @@
 import React from 'react'
-import { User, Mail, Phone, MapPin } from 'lucide-react'
+import { User, Mail, Phone, MapPink, MapPin } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Link } from 'react-router-dom'
 
 interface ApplicantTabContentProps {
   applicant: {
@@ -79,16 +80,12 @@ const ApplicantTabContent: React.FC<ApplicantTabContentProps> = ({
 
         {/* Profile link */}
         <div className="pt-4 border-t border-border">
-          <Button variant="outline" asChild>
-            <a
-              href={`/profile/${applicantId}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+          <Link to={`/profile/${applicantId}`} >
+            <Button variant="outline">
               <User className="h-4 w-4 mr-2" />
               View Full Profile
-            </a>
-          </Button>
+            </Button>
+          </Link>
         </div>
       </CardContent>
     </Card>

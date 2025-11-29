@@ -27,7 +27,8 @@ import {
     ArrowLeft,
     Share2,
     Bookmark,
-    ExternalLink
+    ExternalLink,
+    Check
 } from 'lucide-react'
 import { useJobSeekerDashboard } from '@/hooks/react-queries/dashboard'
 
@@ -87,9 +88,9 @@ const JobDetailPage = () => {
 
     const isEmployer = currentUser?.role === 'EMPLOYER'
     const isAdmin = currentUser?.role === 'ADMIN'
-    const canApply = isAuthenticated && currentUser?.role === 'JOBSEEKER'
+    const canApply = isAuthenticated() && currentUser?.role === 'JOBSEEKER'
     const canEdit =
-        isAuthenticated &&
+        isAuthenticated() &&
         (isAdmin || (isEmployer && job.postedById === currentUser?.id))
 
     return (
@@ -167,9 +168,9 @@ const JobDetailPage = () => {
                                             {isJobApplied ? (
                                                 <Button
                                                     variant="outline"
-                                                    className="px-8 border-green-500/50 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/10 hover:bg-green-50 dark:hover:bg-green-900/10 cursor-default"
+                                                    className="px-8 border-green-500/50 text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/10 hover:bg-green-50 dark:hover:bg-green-900/10 hover:text-green-500 dark:hover:text-green-500 cursor-default"
                                                 >
-                                                    Applied
+                                                    Applied <Check className="w-4 h-4 ml-1" />
                                                 </Button>
                                             ) : (
                                                 <Link to={`/jobs/${job.id}/apply`} className="w-full sm:w-auto">
@@ -179,7 +180,7 @@ const JobDetailPage = () => {
                                                 </Link>
                                             )}
                                         </>
-                                    ) : !isAuthenticated ? (
+                                    ) : !isAuthenticated() ? (
                                         <Link to={`/login?redirect=/jobs/${job.id}`} className="w-full sm:w-auto">
                                             <Button className="w-full sm:w-auto px-8 bg-jb-primary text-white hover:bg-jb-primary/90 shadow-lg shadow-jb-primary/20 transition-all hover:scale-[1.02]">
                                                 Login to Apply

@@ -20,11 +20,11 @@ import { isTokenExpired } from '@/utils/jwt'
 import { RegisterRequest } from '@/types/auth'
 
 interface AuthContextType {
-    currentUser: User | null
-    isAuthenticated: boolean
+    currentUser: User | null | undefined
+    isAuthenticated: () => boolean
     accessToken: string
     isLoading: boolean
-    refetchUser: () => Promise<User>
+    refetchUser: () => Promise<any>
     login: (email: string, password: string) => Promise<void>
     register: (userData: RegisterRequest) => Promise<void>
     logout: () => Promise<void>

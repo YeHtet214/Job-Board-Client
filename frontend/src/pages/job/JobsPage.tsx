@@ -15,6 +15,8 @@ const JobsPage = () => {
     const { totalPages, handlePageChange, isViewedByCurrentUser } = useJobsData()
     const isViewedByUser = useCallback(() => currentUser ? isViewedByCurrentUser(currentUser?.id) : false, [currentUser, isViewedByCurrentUser])()
 
+    console.log("Is viewed by current user: ", isViewedByUser)
+
     return (
         <div className="min-h-screen bg-jb-bg flex flex-col">
             {/* Hero Section */}

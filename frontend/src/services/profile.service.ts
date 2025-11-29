@@ -1,6 +1,5 @@
 import { ApiService } from '@/services/api.service'
 import { Profile, CreateProfileDto, UpdateProfileDto } from '@/types/profile'
-import { profile } from 'console'
 
 class ProfileService extends ApiService {
     private endpoints = {
@@ -11,14 +10,13 @@ class ProfileService extends ApiService {
         UPLOAD_PROFILE_IMAGE: '/profiles/upload-profile-image',
     }
 
-    public async getMyProfile(): Promise<Profile> {
-        const response = await this.get<Profile>(this.endpoints.MY_PROFILE)
-        console.log('get profile data: ', response)
-        return response.data.data
-    }
-
-    public async getProfileById(id: string): Promise<Profile> {
+    public async getProfile(id: string): Promise<Profile> {
         const response = await this.get<Profile>(this.endpoints.DETAIL(id))
+
+        if (!response.data.success) {
+            throw new Error(response.data.message)
+        }
+
         return response.data.data
     }
 

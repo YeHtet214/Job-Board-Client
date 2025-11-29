@@ -6,12 +6,12 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
-} from "../ui/sheet"
+} from "@/components/ui/sheet"
 import { useMessaging } from "@/contexts/MessagingContext";
-import { Badge } from "../ui/badge";
+import { Badge } from "@/components/ui/badge";
 import NotiItem from "./NotiItem";
 import { Notification } from "@/types/messaging";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
 
 const NotificationsList = () => {
   const { notifications, clearNotifications } = useMessaging()

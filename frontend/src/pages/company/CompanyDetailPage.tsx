@@ -171,7 +171,7 @@ const CompanyDetailPage: React.FC = () => {
                                                     variant="outline"
                                                     className="flex items-center gap-2"
                                                     onClick={() =>
-                                                        !isAuthenticated &&
+                                                        !isAuthenticated() &&
                                                         navigate('/login', {
                                                             state: {
                                                                 from: location,

@@ -1,6 +1,10 @@
 export interface Profile {
     id: string
     userId: string
+    firstName: string
+    lastName: string
+    email: string
+    role: string
     bio: string
     skills: string[]
     education: Education[]
@@ -53,4 +57,4 @@ export interface ProfileCompletionItemType {
     text: string
 }
 
-export interface UpdateProfileDto extends Partial<CreateProfileDto> {}
+export interface UpdateProfileDto extends Partial<CreateProfileDto> { }

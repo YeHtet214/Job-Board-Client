@@ -25,8 +25,10 @@ const JobList = () => {
 
     // Use the batch hook to check if jobs are saved in a single request
     const { data: savedJobsStatus = {} } = useBatchJobSavedStatus(
-        isAuthenticated && isJobSeeker ? [...jobIds] : []
+        isAuthenticated() && isJobSeeker ? [...jobIds] : []
     )
+
+    console.log("savedJobsStatus: ", savedJobsStatus)
 
     const hasFilters =
         keyword || location || jobTypes.length > 0 || experienceLevel !== 'ANY'

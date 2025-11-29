@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { useAuth } from '@/contexts/authContext'
-import { useNavigate } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { Pencil } from 'lucide-react'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { Profile } from '@/types/profile'
@@ -24,6 +24,10 @@ import ProfileEditForm, {
 const initialProfile: Profile = {
     id: '',
     userId: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    role: '',
     bio: '',
     skills: [],
     education: [],
@@ -38,22 +42,19 @@ const initialProfile: Profile = {
 
 const ProfilePage = () => {
     const { currentUser } = useAuth()
-    const navigate = useNavigate()
+    const { id } = useParams()
     const [activeTab, setActiveTab] = useState('info')
     const [editMode, setEditMode] = useState(false)
-    const [viewTab, setViewTab] = useState('overview')
 
-    const { data: profile, isLoading } = useProfile()
+    const { data: profile, isLoading } = useProfile(id!)
     const { mutate: createProfile, isPending: isCreating } = useCreateProfile()
     const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile()
     const { mutate: uploadResume, isPending: isUploading } = useUploadResume()
     const { mutate: uploadProfileImage } = useUploadProfileImage()
 
-    useEffect(() => {
-        if (currentUser?.role !== 'JOBSEEKER') {
-            navigate('/')
-        }
-    }, [currentUser, navigate])
+    const isAuthorized = useMemo(() => (currentUser?.id === profile?.userId && currentUser?.role === 'JOBSEEKER'), [currentUser, profile])
+
+    console.log("profile data in profile page: ", profile)
 
     const handleSubmit = async (values: ProfileFormValues) => {
         try {
@@ -78,6 +79,7 @@ const ProfilePage = () => {
     }
 
     const enterEditMode = () => {
+        if (!isAuthorized) return
         setEditMode(true)
         setActiveTab('info')
     }
@@ -90,7 +92,7 @@ const ProfilePage = () => {
         )
     }
 
-    if (!profile?.id) {
+    if (!profile && isAuthorized) {
         return (
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -102,7 +104,7 @@ const ProfilePage = () => {
                     Profile
                 </h1>
 
-                {!editMode ? (
+                {(!editMode) ? (
                     <ProfileOverview enterEditMode={enterEditMode} />
                 ) : (
                     <motion.div
@@ -134,7 +136,7 @@ const ProfilePage = () => {
         )
     }
 
-    if (!editMode) {
+    if (editMode && isAuthorized) {
         return (
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -143,22 +145,31 @@ const ProfilePage = () => {
                 className="container mx-auto max-w-5xl py-10 px-4 sm:px-6 text-jb-text"
             >
                 <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-jb-text">Profile</h1>
+                    <h1 className="text-3xl font-bold">Edit Profile</h1>
                     <Button
-                        onClick={enterEditMode}
+                        onClick={() => setEditMode(false)}
                         variant="outline"
-                        className="flex items-center gap-2 border-jb-primary text-jb-text hover:bg-jb-primary/10"
+                        className="border-jb-text-muted text-jb-text hover:bg-jb-muted/10"
                     >
-                        <Pencil className="h-4 w-4" />
-                        <span>Edit Profile</span>
+                        Cancel
                     </Button>
                 </div>
 
-                <ProfileTabs
-                    profile={profile}
-                    viewTab={viewTab}
-                    setViewTab={setViewTab}
-                />
+                <Card className="border border-jb-primary/20 shadow-md bg-jb-surface">
+                    <CardContent className="pt-6">
+                        <ProfileEditForm
+                            profile={profile || initialProfile}
+                            activeTab={activeTab}
+                            setActiveTab={setActiveTab}
+                            handleSubmit={handleSubmit}
+                            handleResumeUpload={handleResumeUpload}
+                            handleProfileImageUpload={handleProfileImageUpload}
+                            isCreating={isCreating}
+                            isUpdating={isUpdating}
+                            isUploading={isUploading}
+                        />
+                    </CardContent>
+                </Card>
             </motion.div>
         )
     }
@@ -171,33 +182,26 @@ const ProfilePage = () => {
             className="container mx-auto max-w-5xl py-10 px-4 sm:px-6 text-jb-text"
         >
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold">Edit Profile</h1>
-                <Button
-                    onClick={() => setEditMode(false)}
-                    variant="outline"
-                    className="border-jb-text-muted text-jb-text hover:bg-jb-muted/10"
-                >
-                    Cancel
-                </Button>
+                <h1 className="text-3xl font-bold text-jb-text">Profile</h1>
+                {isAuthorized && (
+                    <Button
+                        onClick={enterEditMode}
+                        variant="outline"
+                        className="flex items-center gap-2 border-jb-primary text-jb-text hover:bg-jb-primary/10"
+                    >
+                        <Pencil className="h-4 w-4" />
+                        <span>Edit Profile</span>
+                    </Button>
+                )}
             </div>
 
-            <Card className="border border-jb-primary/20 shadow-md bg-jb-surface">
-                <CardContent className="pt-6">
-                    <ProfileEditForm
-                        profile={profile || initialProfile}
-                        activeTab={activeTab}
-                        setActiveTab={setActiveTab}
-                        handleSubmit={handleSubmit}
-                        handleResumeUpload={handleResumeUpload}
-                        handleProfileImageUpload={handleProfileImageUpload}
-                        isCreating={isCreating}
-                        isUpdating={isUpdating}
-                        isUploading={isUploading}
-                    />
-                </CardContent>
-            </Card>
+            {profile && (
+                <ProfileTabs profile={profile} />
+            )}
         </motion.div>
     )
+
+
 }
 
 export default ProfilePage
