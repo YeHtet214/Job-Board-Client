@@ -11,8 +11,6 @@ import {
     useProfile,
     useCreateProfile,
     useUpdateProfile,
-    useUploadResume,
-    useUploadProfileImage,
 } from '@/hooks/react-queries/profile/useProfileQueries'
 
 import ProfileOverview from '@/components/jobseeker/profile/ProfileOverview'
@@ -49,12 +47,8 @@ const ProfilePage = () => {
     const { data: profile, isLoading } = useProfile(id!)
     const { mutate: createProfile, isPending: isCreating } = useCreateProfile()
     const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile()
-    const { mutate: uploadResume, isPending: isUploading } = useUploadResume()
-    const { mutate: uploadProfileImage } = useUploadProfileImage()
 
     const isAuthorized = useMemo(() => (currentUser?.id === profile?.userId && currentUser?.role === 'JOBSEEKER'), [currentUser, profile])
-
-    console.log("profile data in profile page: ", profile)
 
     const handleSubmit = async (values: ProfileFormValues) => {
         try {
@@ -68,14 +62,6 @@ const ProfilePage = () => {
         } finally {
             setEditMode(false)
         }
-    }
-
-    const handleResumeUpload = async (file: File) => {
-        await uploadResume(file)
-    }
-
-    const handleProfileImageUpload = async (file: File) => {
-        await uploadProfileImage(file)
     }
 
     const enterEditMode = () => {
@@ -120,13 +106,8 @@ const ProfilePage = () => {
                                     activeTab={activeTab}
                                     setActiveTab={setActiveTab}
                                     handleSubmit={handleSubmit}
-                                    handleResumeUpload={handleResumeUpload}
-                                    handleProfileImageUpload={
-                                        handleProfileImageUpload
-                                    }
                                     isCreating={isCreating}
                                     isUpdating={isUpdating}
-                                    isUploading={isUploading}
                                 />
                             </CardContent>
                         </Card>
@@ -149,7 +130,7 @@ const ProfilePage = () => {
                     <Button
                         onClick={() => setEditMode(false)}
                         variant="outline"
-                        className="border-jb-text-muted text-jb-text hover:bg-jb-muted/10"
+                        className=""
                     >
                         Cancel
                     </Button>
@@ -162,11 +143,8 @@ const ProfilePage = () => {
                             activeTab={activeTab}
                             setActiveTab={setActiveTab}
                             handleSubmit={handleSubmit}
-                            handleResumeUpload={handleResumeUpload}
-                            handleProfileImageUpload={handleProfileImageUpload}
                             isCreating={isCreating}
                             isUpdating={isUpdating}
-                            isUploading={isUploading}
                         />
                     </CardContent>
                 </Card>
@@ -187,7 +165,7 @@ const ProfilePage = () => {
                     <Button
                         onClick={enterEditMode}
                         variant="outline"
-                        className="flex items-center gap-2 border-jb-primary text-jb-text hover:bg-jb-primary/10"
+                        className="flex items-center gap-2"
                     >
                         <Pencil className="h-4 w-4" />
                         <span>Edit Profile</span>

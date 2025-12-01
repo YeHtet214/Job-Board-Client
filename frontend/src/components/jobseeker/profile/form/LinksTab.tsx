@@ -1,6 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { FormikProps } from 'formik'
-import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import {
     FileText,
@@ -14,7 +13,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
@@ -24,63 +22,52 @@ import {
 } from '@/components/forms'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { ProfileFormValues } from './ProfileEditForm'
+import { useUploadResume } from '@/hooks/react-queries/profile'
 
 interface LinksTabProps {
     formik: FormikProps<ProfileFormValues>
-    isSaving: boolean
-    onTabChange: (tab: string) => void
-    onResumeUpload: (file: File) => Promise<void>
-    isResumeUploading: boolean
 }
 
 const LinksTab = ({
     formik,
-    isSaving,
-    onTabChange,
-    onResumeUpload,
-    isResumeUploading,
 }: LinksTabProps) => {
-    const { values } = formik
-    const [resumeFile, setResumeFile] = useState<File | null>(null)
-    const [resumeUploadError, setResumeUploadError] = useState<string | null>(
-        null
-    )
+    const { values, setFieldValue } = formik
+    const [resumeUploadError, setResumeUploadError] = useState<string | null>(null)
+    const { mutate: uploadResume, isPending: isResumeUploading } = useUploadResume()
 
-    // const handleResumeFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //   console.log("Resume File Change: ", e.target.files)
-    //   if (e.target.files && e.target.files[0]) {
-    //     const file = e.target.files[0];
+    useEffect(() => {
+        const resumeFile = values.resume as File | null
 
-    //     // Check file size (max 5MB)
-    //     if (file.size > 5 * 1024 * 1024) {
-    //       setResumeUploadError('File size exceeds the 5MB limit');
-    //       return;
-    //     }
-
-    //     // Check file type
-    //     const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    //     if (!allowedTypes.includes(file.type)) {
-    //       setResumeUploadError('Only PDF, DOC, and DOCX files are allowed');
-    //       return;
-    //     }
-
-    //     setResumeFile(file);
-    //     setResumeUploadError(null);
-    //   }
-    // };
-
-    const handleUploadClick = async () => {
-        if (resumeFile) {
-            try {
-                await onResumeUpload(resumeFile)
-                setResumeFile(null)
-            } catch (error) {
-                setResumeUploadError(
-                    'Failed to upload resume. Please try again.'
-                )
+        if (resumeFile && resumeFile instanceof File) {
+            // Check file size (max 5MB)
+            if (resumeFile.size > 5 * 1024 * 1024) {
+                setResumeUploadError('File size exceeds the 5MB limit');
+                setFieldValue('resume', null); // Clear the file input
+                return;
             }
+
+            // Check file type
+            const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            if (!allowedTypes.includes(resumeFile.type)) {
+                setResumeUploadError('Only PDF, DOC, and DOCX files are allowed');
+                setFieldValue('resume', null); // Clear the file input
+                return;
+            }
+
+            // Upload the file
+            uploadResume(resumeFile, {
+                onSuccess: () => {
+                    setResumeUploadError(null)
+                    setFieldValue('resume', null)
+                },
+                onError: (error) => {
+                    setResumeUploadError('Failed to upload resume. Please try again.')
+                    console.error('Resume upload error:', error)
+                    setFieldValue('resume', null)
+                }
+            })
         }
-    }
+    }, [values.resume, uploadResume, setFieldValue])
 
     return (
         <Card className="border-none shadow-none">
@@ -139,102 +126,63 @@ const LinksTab = ({
                     <h3 className="text-lg font-medium">Resume</h3>
 
                     <div className="border border-dashed rounded-lg p-4 bg-muted">
-                        {values.resumeUrl ? (
-                            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                                <div className="flex items-center gap-3">
-                                    <FileText className="h-8 w-8 text-jobboard-darkblue" />
-                                    <div>
-                                        <p className="font-medium">
-                                            Resume uploaded
-                                        </p>
-                                        <p className="text-sm text-gray-500 truncate max-w-xs">
-                                            {values.resumeUrl.split('/').pop()}
-                                        </p>
+                        {values.resumeUrl && (
+                            <>
+                                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <FileText className="h-8 w-8 text-jobboard-darkblue" />
+                                        <div>
+                                            <p className="font-medium">
+                                                Resume uploaded
+                                            </p>
+                                            <p className="text-sm text-gray-500 truncate max-w-xs">
+                                                {values.resumeUrl.split('/').pop()}
+                                            </p>
+                                        </div>
                                     </div>
+                                    <a
+                                        href={values.resumeUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="px-4 py-2 bg-card border rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none"
+                                    >
+                                        View Resume
+                                    </a>
                                 </div>
-                                <a
-                                    href={values.resumeUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="px-4 py-2 bg-card border rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none"
-                                >
-                                    View Resume
-                                </a>
-                            </div>
-                        ) : (
-                            <div className="flex flex-col items-center justify-center p-4">
-                                <Upload className="h-12 w-12 text-gray-300 mb-2" />
-                                <p className="mb-4 text-center">
-                                    Upload your resume (PDF, DOC, or DOCX up to
-                                    5MB)
-                                </p>
 
-                                <div className="flex flex-col justify-center sm:flex-row space-3 w-full max-w-md">
-                                    <div className="">
-                                        {/* <input
-                      type="file"
-                      id="resumeUpload"
-                      className="hidden"
-                      accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                      onChange={handleResumeFileChange}
-                    />
-                    <label
-                      htmlFor="resumeUpload"
-                      className="w-full px-4 py-2 bg-background border rounded-md shadow-sm text-sm font-medium hover:bg-accent focus:outline-none cursor-pointer flex items-center justify-center"
-                    >
-                      Select File
-                    </label> */}
+                                <div className="flex flex-col items-center justify-center p-4">
+                                    <Upload className="h-12 w-12 text-gray-300 mb-2" />
+                                    <p className="mb-4 text-center">
+                                        Upload your resume (PDF, DOC, or DOCX up to 5MB)
+                                    </p>
+
+                                    <div className="w-full max-w-md">
                                         <FileInputFieldWithLabel
                                             name="resume"
                                             label=""
                                             description=""
                                             accept=".pdf,.doc,.docx"
                                             required={false}
-                                            formik={true}
+                                            showPreview={false}
                                         />
+
+                                        {isResumeUploading && (
+                                            <div className="mt-2 flex items-center justify-center text-sm text-gray-500">
+                                                <LoadingSpinner size="sm" className="mr-2" />
+                                                Uploading resume...
+                                            </div>
+                                        )}
                                     </div>
 
-                                    {resumeFile && (
-                                        <Button
-                                            type="button"
-                                            onClick={handleUploadClick}
-                                            disabled={isResumeUploading}
-                                            className="flex-1"
-                                        >
-                                            {isResumeUploading ? (
-                                                <span className="flex items-center">
-                                                    <LoadingSpinner
-                                                        size="sm"
-                                                        className="mr-2"
-                                                    />
-                                                    Uploading...
-                                                </span>
-                                            ) : (
-                                                'Upload'
-                                            )}
-                                        </Button>
+                                    {resumeUploadError && (
+                                        <div className="mt-2 flex items-center text-red-500 text-sm">
+                                            <AlertCircle className="h-4 w-4 mr-1" />
+                                            {resumeUploadError}
+                                        </div>
                                     )}
                                 </div>
+                            </>
 
-                                {resumeFile && !resumeUploadError && (
-                                    <p className="mt-2 text-sm text-gray-500">
-                                        Selected: {resumeFile.name} (
-                                        {(
-                                            resumeFile.size /
-                                            1024 /
-                                            1024
-                                        ).toFixed(2)}{' '}
-                                        MB)
-                                    </p>
-                                )}
-
-                                {resumeUploadError && (
-                                    <div className="mt-2 flex items-center text-red-500 text-sm">
-                                        <AlertCircle className="h-4 w-4 mr-1" />
-                                        {resumeUploadError}
-                                    </div>
-                                )}
-                            </div>
                         )}
                     </div>
                 </div>

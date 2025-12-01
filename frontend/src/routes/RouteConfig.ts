@@ -8,8 +8,8 @@ import RecentlyViewedJobsPage from '@/pages/jobseeker/RecentlyViewedJobsPage'
 export interface RouteConfig {
     path: string
     element:
-        | React.LazyExoticComponent<React.ComponentType<any>>
-        | React.ComponentType<any>
+    | React.LazyExoticComponent<React.ComponentType<any>>
+    | React.ComponentType<any>
     children?: RouteConfig[]
     requiresAuth?: boolean
     allowedRoles?: string[]
@@ -136,7 +136,7 @@ export const routes: RouteConfig[] = [
     {
         path: '/jobs/history',
         element: RecentlyViewedJobsPage,
-        meta: { title: 'Seeker\'s Recently Viewed Jobs '}
+        meta: { title: 'Seeker\'s Recently Viewed Jobs ' }
     },
     {
         path: '/companies',

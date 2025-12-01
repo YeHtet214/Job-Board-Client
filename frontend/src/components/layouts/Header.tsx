@@ -236,7 +236,7 @@ const Header: React.FC = () => {
                                         )}
                                         {currentUser?.role !== 'EMPLOYER' && (
                                             <Link
-                                                to="/profile"
+                                                to={`/profile/${currentUser?.id}`}
                                                 className={`flex items-center gap-2 py-2 px-3 rounded-md text-sm font-medium transition-colors ${isActivePage === 'profile'
                                                     ? 'text-jb-primary bg-jb-highlight font-semibold'
                                                     : 'hover:text-jb-primary'

@@ -10,12 +10,11 @@ import { ProfileValidationSchema } from '@/schemas/validation/profile.shcema'
 import { Button } from '@/components/ui/button'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { useToast } from '@/components/ui/use-toast'
-import { useAuth } from '@/contexts/authContext'
-import { useProfile } from '@/hooks/react-queries/profile'
 
 // Extended profile type for form fields
 export interface ProfileFormValues extends Profile {
     newSkill?: string // Form-specific field for adding new skills
+    resume?: File | null
 }
 
 interface ProfileEditFormProps {
@@ -23,11 +22,8 @@ interface ProfileEditFormProps {
     activeTab: string
     setActiveTab: (tab: string) => void
     handleSubmit: (values: ProfileFormValues) => Promise<void>
-    handleResumeUpload: (file: File) => Promise<void>
-    handleProfileImageUpload: (file: File) => Promise<void>
     isCreating: boolean
     isUpdating: boolean
-    isUploading: boolean
 }
 
 const ProfileEditForm = ({
@@ -35,11 +31,8 @@ const ProfileEditForm = ({
     activeTab,
     setActiveTab,
     handleSubmit,
-    handleResumeUpload,
-    handleProfileImageUpload,
     isCreating,
     isUpdating,
-    isUploading,
 }: ProfileEditFormProps) => {
     const { toast } = useToast()
     // Create the extended initial values
@@ -69,7 +62,6 @@ const ProfileEditForm = ({
 
         const { newSkill, ...profileData } = values
 
-        console.log('Profile data:', profileData)
         await handleSubmit(profileData)
     }
 
@@ -128,7 +120,6 @@ const ProfileEditForm = ({
                         <TabsContent value="info" className="mt-0">
                             <BasicInfoTab
                                 formik={formik}
-                                onProfileImageUpload={handleProfileImageUpload}
                                 profileImageURL={profile.profileImageURL}
                             />
                         </TabsContent>
@@ -144,10 +135,6 @@ const ProfileEditForm = ({
                         <TabsContent value="links" className="mt-0">
                             <LinksTab
                                 formik={formik}
-                                isSaving={isCreating || isUpdating}
-                                onTabChange={setActiveTab}
-                                onResumeUpload={handleResumeUpload}
-                                isResumeUploading={isUploading}
                             />
                         </TabsContent>
 

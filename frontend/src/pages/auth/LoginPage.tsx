@@ -251,7 +251,6 @@ const LoginPage: React.FC = () => {
                             <>
                                 <Form className="space-y-4">
                                     <InputFieldWithLabel
-                                        formik={true}
                                         name="email"
                                         label="Email"
                                         placeholder="name@example.com"
@@ -262,10 +261,8 @@ const LoginPage: React.FC = () => {
 
                                     <div className="space-y-2 relative">
                                         <PasswordFieldWithLabel
-                                            formik={true}
                                             name="password"
                                             label="Password"
-                                            placeholder="••••••••"
                                             autoComplete="current-password"
                                             required
                                             disabled={isSubmitting}
@@ -279,7 +276,6 @@ const LoginPage: React.FC = () => {
                                     </div>
 
                                     <SwitchFieldWithLabel
-                                        formik={true}
                                         name="remember"
                                         label="Remember me"
                                         disabled={isSubmitting}

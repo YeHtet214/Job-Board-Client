@@ -74,11 +74,19 @@ class ProfileService extends ApiService {
         const formData = new FormData()
         formData.append('resume', file)
 
-        // Set the content type to undefined to let the browser set the correct multipart boundary
         const response = await this.post<{ url: string }>(
             this.endpoints.UPLOAD_RESUME,
-            formData
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
         )
+
+        if (!response.data.success) {
+            throw new Error(response.data.message)
+        }
 
         return response.data.data.url
     }
@@ -89,8 +97,17 @@ class ProfileService extends ApiService {
 
         const response = await this.post<{ url: string }>(
             this.endpoints.UPLOAD_PROFILE_IMAGE,
-            formData
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
         )
+
+        if (!response.data.success) {
+            throw new Error(response.data.message)
+        }
 
         return response.data.data.url
     }

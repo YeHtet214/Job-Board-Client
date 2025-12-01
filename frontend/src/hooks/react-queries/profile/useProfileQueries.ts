@@ -17,18 +17,12 @@ export const profileKeys = {
     profileImage: () => [...profileKeys.all, 'profile-image'] as const,
 }
 
-/**
- * Hook for fetching the current user's profile
- *
- * @param options - Optional query options
- * @returns Query result with profile data
- */
-export const useProfile = (param: string, options?: Omit<UseQueryOptions<Profile | null, Error>, 'queryKey' | 'queryFn'>) => {
+export const useProfile = (id: string, options?: Omit<UseQueryOptions<Profile | null, Error>, 'queryKey' | 'queryFn'>) => {
     return useQuery<Profile | null, Error>({
         queryKey: profileKeys.details(),
         queryFn: async () => {
             try {
-                const profile = await profileService.getProfile(param)
+                const profile = await profileService.getProfile(id)
                 return mapProfileData(profile)
             } catch (error: any) {
                 // If profile doesn't exist yet, return null instead of throwing error
@@ -38,15 +32,11 @@ export const useProfile = (param: string, options?: Omit<UseQueryOptions<Profile
                 throw error
             }
         },
+        enabled: !!id,
         ...options,
     })
 }
 
-/**
- * Hook for creating a new profile
- *
- * @returns Mutation for creating a profile
- */
 export const useCreateProfile = () => {
     const queryClient = useQueryClient()
     const { toast } = useToast()
@@ -73,11 +63,6 @@ export const useCreateProfile = () => {
     })
 }
 
-/**
- * Hook for updating an existing profile
- *
- * @returns Mutation for updating a profile
- */
 export const useUpdateProfile = () => {
     const queryClient = useQueryClient()
     const { toast } = useToast()
@@ -104,11 +89,6 @@ export const useUpdateProfile = () => {
     })
 }
 
-/**
- * Hook for uploading a resume
- *
- * @returns Mutation for uploading a resume
- */
 export const useUploadResume = () => {
     const queryClient = useQueryClient()
     const { toast } = useToast()
@@ -142,11 +122,6 @@ export const useUploadResume = () => {
     })
 }
 
-/**
- * Hook for uploading a profile image
- *
- * @returns Mutation for uploading a profile image
- */
 export const useUploadProfileImage = () => {
     const queryClient = useQueryClient()
     const { toast } = useToast()
@@ -185,30 +160,4 @@ export const useUploadProfileImage = () => {
             console.error('Error uploading profile image:', error)
         },
     })
-}
-
-/**
- * @deprecated Use individual hooks instead: useProfile, useCreateProfile, useUpdateProfile, useUploadResume, useUploadProfileImage
- */
-export const useProfileQuery = () => {
-    const { data: profile, isLoading, error, refetch } = useProfile()
-    const createProfileMutation = useCreateProfile()
-    const updateProfileMutation = useUpdateProfile()
-    const uploadResumeMutation = useUploadResume()
-    const uploadProfileImageMutation = useUploadProfileImage()
-
-    return {
-        profile,
-        isLoading,
-        error,
-        refetch,
-        createProfile: createProfileMutation.mutate,
-        updateProfile: updateProfileMutation.mutate,
-        uploadResume: uploadResumeMutation.mutate,
-        uploadProfileImage: uploadProfileImageMutation.mutate,
-        isCreating: createProfileMutation.isPending,
-        isUpdating: updateProfileMutation.isPending,
-        isUploading: uploadResumeMutation.isPending,
-        isUploadingImage: uploadProfileImageMutation.isPending,
-    }
 }

@@ -7,7 +7,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
@@ -15,25 +14,20 @@ import { Button } from '@/components/ui/button'
 import { TextareaField, InputFieldWithLabel } from '@/components/forms'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { ProfileFormValues } from './ProfileEditForm'
-import { useProfile } from '@/hooks/react-queries/profile'
+import { useUploadProfileImage } from '@/hooks/react-queries/profile'
 
 interface BasicInfoTabProps {
     formik: FormikProps<ProfileFormValues>
-    onProfileImageUpload: (file: File) => Promise<void>
     profileImageURL?: string
 }
 
 const BasicInfoTab = ({
     formik,
-    onProfileImageUpload,
     profileImageURL,
 }: BasicInfoTabProps) => {
     const { values, setFieldValue } = formik
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const [isUploading, setIsUploading] = useState(false)
-    const { data: profile } = useProfile()
-
-    console.log('PROFILE IMAGE URL ', profile?.profileImageURL)
+    const { mutate: uploadProfileImage, isPending: isUploading } = useUploadProfileImage()
 
     const handleImageChange = async (
         e: React.ChangeEvent<HTMLInputElement>
@@ -48,18 +42,16 @@ const BasicInfoTab = ({
         }
 
         // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
+        if (file.size > 5 * 1024 * 1024) {  
             alert('Image size should be less than 5MB')
             return
         }
 
         try {
-            setIsUploading(true)
-            await onProfileImageUpload(file)
+            await uploadProfileImage(file)
         } catch (error) {
             console.error('Error uploading profile image:', error)
         } finally {
-            setIsUploading(false)
             // Reset the file input
             if (fileInputRef.current) {
                 fileInputRef.current.value = ''
@@ -103,9 +95,9 @@ const BasicInfoTab = ({
                 <div className="flex flex-col items-center space-y-4">
                     <div className="relative group">
                         <div className="w-24 h-24 rounded-full bg-accent flex items-center justify-center overflow-hidden border-2 border-border">
-                            {profile?.profileImageURL ? (
+                            {profileImageURL ? (
                                 <img
-                                    src={profile?.profileImageURL}
+                                    src={profileImageURL}
                                     alt="Profile"
                                     className="w-full h-full object-cover"
                                 />
@@ -142,7 +134,6 @@ const BasicInfoTab = ({
                 </div>
                 <div className="border-t border-gray-200 my-6"></div>
                 <TextareaField
-                    formik={true}
                     name="bio"
                     label="Bio"
                     placeholder="Write a brief introduction about yourself..."
