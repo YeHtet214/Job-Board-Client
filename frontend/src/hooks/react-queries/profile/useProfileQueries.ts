@@ -89,19 +89,26 @@ export const useUpdateProfile = () => {
     })
 }
 
+export const useViewResume = (resumeFileId: string) => {
+    return useQuery({
+        queryKey: profileKeys.resume(),
+        queryFn: () => profileService.getResume(resumeFileId),
+    })
+}
+
 export const useUploadResume = () => {
     const queryClient = useQueryClient()
     const { toast } = useToast()
 
     return useMutation({
         mutationFn: (file: File) => profileService.uploadResume(file),
-        onSuccess: (resumeUrl) => {
+        onSuccess: (fileId: string) => {
             // Update the profile with the new resume URL
             queryClient.setQueryData<Profile | null>(
                 profileKeys.details(),
                 (oldData) => {
                     if (!oldData) return null
-                    return { ...oldData, resumeUrl }
+                    return { ...oldData, fileId }
                 }
             )
 

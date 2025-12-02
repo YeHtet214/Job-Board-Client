@@ -22,7 +22,7 @@ import {
 } from '@/components/forms'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { ProfileFormValues } from './ProfileEditForm'
-import { useUploadResume } from '@/hooks/react-queries/profile'
+import { useUploadResume, useViewResume } from '@/hooks/react-queries/profile'
 
 interface LinksTabProps {
     formik: FormikProps<ProfileFormValues>
@@ -34,17 +34,12 @@ const LinksTab = ({
     const { values, setFieldValue } = formik
     const [resumeUploadError, setResumeUploadError] = useState<string | null>(null)
     const { mutate: uploadResume, isPending: isResumeUploading } = useUploadResume()
+    const { data: viewResume } = useViewResume(values?.resumeFileId || '')
 
     useEffect(() => {
-        const resumeFile = values.resume as File | null
+        const resumeFile = values.resumeFileId
 
         if (resumeFile && resumeFile instanceof File) {
-            // Check file size (max 5MB)
-            if (resumeFile.size > 5 * 1024 * 1024) {
-                setResumeUploadError('File size exceeds the 5MB limit');
-                setFieldValue('resume', null); // Clear the file input
-                return;
-            }
 
             // Check file type
             const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
@@ -56,9 +51,10 @@ const LinksTab = ({
 
             // Upload the file
             uploadResume(resumeFile, {
-                onSuccess: () => {
+                onSuccess: (fileId: string) => {
                     setResumeUploadError(null)
-                    setFieldValue('resume', null)
+                    setFieldValue('resumeFileId', fileId)
+                    console.log('Resume data in link tab: ', fileId)
                 },
                 onError: (error) => {
                     setResumeUploadError('Failed to upload resume. Please try again.')
@@ -126,28 +122,28 @@ const LinksTab = ({
                     <h3 className="text-lg font-medium">Resume</h3>
 
                     <div className="border border-dashed rounded-lg p-4 bg-muted">
-                        {values.resumeUrl && (
+                        {values.resume && (
                             <>
                                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                                     <div className="flex items-center gap-3">
-                                        <FileText className="h-8 w-8 text-jobboard-darkblue" />
+                                        <FileText className="h-8 w-8 text-jb-primary" />
                                         <div>
                                             <p className="font-medium">
                                                 Resume uploaded
                                             </p>
-                                            <p className="text-sm text-gray-500 truncate max-w-xs">
-                                                {values.resumeUrl.split('/').pop()}
-                                            </p>
+                                            {/* <p className="text-sm text-gray-500 truncate max-w-xs">
+                                                {values.resume.split('/').pop()}
+                                            </p> */}
                                         </div>
                                     </div>
-                                    <a
-                                        href={values.resumeUrl}
+                                    {/* <a
+                                        href={values.resume}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="px-4 py-2 bg-card border rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none"
                                     >
                                         View Resume
-                                    </a>
+                                    </a> */}
                                 </div>
 
                                 <div className="flex flex-col items-center justify-center p-4">

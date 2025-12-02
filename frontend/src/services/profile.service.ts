@@ -6,7 +6,8 @@ class ProfileService extends ApiService {
         ALL: '/profiles',
         MY_PROFILE: '/profiles/me',
         DETAIL: (id: string) => `/profiles/${id}`,
-        UPLOAD_RESUME: '/profiles/upload-resume',
+        UPLOAD_RESUME: '/resumes/upload',
+        VIEW_RESUME: (id: string) => `/resumes/${id}/view`,
         UPLOAD_PROFILE_IMAGE: '/profiles/upload-profile-image',
     }
 
@@ -70,11 +71,25 @@ class ProfileService extends ApiService {
         return response.data.data
     }
 
-    public async uploadResume(file: File): Promise<string> {
+    public async getResume(resumeFileId: string) {
+        const response = await this.get<{ url: string }>(
+            this.endpoints.VIEW_RESUME(resumeFileId)
+        )
+
+        if (!response.data.success) {
+            throw new Error(response.data.message)
+        }
+
+        console.log('Resume VIEW data in service: ', response.data.data)
+
+        return response.data.data
+    }
+
+    public async uploadResume(file: File) {
         const formData = new FormData()
         formData.append('resume', file)
 
-        const response = await this.post<{ url: string }>(
+        const response = await this.post<{ fileId: string }>(
             this.endpoints.UPLOAD_RESUME,
             formData,
             {
@@ -88,7 +103,7 @@ class ProfileService extends ApiService {
             throw new Error(response.data.message)
         }
 
-        return response.data.data.url
+        return response.data.data
     }
 
     public async uploadProfileImage(file: File): Promise<string> {

@@ -62,7 +62,7 @@ const ProfileTabs = ({ profile }: ProfileTabsProps) => {
                     linkedInUrl={profile.linkedInUrl}
                     githubUrl={profile.githubUrl}
                     portfolioUrl={profile.portfolioUrl}
-                    resumeUrl={profile.resumeUrl}
+                    resume={profile.resume}
                 />
             </motion.div>
         </motion.div>

@@ -121,7 +121,7 @@ const Header: React.FC = () => {
                                     {currentUser?.role === 'JOBSEEKER' && (
                                         <NavigationMenuItem>
                                             <Link
-                                                to="/profile/me"
+                                                to={`/profile/${currentUser?.id}`}
                                                 className={`${navigationMenuTriggerStyle()} ${linkBaseClasses} ${isActivePage === 'profile' ? activeLinkClasses : ''}`}
                                             >
                                                 <User className="h-4 w-4" />

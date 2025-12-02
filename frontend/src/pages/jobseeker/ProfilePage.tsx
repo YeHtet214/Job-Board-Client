@@ -30,7 +30,7 @@ const initialProfile: Profile = {
     skills: [],
     education: [],
     experience: [],
-    resumeUrl: '',
+    resumeFileId: '',
     linkedInUrl: '',
     githubUrl: '',
     portfolioUrl: '',
@@ -48,7 +48,9 @@ const ProfilePage = () => {
     const { mutate: createProfile, isPending: isCreating } = useCreateProfile()
     const { mutate: updateProfile, isPending: isUpdating } = useUpdateProfile()
 
-    const isAuthorized = useMemo(() => (currentUser?.id === profile?.userId && currentUser?.role === 'JOBSEEKER'), [currentUser, profile])
+    const isAuthorized = useMemo(() => currentUser?.role === 'JOBSEEKER' && currentUser?.id === profile?.userId, [currentUser, profile])
+
+    console.log("current user: ", currentUser, "profile: ", profile)
 
     const handleSubmit = async (values: ProfileFormValues) => {
         try {

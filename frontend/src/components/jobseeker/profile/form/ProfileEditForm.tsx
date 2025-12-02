@@ -14,7 +14,7 @@ import { useToast } from '@/components/ui/use-toast'
 // Extended profile type for form fields
 export interface ProfileFormValues extends Profile {
     newSkill?: string // Form-specific field for adding new skills
-    resume?: File | null
+    resumeFileId?: string
 }
 
 interface ProfileEditFormProps {
