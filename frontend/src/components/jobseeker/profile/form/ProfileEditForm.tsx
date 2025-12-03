@@ -1,3 +1,4 @@
+import { useState, useMemo, useEffect } from 'react'
 import { Profile } from '@/types/profile'
 import { Formik, Form } from 'formik'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -14,6 +15,7 @@ import { useToast } from '@/components/ui/use-toast'
 // Extended profile type for form fields
 export interface ProfileFormValues extends Profile {
     newSkill?: string // Form-specific field for adding new skills
+    resume?: File | null
     resumeFileId?: string
 }
 
@@ -35,16 +37,18 @@ const ProfileEditForm = ({
     isUpdating,
 }: ProfileEditFormProps) => {
     const { toast } = useToast()
-    // Create the extended initial values
-    const initialValues: ProfileFormValues = {
+    const [isResumeUploading, setIsResumeUploading] = useState(false)
+    const [uploadedResumeId, setUploadedResumeId] = useState<string | undefined>(profile.resumeFileId)
+
+    // Memoize initial values to prevent unnecessary re-initialization
+    const initialValues: ProfileFormValues = useMemo(() => ({
         ...profile,
         newSkill: '', // Add the form-specific field
-    }
+    }), [profile])
 
-    // Custom submit handler that strips form-specific fields before submitting
+    useEffect(() => alert("uploadedResumeId: " + uploadedResumeId), [uploadedResumeId])
+
     const handleFormSubmit = async (values: ProfileFormValues) => {
-        // Extract only the Profile fields (omitting newSkill)
-
         const { skills, education, experience } = values
         if (
             skills.length < 2 ||
@@ -62,7 +66,12 @@ const ProfileEditForm = ({
 
         const { newSkill, ...profileData } = values
 
-        await handleSubmit(profileData)
+        const finalData = {
+            ...profileData,
+            resumeFileId: uploadedResumeId
+        }
+
+        await handleSubmit(finalData)
     }
 
     const changeNextTab = () => {
@@ -77,46 +86,46 @@ const ProfileEditForm = ({
     }
 
     return (
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="w-full mb-8 bg-jb-bg border border-jb-border">
-                <TabsTrigger
-                    value="info"
-                    className="text-xs sm:text-sm md:text-base flex-1 whitespace-nowrap cursor-pointer hover:bg-jb-surface hover:font-bold"
-                >
-                    <User className="h-3 w-3 hidden sm:inline-block sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                    <span>Basic Info</span>
-                </TabsTrigger>
-                <TabsTrigger
-                    value="education"
-                    className="text-xs sm:text-sm md:text-base flex-1 whitespace-nowrap cursor-pointer hover:bg-jb-surface hover:font-bold"
-                >
-                    <BookOpen className="h-3 w-3 hidden sm:inline-block sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                    <span>Education</span>
-                </TabsTrigger>
-                <TabsTrigger
-                    value="experience"
-                    className="text-xs sm:text-sm md:text-base flex-1 whitespace-nowrap cursor-pointer hover:bg-jb-surface hover:font-bold"
-                >
-                    <Building className="h-3 w-3 hidden sm:inline-block sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                    <span>Experience</span>
-                </TabsTrigger>
-                <TabsTrigger
-                    value="links"
-                    className="text-xs sm:text-sm md:text-base flex-1 whitespace-nowrap cursor-pointer hover:bg-jb-surface hover:font-bold"
-                >
-                    <Link className="h-3 w-3 hidden sm:inline-block sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                    <span>Links & Resume</span>
-                </TabsTrigger>
-            </TabsList>
+        <Formik
+            initialValues={initialValues}
+            validationSchema={ProfileValidationSchema}
+            onSubmit={handleFormSubmit}
+            enableReinitialize
+        >
+            {(formik) => (
+                <Form className="space-y-6">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <TabsList className="w-full mb-8 bg-jb-bg border border-jb-border">
+                            <TabsTrigger
+                                value="info"
+                                className="text-xs sm:text-sm md:text-base flex-1 whitespace-nowrap cursor-pointer hover:bg-jb-surface hover:font-bold"
+                            >
+                                <User className="h-3 w-3 hidden sm:inline-block sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                <span>Basic Info</span>
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="education"
+                                className="text-xs sm:text-sm md:text-base flex-1 whitespace-nowrap cursor-pointer hover:bg-jb-surface hover:font-bold"
+                            >
+                                <BookOpen className="h-3 w-3 hidden sm:inline-block sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                <span>Education</span>
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="experience"
+                                className="text-xs sm:text-sm md:text-base flex-1 whitespace-nowrap cursor-pointer hover:bg-jb-surface hover:font-bold"
+                            >
+                                <Building className="h-3 w-3 hidden sm:inline-block sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                <span>Experience</span>
+                            </TabsTrigger>
+                            <TabsTrigger
+                                value="links"
+                                className="text-xs sm:text-sm md:text-base flex-1 whitespace-nowrap cursor-pointer hover:bg-jb-surface hover:font-bold"
+                            >
+                                <Link className="h-3 w-3 hidden sm:inline-block sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+                                <span>Links & Resume</span>
+                            </TabsTrigger>
+                        </TabsList>
 
-            <Formik
-                initialValues={initialValues}
-                validationSchema={ProfileValidationSchema}
-                onSubmit={handleFormSubmit}
-                enableReinitialize
-            >
-                {(formik) => (
-                    <Form className="space-y-6">
                         <TabsContent value="info" className="mt-0">
                             <BasicInfoTab
                                 formik={formik}
@@ -135,38 +144,49 @@ const ProfileEditForm = ({
                         <TabsContent value="links" className="mt-0">
                             <LinksTab
                                 formik={formik}
+                                onUploadStatusChange={setIsResumeUploading}
+                                onResumeUploaded={setUploadedResumeId}
+                                currentResumeId={uploadedResumeId}
                             />
                         </TabsContent>
+                    </Tabs>
 
-                        <div className="flex justify-end gap-2">
-                            <Button
-                                type="submit"
-                                disabled={isCreating || isUpdating}
-                            >
-                                {isCreating || isUpdating ? (
-                                    <span className="flex items-center">
-                                        <LoadingSpinner
-                                            size="sm"
-                                            className="mr-2"
-                                        />
-                                        Saving...
-                                    </span>
-                                ) : (
-                                    'Save'
-                                )}
-                            </Button>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={changeNextTab}
-                            >
-                                Next
-                            </Button>
-                        </div>
-                    </Form>
-                )}
-            </Formik>
-        </Tabs>
+                    <div className="flex justify-end gap-2">
+                        <Button
+                            type="submit"
+                            disabled={isCreating || isUpdating || isResumeUploading}
+                        >
+                            {isCreating || isUpdating ? (
+                                <span className="flex items-center">
+                                    <LoadingSpinner
+                                        size="sm"
+                                        className="mr-2"
+                                    />
+                                    Saving...
+                                </span>
+                            ) : isResumeUploading ? (
+                                <span className="flex items-center">
+                                    <LoadingSpinner
+                                        size="sm"
+                                        className="mr-2"
+                                    />
+                                    Uploading resume...
+                                </span>
+                            ) : (
+                                'Save'
+                            )}
+                        </Button>
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={changeNextTab}
+                        >
+                            Next
+                        </Button>
+                    </div>
+                </Form>
+            )}
+        </Formik>
     )
 }
 

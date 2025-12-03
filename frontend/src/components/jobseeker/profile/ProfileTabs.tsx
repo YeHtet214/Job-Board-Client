@@ -1,5 +1,6 @@
 import { Profile } from '@/types/profile'
 import { motion } from 'framer-motion'
+import { useViewResume } from '@/hooks/react-queries/profile'
 
 import BasicInfoSection from './BasicInfoSection'
 import EducationSection from './EducationSection'
@@ -11,6 +12,9 @@ interface ProfileTabsProps {
 }
 
 const ProfileTabs = ({ profile }: ProfileTabsProps) => {
+    // Fetch resume URL if resumeFileId exists
+    const { data: resumeUrl } = useViewResume(profile.resumeFileId)
+
     // Animation variants for stagger effect
     const containerVariants = {
         hidden: { opacity: 0 },
@@ -62,7 +66,7 @@ const ProfileTabs = ({ profile }: ProfileTabsProps) => {
                     linkedInUrl={profile.linkedInUrl}
                     githubUrl={profile.githubUrl}
                     portfolioUrl={profile.portfolioUrl}
-                    resume={profile.resume}
+                    resumeURL={resumeUrl}
                 />
             </motion.div>
         </motion.div>

@@ -5,18 +5,18 @@ interface LinksResumeSectionProps {
     linkedInUrl?: string
     githubUrl?: string
     portfolioUrl?: string
-    resume?: string
+    resumeURL?: string
 }
 
 const LinksResumeSection = ({
     linkedInUrl,
     githubUrl,
     portfolioUrl,
-    resume,
+    resumeURL,
 }: LinksResumeSectionProps) => {
     const hasLinks = linkedInUrl || githubUrl || portfolioUrl
 
-    console.log("resume: ", resume)
+    console.log("resumeURL: ", resumeURL)
 
     return (
         <Card className="border border-border shadow-sm bg-card">
@@ -112,9 +112,9 @@ const LinksResumeSection = ({
                         <h3 className="text-md font-semibold mb-4 text-jb-text">
                             Resume
                         </h3>
-                        {resume ? (
+                        {resumeURL ? (
                             <a
-                                href={resume}
+                                href={resumeURL}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="flex items-center gap-3 p-4 rounded-lg border-2 border-jb-primary/30 bg-jb-primary/5 hover:bg-jb-primary/10 transition-colors group"

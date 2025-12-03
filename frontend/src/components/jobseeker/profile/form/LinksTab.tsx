@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { FormikProps } from 'formik'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -8,6 +8,8 @@ import {
     Globe,
     Upload,
     AlertCircle,
+    CheckCircle,
+    X,
 } from 'lucide-react'
 import {
     Card,
@@ -22,30 +24,53 @@ import {
 } from '@/components/forms'
 import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { ProfileFormValues } from './ProfileEditForm'
-import { useUploadResume, useViewResume } from '@/hooks/react-queries/profile'
+import { useUploadResume } from '@/hooks/react-queries/profile'
+import { Button } from '@/components/ui/button'
 
 interface LinksTabProps {
     formik: FormikProps<ProfileFormValues>
+    onUploadStatusChange?: (isUploading: boolean) => void
+    onResumeUploaded: (fileId: string) => void
+    currentResumeId?: string
 }
 
 const LinksTab = ({
     formik,
+    onUploadStatusChange,
+    onResumeUploaded,
+    currentResumeId,
 }: LinksTabProps) => {
-    const { values, setFieldValue } = formik
+    const { values } = formik // Only destructure values, use formik.setFieldValue directly
     const [resumeUploadError, setResumeUploadError] = useState<string | null>(null)
+    const [uploadedFileName, setUploadedFileName] = useState<string | null>(null)
     const { mutate: uploadResume, isPending: isResumeUploading } = useUploadResume()
-    const { data: viewResume } = useViewResume(values?.resumeFileId || '')
+
+    const processedFileRef = useRef<File | null>(null)
 
     useEffect(() => {
-        const resumeFile = values.resumeFileId
+        onUploadStatusChange?.(isResumeUploading)
+    }, [isResumeUploading, onUploadStatusChange])
 
-        if (resumeFile && resumeFile instanceof File) {
+    useEffect(() => {
+        const resumeFile = values.resume
 
-            // Check file type
+        // Only process if we have a new file and it's different from the last processed file
+        if (resumeFile && resumeFile instanceof File && resumeFile !== processedFileRef.current) {
+            processedFileRef.current = resumeFile
+
+            const maxSize = 5 * 1024 * 1024; // 5MB limit
+            if (resumeFile.size > maxSize) {
+                setResumeUploadError('File size must be less than 5MB');
+                formik.setFieldValue('resume', null);
+                processedFileRef.current = null;
+                return;
+            }
+
             const allowedTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
             if (!allowedTypes.includes(resumeFile.type)) {
                 setResumeUploadError('Only PDF, DOC, and DOCX files are allowed');
-                setFieldValue('resume', null); // Clear the file input
+                formik.setFieldValue('resume', null);
+                processedFileRef.current = null;
                 return;
             }
 
@@ -53,17 +78,39 @@ const LinksTab = ({
             uploadResume(resumeFile, {
                 onSuccess: (fileId: string) => {
                     setResumeUploadError(null)
-                    setFieldValue('resumeFileId', fileId)
-                    console.log('Resume data in link tab: ', fileId)
+                    setUploadedFileName(resumeFile.name)
+
+                    onResumeUploaded(fileId)
+
                 },
                 onError: (error) => {
-                    setResumeUploadError('Failed to upload resume. Please try again.')
                     console.error('Resume upload error:', error)
-                    setFieldValue('resume', null)
+                    setResumeUploadError('Failed to upload resume. Please try again.')
+                    formik.setFieldValue('resume', null)
+                    if (onResumeUploaded) {
+                        onResumeUploaded('')
+                    }
+                    processedFileRef.current = null
                 }
             })
         }
-    }, [values.resume, uploadResume, setFieldValue])
+    }, [values.resume, formik, onResumeUploaded])
+
+    const handleRemoveResume = () => {
+        formik.setFieldValue('resume', null)
+        if (onResumeUploaded) {
+            onResumeUploaded('')
+        }
+        setUploadedFileName(null)
+        setResumeUploadError(null)
+        processedFileRef.current = null
+    }
+
+    // Show uploaded state if we have a currentResumeId (from parent/profile) OR if we just uploaded a file
+    // Note: If we have currentResumeId but no uploadedFileName, it means it's a pre-existing resume.
+    // We might want to show a generic "Resume Uploaded" message or fetch the name if possible.
+    // For now, we'll assume if currentResumeId exists, we show the success state.
+    const hasUploadedResume = !!currentResumeId
 
     return (
         <Card className="border-none shadow-none">
@@ -121,66 +168,74 @@ const LinksTab = ({
                 <div className="space-y-4">
                     <h3 className="text-lg font-medium">Resume</h3>
 
-                    <div className="border border-dashed rounded-lg p-4 bg-muted">
-                        {values.resume && (
-                            <>
-                                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                                    <div className="flex items-center gap-3">
-                                        <FileText className="h-8 w-8 text-jb-primary" />
-                                        <div>
-                                            <p className="font-medium">
-                                                Resume uploaded
-                                            </p>
-                                            {/* <p className="text-sm text-gray-500 truncate max-w-xs">
-                                                {values.resume.split('/').pop()}
-                                            </p> */}
-                                        </div>
+                    {/* Show uploaded resume status */}
+                    {hasUploadedResume && (
+                        <div className="border border-green-200 rounded-lg p-4 bg-green-50 mb-4">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <CheckCircle className="h-6 w-6 text-green-600" />
+                                    <div>
+                                        <p className="font-medium text-green-900">
+                                            Resume uploaded successfully
+                                        </p>
+                                        <p className="text-sm text-green-700 truncate max-w-xs">
+                                            {uploadedFileName || "Existing Resume"}
+                                        </p>
                                     </div>
-                                    {/* <a
-                                        href={values.resume}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="px-4 py-2 bg-card border rounded-md shadow-sm text-sm font-medium hover:bg-gray-50 focus:outline-none"
-                                    >
-                                        View Resume
-                                    </a> */}
                                 </div>
+                                <Button
+                                    type="button"
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={handleRemoveResume}
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-100"
+                                >
+                                    <X className="h-4 w-4 mr-1" />
+                                    Remove
+                                </Button>
+                            </div>
+                        </div>
+                    )}
 
-                                <div className="flex flex-col items-center justify-center p-4">
-                                    <Upload className="h-12 w-12 text-gray-300 mb-2" />
-                                    <p className="mb-4 text-center">
-                                        Upload your resume (PDF, DOC, or DOCX up to 5MB)
-                                    </p>
+                    {/* Upload section */}
+                    {!hasUploadedResume && (
+                        <div className="border border-dashed rounded-lg p-6 bg-muted">
+                            <div className="flex flex-col items-center justify-center">
+                                <Upload className="h-12 w-12 text-gray-400 mb-3" />
+                                <p className="mb-1 text-center font-medium">
+                                    Upload your resume
+                                </p>
+                                <p className="mb-4 text-center text-sm text-gray-500">
+                                    PDF, DOC, or DOCX (max 5MB)
+                                </p>
 
-                                    <div className="w-full max-w-md">
-                                        <FileInputFieldWithLabel
-                                            name="resume"
-                                            label=""
-                                            description=""
-                                            accept=".pdf,.doc,.docx"
-                                            required={false}
-                                            showPreview={false}
-                                        />
+                                <div className="w-full max-w-md">
+                                    <FileInputFieldWithLabel
+                                        name="resume"
+                                        label=""
+                                        description=""
+                                        accept=".pdf,.doc,.docx"
+                                        required={false}
+                                        showPreview={false}
+                                    />
 
-                                        {isResumeUploading && (
-                                            <div className="mt-2 flex items-center justify-center text-sm text-gray-500">
-                                                <LoadingSpinner size="sm" className="mr-2" />
-                                                Uploading resume...
-                                            </div>
-                                        )}
-                                    </div>
+                                    {isResumeUploading && (
+                                        <div className="mt-3 flex items-center justify-center text-sm text-blue-600 bg-blue-50 p-3 rounded-md">
+                                            <LoadingSpinner size="sm" className="mr-2" />
+                                            Uploading resume...
+                                        </div>
+                                    )}
 
                                     {resumeUploadError && (
-                                        <div className="mt-2 flex items-center text-red-500 text-sm">
-                                            <AlertCircle className="h-4 w-4 mr-1" />
+                                        <div className="mt-3 flex items-center text-red-600 text-sm bg-red-50 p-3 rounded-md">
+                                            <AlertCircle className="h-4 w-4 mr-2 flex-shrink-0" />
                                             {resumeUploadError}
                                         </div>
                                     )}
                                 </div>
-                            </>
-
-                        )}
-                    </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </CardContent>
         </Card>

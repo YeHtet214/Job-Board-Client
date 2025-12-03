@@ -34,6 +34,8 @@ const FileInputFieldWithLabel: React.FC<FileInputFieldWithLabelProps> = ({
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
 
+        console.log("File selected: ", file)
+
         if (!file) {
             helpers.setValue(null)
             return
@@ -41,40 +43,12 @@ const FileInputFieldWithLabel: React.FC<FileInputFieldWithLabelProps> = ({
 
         // Validate file size
         if (file.size > maxSize) {
+            alert("File size exceeds the maxsize 5mb")
             setFileError(
                 `File size exceeds the ${(maxSize / (1024 * 1024)).toFixed(1)}MB limit`
             )
             helpers.setValue(null)
             return
-        }
-
-        // Validate file type if accept is specified
-        if (accept !== '*/*') {
-            const fileType = file.type
-            const acceptedTypes = accept.split(',').map((type) => type.trim())
-
-            let isValidType = false
-            for (const type of acceptedTypes) {
-                if (type.includes('/*')) {
-                    const mainType = type.split('/')[0]
-                    if (fileType.startsWith(mainType)) {
-                        isValidType = true
-                        break
-                    }
-                } else if (type === fileType) {
-                    isValidType = true
-                    break
-                } else if (type.startsWith('.') && file.name.endsWith(type)) {
-                    isValidType = true
-                    break
-                }
-            }
-
-            if (!isValidType) {
-                setFileError(`Invalid file type. Accepted: ${accept}`)
-                helpers.setValue(null)
-                return
-            }
         }
 
         setFileError(null)

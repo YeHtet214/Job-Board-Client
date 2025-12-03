@@ -89,10 +89,15 @@ export const useUpdateProfile = () => {
     })
 }
 
-export const useViewResume = (resumeFileId: string) => {
-    return useQuery({
+export const useViewResume = (resumeFileId: string | undefined) => {
+    return useQuery<string>({
         queryKey: profileKeys.resume(),
-        queryFn: () => profileService.getResume(resumeFileId),
+        queryFn: () => {
+            console.log("Resume fileid in query: ", resumeFileId)
+            const result = profileService.getResume(resumeFileId!)
+            return result
+        },
+        enabled: !!resumeFileId
     })
 }
 

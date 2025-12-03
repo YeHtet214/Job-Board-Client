@@ -10,7 +10,8 @@ export interface Profile {
     education: Education[]
     experience: Experience[]
     profileImageURL?: string
-    resume?: string
+    resume?: File | null
+    resumeFileId?: string
     linkedInUrl?: string
     githubUrl?: string
     portfolioUrl?: string

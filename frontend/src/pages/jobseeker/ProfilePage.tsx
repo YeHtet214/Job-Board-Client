@@ -50,8 +50,6 @@ const ProfilePage = () => {
 
     const isAuthorized = useMemo(() => currentUser?.role === 'JOBSEEKER' && currentUser?.id === profile?.userId, [currentUser, profile])
 
-    console.log("current user: ", currentUser, "profile: ", profile)
-
     const handleSubmit = async (values: ProfileFormValues) => {
         try {
             if (profile?.id) {

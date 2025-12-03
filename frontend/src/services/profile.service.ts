@@ -71,8 +71,8 @@ class ProfileService extends ApiService {
         return response.data.data
     }
 
-    public async getResume(resumeFileId: string) {
-        const response = await this.get<{ url: string }>(
+    public async getResume(resumeFileId: string): Promise<string> {
+        const response = await this.get<string>(
             this.endpoints.VIEW_RESUME(resumeFileId)
         )
 
@@ -89,6 +89,8 @@ class ProfileService extends ApiService {
         const formData = new FormData()
         formData.append('resume', file)
 
+        console.log('Resume data in service: ', formData.get('resume'))
+
         const response = await this.post<{ fileId: string }>(
             this.endpoints.UPLOAD_RESUME,
             formData,
@@ -103,7 +105,7 @@ class ProfileService extends ApiService {
             throw new Error(response.data.message)
         }
 
-        return response.data.data
+        return response.data.data.fileId
     }
 
     public async uploadProfileImage(file: File): Promise<string> {
