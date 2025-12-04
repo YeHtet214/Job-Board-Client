@@ -11,6 +11,7 @@ export interface Profile {
     experience: Experience[]
     profileImageURL?: string
     resume?: File | null
+    resumeURL?: string
     resumeFileId?: string
     linkedInUrl?: string
     githubUrl?: string
@@ -46,7 +47,7 @@ export interface CreateProfileDto {
     skills: string[]
     education: Education[]
     experience: Experience[]
-    resumeUrl?: string
+    resumeFileId?: string
     profileImageURL?: string
     linkedInUrl?: string
     githubUrl?: string

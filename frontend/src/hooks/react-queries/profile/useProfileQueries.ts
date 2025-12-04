@@ -13,7 +13,7 @@ import { mapProfileData } from '@/utils/profileMapper'
 export const profileKeys = {
     all: ['profile'] as const,
     details: () => [...profileKeys.all, 'details'] as const,
-    resume: () => [...profileKeys.all, 'resume'] as const,
+    resume: (id?: string) => [...profileKeys.all, 'resume', id] as const,
     profileImage: () => [...profileKeys.all, 'profile-image'] as const,
 }
 
@@ -86,18 +86,6 @@ export const useUpdateProfile = () => {
             })
             console.error('Error updating profile:', error)
         },
-    })
-}
-
-export const useViewResume = (resumeFileId: string | undefined) => {
-    return useQuery<string>({
-        queryKey: profileKeys.resume(),
-        queryFn: () => {
-            console.log("Resume fileid in query: ", resumeFileId)
-            const result = profileService.getResume(resumeFileId!)
-            return result
-        },
-        enabled: !!resumeFileId
     })
 }
 

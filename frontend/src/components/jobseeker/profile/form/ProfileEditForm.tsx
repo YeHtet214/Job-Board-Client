@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo } from 'react'
 import { Profile } from '@/types/profile'
 import { Formik, Form } from 'formik'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -15,8 +15,6 @@ import { useToast } from '@/components/ui/use-toast'
 // Extended profile type for form fields
 export interface ProfileFormValues extends Profile {
     newSkill?: string // Form-specific field for adding new skills
-    resume?: File | null
-    resumeFileId?: string
 }
 
 interface ProfileEditFormProps {
@@ -46,8 +44,6 @@ const ProfileEditForm = ({
         newSkill: '', // Add the form-specific field
     }), [profile])
 
-    useEffect(() => alert("uploadedResumeId: " + uploadedResumeId), [uploadedResumeId])
-
     const handleFormSubmit = async (values: ProfileFormValues) => {
         const { skills, education, experience } = values
         if (
@@ -66,10 +62,16 @@ const ProfileEditForm = ({
 
         const { newSkill, ...profileData } = values
 
-        const finalData = {
+        const finalData = Object.entries({
             ...profileData,
             resumeFileId: uploadedResumeId
-        }
+        }).reduce((acc, [key, value]) => {
+            // Filter out null, undefined, and empty strings
+            if (value !== null && value !== '' && value !== undefined) {
+                acc[key] = value
+            }
+            return acc
+        }, {} as any)
 
         await handleSubmit(finalData)
     }

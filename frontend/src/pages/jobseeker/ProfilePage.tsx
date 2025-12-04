@@ -55,7 +55,7 @@ const ProfilePage = () => {
             if (profile?.id) {
                 await updateProfile(values)
             } else {
-                await createProfile(values as any)
+                await createProfile(values)
             }
         } catch (error) {
             console.error('Error saving profile:', error)

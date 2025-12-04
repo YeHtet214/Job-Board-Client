@@ -29,8 +29,11 @@ export class ApiService {
             : { 'Content-Type': 'application/json', ...customHeaders }
     }
 
-    protected get<T>(url: string): Promise<AxiosResponse<ApiResponse<T>>> {
-        return this.api.get<ApiResponse<T>>(url)
+    protected get<T>(
+        url: string,
+        config: any = {}
+    ): Promise<AxiosResponse<ApiResponse<T>>> {
+        return this.api.get<ApiResponse<T>>(url, config)
     }
 
     protected post<T>(

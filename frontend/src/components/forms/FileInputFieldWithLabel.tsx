@@ -34,8 +34,6 @@ const FileInputFieldWithLabel: React.FC<FileInputFieldWithLabelProps> = ({
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
 
-        console.log("File selected: ", file)
-
         if (!file) {
             helpers.setValue(null)
             return

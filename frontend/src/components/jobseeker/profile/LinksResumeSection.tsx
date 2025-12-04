@@ -12,11 +12,9 @@ const LinksResumeSection = ({
     linkedInUrl,
     githubUrl,
     portfolioUrl,
-    resumeURL,
+    resumeURL
 }: LinksResumeSectionProps) => {
     const hasLinks = linkedInUrl || githubUrl || portfolioUrl
-
-    console.log("resumeURL: ", resumeURL)
 
     return (
         <Card className="border border-border shadow-sm bg-card">

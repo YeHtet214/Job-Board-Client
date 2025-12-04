@@ -26,7 +26,6 @@ class ProfileService extends ApiService {
     ): Promise<Profile> {
         const formData = new FormData()
 
-        console.log('Profile data form in service raw: ', profileData)
         for (const [key, value] of Object.entries(profileData)) {
             if (
                 key === 'skills' ||
@@ -38,8 +37,6 @@ class ProfileService extends ApiService {
                 formData.append(key, value)
             }
         }
-
-        console.log('Profile data form in service: ', formData.get('education'))
 
         const response = await this.post<Profile>(
             this.endpoints.MY_PROFILE,
@@ -71,25 +68,9 @@ class ProfileService extends ApiService {
         return response.data.data
     }
 
-    public async getResume(resumeFileId: string): Promise<string> {
-        const response = await this.get<string>(
-            this.endpoints.VIEW_RESUME(resumeFileId)
-        )
-
-        if (!response.data.success) {
-            throw new Error(response.data.message)
-        }
-
-        console.log('Resume VIEW data in service: ', response.data.data)
-
-        return response.data.data
-    }
-
     public async uploadResume(file: File) {
         const formData = new FormData()
         formData.append('resume', file)
-
-        console.log('Resume data in service: ', formData.get('resume'))
 
         const response = await this.post<{ fileId: string }>(
             this.endpoints.UPLOAD_RESUME,

@@ -1,8 +1,10 @@
 import axios from 'axios'
-import { isTokenExpired, willTokenExpireSoon } from '../utils/jwt'
+import { willTokenExpireSoon } from '../utils/jwt'
+
+export const BASE_URL = import.meta.env.VITE_API_BASE_URL + '/api'
 
 const axiosInstance = axios.create({
-   baseURL: import.meta.env.VITE_API_BASE_URL + '/api',
+   baseURL: BASE_URL,
    headers: {
       'Content-Type': 'application/json',
    },

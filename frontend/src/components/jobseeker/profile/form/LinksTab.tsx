@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from 'react'
 import { FormikProps } from 'formik'
 import { Separator } from '@/components/ui/separator'
 import {
-    FileText,
     Github,
     Linkedin,
     Globe,
@@ -106,10 +105,6 @@ const LinksTab = ({
         processedFileRef.current = null
     }
 
-    // Show uploaded state if we have a currentResumeId (from parent/profile) OR if we just uploaded a file
-    // Note: If we have currentResumeId but no uploadedFileName, it means it's a pre-existing resume.
-    // We might want to show a generic "Resume Uploaded" message or fetch the name if possible.
-    // For now, we'll assume if currentResumeId exists, we show the success state.
     const hasUploadedResume = !!currentResumeId
 
     return (
