@@ -46,7 +46,12 @@ class ApplicationService extends ApiService {
 
       const response = await this.post<Application>(
          this.endpoints.APPLY_JOB(applicationData.jobId),
-         formData
+         formData,
+         {
+            headers: {
+               'Content-Type': 'multipart/form-data'
+            },
+         }
       )
       return response.data.data
    }
@@ -57,7 +62,12 @@ class ApplicationService extends ApiService {
    ): Promise<Application> {
       const response = await this.put<Application>(
          this.endpoints.DETAIL(id),
-         updateData
+         updateData,
+         {
+            headers: {
+               'Content-Type': 'multipart/form-data'
+            },
+         }
       )
       return response.data.data
    }

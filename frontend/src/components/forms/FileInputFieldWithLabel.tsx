@@ -26,6 +26,7 @@ const FileInputFieldWithLabel: React.FC<FileInputFieldWithLabelProps> = ({
     disabled = false,
     required = false,
     showPreview = true,
+    ...props
 }) => {
     const [field, meta, helpers] = useField<File | null>(name)
     const [fileError, setFileError] = useState<string | null>(null)
@@ -86,6 +87,7 @@ const FileInputFieldWithLabel: React.FC<FileInputFieldWithLabelProps> = ({
                     onChange={handleFileChange}
                     disabled={disabled}
                     className="hidden"
+                    {...props}
                 />
                 <Button
                     type="button"

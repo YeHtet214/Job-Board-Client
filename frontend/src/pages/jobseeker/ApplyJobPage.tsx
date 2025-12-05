@@ -24,6 +24,7 @@ import ApplicationSchema from '@/schemas/validation/application.schema'
 import { useAuth } from '@/contexts/authContext'
 import { useCreateApplication } from '@/hooks/react-queries/application/useApplicationQueries'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useProfile } from '@/hooks/react-queries/profile'
 
 const STEPS = [
     {
@@ -40,8 +41,10 @@ const STEPS = [
     { value: 'review', label: 'Review', Icon: Check },
 ]
 
-const ApplyJobPage: React.FC = () => {
+const ApplyJobPage = () => {
     const navigate = useNavigate()
+    const { currentUser } = useAuth()
+    const { data: profile } = useProfile(currentUser?.id!)
     const createApplicationMutation = useCreateApplication()
 
     const [activeTab, setActiveTab] = useState('personal')
@@ -49,7 +52,6 @@ const ApplyJobPage: React.FC = () => {
 
     const jobId = useParams<{ id: string }>().id
     const { data: job } = useJob(jobId || '')
-    const { currentUser } = useAuth()
 
     if (!jobId) {
         navigate('/jobseeker/jobs')
@@ -58,13 +60,11 @@ const ApplyJobPage: React.FC = () => {
 
     const initialValues: CreateApplicationDto = {
         jobId: jobId,
-        fullName: currentUser
-            ? `${currentUser.firstName} ${currentUser.lastName}`
-            : '',
-        email: currentUser?.email || '',
+        fullName: profile?.firstName + ' ' + profile?.lastName,
+        email: profile?.email || '',
         phone: '',
-        resume: null,
-        useExistingResume: false,
+        resumeURL: profile?.resumeURL,
+        useExistingResume: true,
         coverLetter: '',
         availability: '',
         expectedSalary: '',
@@ -116,7 +116,7 @@ const ApplyJobPage: React.FC = () => {
             case 'personal':
                 return <PersonalInfoTab />
             case 'resume':
-                return <ResumeTab />
+                return <ResumeTab formik={formik} />
             case 'questions':
                 return <QuestionsTab />
             case 'review':
@@ -152,12 +152,23 @@ const ApplyJobPage: React.FC = () => {
 
     const isStepValid = (
         step: string,
+        values: CreateApplicationDto,
         errors: FormikErrors<CreateApplicationDto>
     ) => {
         const fields = stepFields[step]
         if (!fields) return true
-        
-        return !fields.some((field) => errors[field])
+
+        // Filter to remove resume field from validation if using existing resume with valid resumeURL
+        const filteredFields = fields.filter(field => {
+            // Skip 'resume' field validation if user is using existing resume and has a resumeURL
+            if (field === 'resume' && values.useExistingResume && values.resumeURL) {
+                return false
+            }
+            return true
+        })
+
+        const hasErrors = filteredFields.some((field) => errors[field])
+        return !hasErrors
     }
 
     return (
@@ -192,6 +203,7 @@ const ApplyJobPage: React.FC = () => {
                         const stepsWithErrors = getStepsWithErrors(formik.errors, formik.touched)
                         const isCurrentStepValid = isStepValid(
                             activeTab,
+                            formik.values,
                             formik.errors
                         )
 

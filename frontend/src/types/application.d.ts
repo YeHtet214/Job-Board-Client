@@ -10,7 +10,7 @@ export interface Application {
     jobId: string
     applicantId: string
     coverLetter?: string
-    resumeUrl?: string
+    resumeURL?: string
     acceptTerms: boolean
     additionalInfo?: string
     status: ApplicationStatus
@@ -28,7 +28,8 @@ export interface CreateApplicationDto {
     phone: string
 
     // Resume
-    resume: File | null
+    resume?: File | null
+    resumeURL?: string
     useExistingResume: boolean
 
     // Cover letter
