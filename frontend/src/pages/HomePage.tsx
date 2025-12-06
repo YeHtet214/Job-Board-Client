@@ -8,12 +8,10 @@ import SearchSection from '@/components/home/SearchSection'
 import StatsSection from '@/components/home/StatsSection'
 import FeaturedJobsSection from '@/components/home/FeaturedJobsSection'
 import FeaturedCompaniesSection from '@/components/home/FeaturedCompaniesSection'
-import { useTheme } from '@/components/ThemeProvider'
 import ChatIcon from '@/components/messaging/ChatIcon'
 
 const HomePage = () => {
     const navigate = useNavigate()
-    const { theme } = useTheme()
     const [searchKeyword, setSearchKeyword] = useState('')
     const [searchLocation, setSearchLocation] = useState('')
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })

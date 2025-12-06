@@ -10,7 +10,6 @@ class UserService extends ApiService {
     }
 
     public async getCurrentUser(): Promise<User> {
-        // Use the new user endpoint instead of the profile endpoint
         const response = await this.get<User>(this.endpoints.CURRENT_USER)
 
         if (!response.data.success) {

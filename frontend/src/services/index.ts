@@ -11,7 +11,6 @@ const axiosInstance = axios.create({
    withCredentials: true,
 })
 
-// Whether we're currently refreshing the token
 let isRefreshing = false
 // Queued requests waiting for token refresh
 let refreshSubscribers: Array<(token: string) => void> = []
@@ -38,7 +37,6 @@ axiosInstance.interceptors.request.use(
 
       if (accessToken && !isAuthEndpoint) {
          if (willTokenExpireSoon(accessToken, 120)) {
-            // expire in 2 minutes
             try {
                // Only start a refresh if another request isn't already refreshing
                if (!isRefreshing) {
@@ -78,13 +76,11 @@ axiosInstance.interceptors.request.use(
    }
 )
 
-// Response interceptor to handle auth errors
 axiosInstance.interceptors.response.use(
    (response) => response,
    async (error) => {
       const originalRequest = error.config
 
-      // Extract error message if available
       if (error.response?.data?.message) {
          error.message = error.response.data.message
       }
@@ -122,14 +118,23 @@ axiosInstance.interceptors.response.use(
                axiosInstance
                   .post(`${axiosInstance.defaults.baseURL}/auth/refresh-token`)
                   .then((response) => {
-                     console.log('refresh response: ', response.data)
                      const { accessToken: newAccessToken } = response.data.data
                      originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
                      onTokenRefreshed(newAccessToken)
                      resolve(axiosInstance(originalRequest))
                   })
-                  .catch((error) => {
-                     reject(error)
+                  .catch((refreshError) => {
+                     // Check if user was actually authenticated before showing session expired
+                     const hadAccessToken = !!localStorage.getItem('accessToken')
+
+                     localStorage.removeItem('accessToken')
+
+                     // Only trigger session expired event if user was previously authenticated
+                     if (hadAccessToken) {
+                        window.dispatchEvent(new CustomEvent('auth:sessionExpired'))
+                     }
+
+                     reject(refreshError)
                   })
                   .finally(() => {
                      isRefreshing = false
@@ -138,8 +143,15 @@ axiosInstance.interceptors.response.use(
          } catch (refreshError) {
             isRefreshing = false
 
+            // Check if user was actually authenticated before showing session expired
+            const hadAccessToken = !!localStorage.getItem('accessToken')
+
             localStorage.removeItem('accessToken')
-            window.dispatchEvent(new CustomEvent('auth:sessionExpired'))
+
+            // Only trigger session expired event if user was previously authenticated
+            if (hadAccessToken) {
+               window.dispatchEvent(new CustomEvent('auth:sessionExpired'))
+            }
 
             return Promise.reject(refreshError)
          }

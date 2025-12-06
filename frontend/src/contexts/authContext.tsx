@@ -58,6 +58,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     useEffect(() => {
         const handleSessionExpired = () => {
             setShowSessionExpiredDialog(true)
+
+            alert("Session expired")
         }
 
         window.addEventListener('auth:sessionExpired', handleSessionExpired)
