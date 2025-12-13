@@ -114,17 +114,18 @@ const CompanySizeSelect = ({ selectCompanySize }: CompanySelectProps) => {
 }
 
 type CompanyFiltersProps = {
-    updateParams: (value) => void
+    updateParams: (value: Record<string, string | string[] | null>) => void
 }
 
 const CompanyFilters: React.FC<CompanyFiltersProps> = ({ updateParams }) => {
     const [keyword, setKeyword] = useState('')
     const [industry, setIndustry] = useState('')
-    const [companySize, setCompanySize] = useState(null)
+    const [companySize, setCompanySize] = useState<null | string>(null)
 
     const debouncedValue = useDebounce(keyword)
 
     useEffect(() => {
+        
         updateParams({
             searchTerm: debouncedValue,
             industry,

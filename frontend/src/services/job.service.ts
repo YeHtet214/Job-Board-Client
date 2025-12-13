@@ -46,7 +46,7 @@ class JobService extends ApiService {
    }
 
    public async getCompanyJobs(params?: JobFilterType): Promise<JobsResponse> {
-      const queryParams = this.createQueryParams(params || {})
+      const queryParams = params ? this.createQueryParams(params) : ''
       const url = `${this.endpoints.COMPANY_JOBS}?${queryParams.toString()}`
       const response = await this.get<JobsResponse>(url)
       return response.data.data
@@ -56,7 +56,7 @@ class JobService extends ApiService {
       companyId: string,
       params?: JobFilterType
    ): Promise<JobsResponse> {
-      const queryParams = this.createQueryParams(params || {})
+      const queryParams = params ? this.createQueryParams(params) : ''
       const url = `${this.endpoints.COMPANY(companyId)}?${queryParams.toString()}`
       const response = await this.get<JobsResponse>(url)
       return response.data.data
@@ -76,13 +76,6 @@ class JobService extends ApiService {
       await this.delete<void>(this.endpoints.DETAIL(id))
    }
 
-   /**
-    * Fetches search suggestions based on the partial search term
-    * @param term The partial search term to get suggestions for
-    * @param type The type of suggestions to get ('keyword', 'location', or 'all')
-    * @param limit Maximum number of suggestions to return
-    * @returns Array of suggestion strings
-    */
    public async getSearchSuggestions(
       term: string,
       type: 'keyword' | 'location' | 'all' = 'all',
@@ -97,9 +90,8 @@ class JobService extends ApiService {
 
       try {
          const url = `${this.endpoints.SUGGESTIONS}?${params.toString()}`
-         // Using any for the get request to bypass TypeScript's strict checking
-         const response = await this.get<any>(url)
-         // Ensure we return a string array, even if the API doesn't match our expected format
+         const response = await this.get(url)
+         
          return Array.isArray(response?.data?.data) ? response.data.data : []
       } catch (error) {
          console.error('Error fetching search suggestions:', error)

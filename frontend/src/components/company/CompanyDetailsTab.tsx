@@ -16,7 +16,6 @@ const CompanyDetailsTab = () => {
     return (
         <div className="space-y-6">
             <InputFieldWithLabel
-                formik={true}
                 name="location"
                 label={
                     <span className="flex items-center">
@@ -29,7 +28,6 @@ const CompanyDetailsTab = () => {
             />
 
             <InputFieldWithLabel
-                formik={true}
                 name="website"
                 label={
                     <span className="flex items-center">
@@ -42,7 +40,6 @@ const CompanyDetailsTab = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <InputFieldWithLabel
-                    formik={true}
                     name="foundedYear"
                     label={
                         <span className="flex items-center">
@@ -55,7 +52,6 @@ const CompanyDetailsTab = () => {
                 />
 
                 <SelectFieldWithLabel
-                    formik={true}
                     name="size"
                     label={
                         <span className="flex items-center">

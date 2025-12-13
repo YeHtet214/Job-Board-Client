@@ -2,7 +2,7 @@ import { FormikProps } from 'formik'
 import { FieldArray } from 'formik'
 import { Badge } from '@/components/ui/badge'
 import { X, Plus, Upload, User as UserIcon } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import {
     Card,
     CardContent,
@@ -42,7 +42,7 @@ const BasicInfoTab = ({
         }
 
         // Check file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {  
+        if (file.size > 5 * 1024 * 1024) {
             alert('Image size should be less than 5MB')
             return
         }
@@ -176,13 +176,13 @@ const BasicInfoTab = ({
                     </div>
 
                     <div className="flex gap-2 items-center">
-                        <InputFieldWithLabel
-                            formik={true}
-                            name="newSkill"
-                            label=""
-                            placeholder="Add a skill..."
-                            className="flex-1"
-                        />
+                        <div className="flex-1">
+                            <InputFieldWithLabel
+                                name="newSkill"
+                                label=""
+                                placeholder="Add a skill..."
+                            />
+                        </div>
                         <Button
                             type="button"
                             variant="outline"

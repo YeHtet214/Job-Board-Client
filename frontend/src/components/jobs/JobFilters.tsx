@@ -55,7 +55,6 @@ const JobFilters = () => {
                             <SelectFieldWithLabel
                                 label='Experience Level'
                                 name="experienceLevel"
-                                className="bg-jb-bg border-jb-border"
                             />
                         </div>
 

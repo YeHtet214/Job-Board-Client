@@ -25,7 +25,6 @@ const OAuthCallbackPage: React.FC = () => {
                 // Get the URL search params
                 const searchParams = new URLSearchParams(window.location.search)
                 const accessToken = searchParams.get('accessToken')
-                const refreshToken = searchParams.get('refreshToken')
                 const errorParam = searchParams.get('error')
 
                 // Handle error case
@@ -36,7 +35,7 @@ const OAuthCallbackPage: React.FC = () => {
                 }
 
                 // Validate tokens
-                if (!accessToken || !refreshToken) {
+                if (!accessToken) {
                     setError('No authentication tokens received')
                     setIsProcessing(false)
                     return
@@ -44,7 +43,6 @@ const OAuthCallbackPage: React.FC = () => {
 
                 // Store tokens in localStorage
                 localStorage.setItem('accessToken', accessToken)
-                localStorage.setItem('refreshToken', refreshToken)
 
                 // Update auth state by refetching the user
                 await refetchUser()

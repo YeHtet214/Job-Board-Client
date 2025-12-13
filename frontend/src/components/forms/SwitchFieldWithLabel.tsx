@@ -1,8 +1,9 @@
 import { useField } from 'formik'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
+import { FormFieldProps } from '@/types/formFields';
 
-const SwitchFieldWithLabel = ({ label, ...props }) => {
+const SwitchFieldWithLabel = ({ label, ...props }: Partial<FormFieldProps>) => {
     const [field, meta, helpers] = useField({ ...props, type: 'checkbox' })
 
     return (

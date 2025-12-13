@@ -14,3 +14,8 @@ export interface User {
     profileImageURL?: string // for conversatoin receiver avatar
     logo?: string // for conversation receiver avatar
 }
+
+export interface Applicant extends Partial<User> {
+    phone: string
+    location: string
+}

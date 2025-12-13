@@ -15,7 +15,6 @@ const QuestionsTab = () => {
                         name="availability"
                         label="When can you start?"
                         required={true}
-                        formik={true}
                         placeholder="e.g., Immediately, 2 weeks, after June 15th, etc."
                     />
                 </div>
@@ -26,7 +25,6 @@ const QuestionsTab = () => {
                         name="expectedSalary"
                         label="What is your expected salary?"
                         required={true}
-                        formik={true}
                         placeholder="e.g., $70,000 - $80,000 per year"
                     />
                 </div>
@@ -37,7 +35,6 @@ const QuestionsTab = () => {
                         name="additionalInfo"
                         label="Anything else you'd like to share?"
                         placeholder="Share any additional information that might help your application..."
-                        formik={true}
                     />
                 </div>
             </div>

@@ -3,8 +3,9 @@ import { useField } from 'formik'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Eye, EyeOff } from 'lucide-react'
+import { FormFieldProps } from '@/types/formFields'
 
-const PasswordFieldWithLabel = ({ label, ...props }) => {
+const PasswordFieldWithLabel = ({ label, ...props }: Partial<FormFieldProps>) => {
     const [field, meta] = useField(props);
     const [showPassword, setShowPassword] = useState(false);
 

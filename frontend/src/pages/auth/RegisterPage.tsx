@@ -54,7 +54,7 @@ const RegisterPage: React.FC = () => {
 
         try {
             // Remove confirmPassword as it's not part of the RegisterRequest type
-            const { confirmPassword, terms, ...registerData } = values
+            const { ...registerData } = values
             await register(registerData)
             navigate('/verify-email', {
                 state: {
@@ -130,7 +130,6 @@ const RegisterPage: React.FC = () => {
                             <Form>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 m-0">
                                     <InputFieldWithLabel
-                                        formik={true}
                                         name="firstName"
                                         label="First Name"
                                         placeholder="John"
@@ -138,7 +137,6 @@ const RegisterPage: React.FC = () => {
                                         disabled={isSubmitting}
                                     />
                                     <InputFieldWithLabel
-                                        formik={true}
                                         name="lastName"
                                         label="Last Name"
                                         placeholder="Doe"
@@ -148,7 +146,6 @@ const RegisterPage: React.FC = () => {
                                 </div>
 
                                 <InputFieldWithLabel
-                                    formik={true}
                                     name="email"
                                     label="Email"
                                     placeholder="name@example.com"
@@ -158,7 +155,6 @@ const RegisterPage: React.FC = () => {
                                 />
 
                                 <PasswordFieldWithLabel
-                                    formik={true}
                                     name="password"
                                     label="Password"
                                     placeholder="••••••••"
@@ -168,7 +164,6 @@ const RegisterPage: React.FC = () => {
                                 />
 
                                 <PasswordFieldWithLabel
-                                    formik={true}
                                     name="confirmPassword"
                                     label="Confirm Password"
                                     placeholder="••••••••"
@@ -178,7 +173,6 @@ const RegisterPage: React.FC = () => {
                                 />
 
                                 <SelectFieldWithLabel
-                                    formik={true}
                                     name="role"
                                     label="I am a..."
                                     options={roleOptions}
@@ -188,7 +182,6 @@ const RegisterPage: React.FC = () => {
                                 />
 
                                 <SwitchFieldWithLabel
-                                    formik={true}
                                     name="terms"
                                     label="I agree to the Terms of Service and Privacy Policy"
                                     disabled={isSubmitting}

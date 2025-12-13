@@ -28,7 +28,6 @@ const BasicInfoTab = () => {
     return (
         <div className="space-y-6">
             <InputFieldWithLabel
-                formik={true}
                 name="name"
                 label={
                     <span className="flex items-center">
@@ -41,7 +40,6 @@ const BasicInfoTab = () => {
             />
 
             <TextareaField
-                formik={true}
                 name="description"
                 label={
                     <span className="flex items-center">
@@ -55,7 +53,6 @@ const BasicInfoTab = () => {
             />
 
             <SelectFieldWithLabel
-                formik={true}
                 name="industry"
                 label={
                     <span className="flex items-center">

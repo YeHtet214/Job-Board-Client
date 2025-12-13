@@ -9,7 +9,7 @@ const jobTypeOptions = [
   { value: 'REMOTE', label: 'Remote' },
 ]
 
-const CheckboxItems = ({ label, ...props }) => {
+const CheckboxItems = ({ ...props }) => {
   const [field, meta] = useField(props)
 
   return (

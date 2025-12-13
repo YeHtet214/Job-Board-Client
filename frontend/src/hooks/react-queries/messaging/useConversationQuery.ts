@@ -1,9 +1,7 @@
 import MessagingService from '@/services/messaging.service'
 import { Conversation } from '@/types/messaging'
 import {
-    useInfiniteQuery,
     useQuery,
-    useQueryClient,
     UseQueryResult,
 } from '@tanstack/react-query'
 

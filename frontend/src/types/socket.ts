@@ -13,10 +13,10 @@ export interface ChatSendResponse {
 export interface JoinConversationResponse {
   ok: boolean
   conversationId?: string
-  notis?: any[] // You can further type this based on your notification structure
+  notis?: [] // You can further type this based on your notification structure
   error?: string
 }
 
-export interface SocketEmitCallback<T = any> {
+export interface SocketEmitCallback<T> {
   (response: T): void
 }

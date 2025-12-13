@@ -1,3 +1,6 @@
+import { AppliedJobInfo } from "./job"
+import { Applicant, User } from "./user"
+
 export type ApplicationStatus =
     | 'PENDING'
     | 'REVIEWING'
@@ -16,8 +19,8 @@ export interface Application {
     status: ApplicationStatus
     createdAt: string
     updatedAt: string
-    job?: any // The job details will be populated when needed
-    applicant?: any // The applicant details will be populated when needed
+    job?: AppliedJobInfo // The job details will be populated when needed
+    applicant?: Applicant // The applicant details will be populated when needed
 }
 
 export interface CreateApplicationDto {

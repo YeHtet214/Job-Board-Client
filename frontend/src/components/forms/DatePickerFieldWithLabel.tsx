@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect, useMemo } from 'react'
 import { useField } from 'formik'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Calendar as CalendarIcon } from 'lucide-react'
-import { format, parse } from 'date-fns'
+import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { Calendar } from '../ui/calendar'
 
@@ -32,11 +32,13 @@ const DatePickerFieldWithLabel: React.FC<DatePickerFieldWithLabelProps> = ({
     const datePickerRef = useRef<HTMLDivElement>(null)
 
     const hasError = meta.touched && meta.error
-    const dateValue = field.value
+    const dateValue = useMemo(() => (
+        field.value
         ? field.value instanceof Date
             ? field.value
             : new Date(field.value)
         : null
+    ), [field])
 
     // Update display value when date changes
     useEffect(() => {

@@ -15,6 +15,7 @@ import { useMessageHandlers } from '@/hooks/useMessageHandlers'
 import { usePresenceHandlers } from '@/hooks/usePresenceHandlers'
 import { useMessagingOperations } from '@/hooks/useMessagingOperations'
 import { useToast } from '@/components/ui/use-toast'
+import { PresenceUpdate } from '@/types/socket'
 
 type MessagingContextType = {
     // Socket connection
@@ -50,7 +51,7 @@ type MessagingContextType = {
     removeNotification: (notificationId: string) => void
 
     // Presence operations
-    getUserPresence: (userId: string) => any
+    getUserPresence: (userId: string) => PresenceUpdate | null
     isUserOnline: (userId: string) => boolean
 }
 
@@ -69,25 +70,12 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
         currentUser?.id || null
     )
 
-    // Create a wrapper function to match the customToast signature
-    // const customToast = (options: {
-    //     title: string
-    //     description: string
-    //     variant?: 'default' | 'destructive'
-    // }) => {
-    //     toast({
-    //         title: options.title,
-    //         description: options.description,
-    //         variant: options.variant,
-    //     })
-    // }
-
     // Notification handling
     const { notifications, clearNotifications, removeNotification } =
         useNotificationHandlers({ socket, toast })
 
     // Message handling
-    const { realtimeMessages, addMessage, updateMessageStatus, clearConversationMessages } = useMessageHandlers({
+    const { realtimeMessages, addMessage, updateMessageStatus } = useMessageHandlers({
         socket,
         currentUserId: currentUser?.id || null,
         queryClient,
@@ -147,10 +135,6 @@ export const MessagingProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     )
 }
 
-/**
- * Custom hook to use messaging context
- * @throws Error if used outside MessagingProvider
- */
 export const useMessaging = () => {
     const context = useContext(MessagingContext)
 

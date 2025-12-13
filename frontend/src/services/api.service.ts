@@ -1,4 +1,3 @@
-// api.service.ts
 import { AxiosInstance, AxiosResponse } from 'axios'
 import axios from './index'
 

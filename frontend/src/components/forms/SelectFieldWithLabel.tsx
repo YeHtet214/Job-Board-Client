@@ -1,6 +1,7 @@
 import { useField } from "formik"
 import { Label } from "../ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { FormFieldProps } from "@/types/formFields";
 
 const experienceLevelOptions = [
     { value: 'Any', label: 'Any Experience' },
@@ -10,8 +11,7 @@ const experienceLevelOptions = [
     { value: 'Executive', label: 'Executive' },
 ]
 
-
-const SelectFieldWithLabel = ({ label, ...props }) => {
+const SelectFieldWithLabel = ({ ...props }: Partial<FormFieldProps>) => {
     const [field, meta, helpers] = useField(props)
     const { setValue } = helpers
 

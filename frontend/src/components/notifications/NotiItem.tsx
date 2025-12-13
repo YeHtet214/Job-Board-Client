@@ -35,7 +35,7 @@ const NotiItem = ({ noti, isLast }: { noti: Notification, isLast?: boolean }) =>
   const content = getNotificationContent();
 
   return (
-    <Item variant="muted" size="sm" className="hover">
+    <Item variant="muted" size="sm" className={`hover ${isLast && 'border-b-2'}`}>
       <ItemMedia className="h-2 w-2 rounded-full bg-jb-primary" />
       <ItemContent>
         <ItemTitle>{content.title}</ItemTitle>

@@ -31,7 +31,6 @@ class ApplicationService extends ApiService {
          this.endpoints.APPLICATIONS_BY_JOB_ID(jobId)
       )
 
-      console.log('Applications by job id: ', response.data.data)
       return response.data.data
    }
 

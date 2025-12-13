@@ -125,7 +125,6 @@ const ForgotPasswordPage: React.FC = () => {
                                     )}
 
                                     <InputFieldWithLabel
-                                        formik={true}
                                         name="email"
                                         label="Email"
                                         placeholder="name@example.com"

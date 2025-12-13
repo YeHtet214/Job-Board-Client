@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Building, MapPin, Briefcase, Users } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -11,8 +11,8 @@ import EmployerCTA from '@/components/employer/EmployerCTA'
 import Pagination from '@/components/Pagination'
 
 export interface CompanySearchParams {
-    page: number
-    limit: number
+    page?: number
+    limit?: number
     searchTerm: string
     industry: string
     companySize: string | null
@@ -47,6 +47,20 @@ const CompaniesPage = () => {
         setPage(event.selected + 1)
     }
 
+    const handleUpdateParams = (value: Record<string, string | string[] | null>) => {
+        // Filter out null values and convert to URLSearchParams format
+        const filteredParams: Record<string, string> = {}
+
+        Object.entries(value).forEach(([key, val]) => {
+            if (val !== null && val !== '') {
+                // Convert arrays to comma-separated strings if needed
+                filteredParams[key] = Array.isArray(val) ? val.join(',') : val
+            }
+        })
+
+        setSearchParams(filteredParams)
+    }
+
     return (
         <section>
             <div className="bg-jb-bg py-10">
@@ -61,7 +75,7 @@ const CompaniesPage = () => {
 
                     <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         <div className="md:col-span-1">
-                            <CompanyFilters updateParams={(value) => setSearchParams(value)} />
+                            <CompanyFilters updateParams={handleUpdateParams} />
                             <div className='hidden md:block'>
                                 <EmployerCTA />
                             </div>

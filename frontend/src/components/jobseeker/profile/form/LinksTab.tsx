@@ -126,7 +126,6 @@ const LinksTab = ({
                         <div className="flex items-center gap-2">
                             <Linkedin className="h-5 w-5 text-[#0077B5]" />
                             <InputFieldWithLabel
-                                formik={true}
                                 name="linkedInUrl"
                                 label="LinkedIn Profile"
                                 placeholder="https://linkedin.com/in/yourprofile"
@@ -137,7 +136,6 @@ const LinksTab = ({
                         <div className="flex items-center gap-2">
                             <Github className="h-5 w-5" />
                             <InputFieldWithLabel
-                                formik={true}
                                 name="githubUrl"
                                 label="GitHub Profile"
                                 placeholder="https://github.com/yourusername"
@@ -148,7 +146,6 @@ const LinksTab = ({
                         <div className="flex items-center gap-2">
                             <Globe className="h-5 w-5 text-blue-500" />
                             <InputFieldWithLabel
-                                formik={true}
                                 name="portfolioUrl"
                                 label="Portfolio Website"
                                 placeholder="https://yourportfolio.com"

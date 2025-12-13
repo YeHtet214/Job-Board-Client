@@ -11,7 +11,6 @@ const BrandingTab = () => {
         <div className="space-y-6">
             <div>
                 <InputFieldWithLabel
-                    formik={true}
                     name="logo"
                     label={
                         <span className="flex items-center">

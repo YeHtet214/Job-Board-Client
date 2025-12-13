@@ -45,7 +45,7 @@ const JobDetailPage = () => {
     }, [seekerData, id])()
 
     // Fetch job details using the useJob hook
-    const { data: job, isLoading, error } = useJob(id || '')
+     const { data: job, isLoading, error } = useJob(id || '')
 
     // Update recently viewed jobs when the job data is loaded
     useEffect(() => {

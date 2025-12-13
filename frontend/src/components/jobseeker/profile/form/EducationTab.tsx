@@ -4,7 +4,6 @@ import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from '@/components/ui/card'
@@ -14,7 +13,6 @@ import {
     TextareaField,
     CheckboxField,
 } from '@/components/forms'
-import LoadingSpinner from '@/components/ui/LoadingSpinner'
 import { ProfileFormValues } from './ProfileEditForm'
 
 interface EducationTabProps {
@@ -65,21 +63,18 @@ const EducationTab = ({ formik }: EducationTabProps) => {
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                             <InputFieldWithLabel
-                                                formik={true}
                                                 name={`education.${index}.institution`}
                                                 label="Institution"
                                                 placeholder="e.g. Harvard University"
                                             />
 
                                             <InputFieldWithLabel
-                                                formik={true}
                                                 name={`education.${index}.degree`}
                                                 label="Degree"
                                                 placeholder="e.g. Bachelor of Science"
                                             />
 
                                             <InputFieldWithLabel
-                                                formik={true}
                                                 name={`education.${index}.fieldOfStudy`}
                                                 label="Field of Study"
                                                 placeholder="e.g. Computer Science"
@@ -87,28 +82,24 @@ const EducationTab = ({ formik }: EducationTabProps) => {
 
                                             <div className="space-y-2 col-span-2 flex items-center gap-2">
                                                 <CheckboxField
-                                                    formik={true}
                                                     name={`education.${index}.isCurrent`}
                                                     label="I currently study here"
                                                 />
                                             </div>
 
                                             <InputFieldWithLabel
-                                                formik={true}
                                                 name={`education.${index}.startDate`}
                                                 label="Start Date"
                                                 placeholder="YYYY-MM-DD"
                                             />
 
                                             <InputFieldWithLabel
-                                                formik={true}
                                                 name={`education.${index}.endDate`}
                                                 label="End Date"
                                                 placeholder="YYYY-MM-DD"
                                             />
 
                                             <TextareaField
-                                                formik={true}
                                                 name={`education.${index}.description`}
                                                 label="Description (Optional)"
                                                 placeholder="Add more details about your education..."

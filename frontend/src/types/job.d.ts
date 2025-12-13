@@ -27,6 +27,17 @@ export interface Job {
    }
 }
 
+export interface AppliedJobInfo extends Partial<Job> {
+   interviewDate: Date
+   jobType: JobType
+   salary: string
+   requirements: string
+   responsibilities: string
+   benefits: string[]
+   qualifications: string[]
+   company: Company
+}
+
 export interface JobsResponse {
    jobs: Job[]
    meta: {

@@ -59,4 +59,9 @@ export interface ProfileCompletionItemType {
     text: string
 }
 
-export interface UpdateProfileDto extends Partial<CreateProfileDto> { }
+export interface UpdateProfileDto extends Partial<CreateProfileDto> {
+    bio: string
+    skills: string[]
+    education: Education[]
+    experience: Experience[]
+}

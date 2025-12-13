@@ -1,3 +1,4 @@
+import { API_URL } from '@/lib/constants'
 import { ApiService } from '@/services/api.service'
 import {
    LoginRequest,
@@ -12,8 +13,8 @@ class AuthService extends ApiService {
    private endpoints = {
       SIGNIN: '/auth/signin',
       SIGNUP: '/auth/signup',
-      GOOGLE_AUTH: `${import.meta.env.VITE_API_BASE_URL}/auth/google`,
-      GOOGLE_CALLBACK: `${import.meta.env.VITE_API_BASE_URL}/auth/google/callback`,
+      GOOGLE_AUTH: `${API_URL}/auth/google`,
+      GOOGLE_CALLBACK: `${API_URL}/auth/google/callback`,
       LOGOUT: '/auth/logout',
       REFRESH_TOKEN: '/auth/refresh-token',
       VERIFY_EMAIL: (token: string) => `/auth/verify-email/${token}`,
@@ -41,9 +42,8 @@ class AuthService extends ApiService {
       )
       const data = response.data.data
 
-      if (data.accessToken && data.refreshToken) {
+      if (data.accessToken) {
          localStorage.setItem('accessToken', data.accessToken)
-         localStorage.setItem('refreshToken', data.refreshToken)
       }
 
       return data.user
@@ -62,9 +62,8 @@ class AuthService extends ApiService {
       )
       const data = response.data.data
 
-      if (data.accessToken && data.refreshToken) {
+      if (data.accessToken) {
          localStorage.setItem('accessToken', data.accessToken)
-         localStorage.setItem('refreshToken', data.refreshToken)
       }
 
       return data.user
@@ -72,32 +71,27 @@ class AuthService extends ApiService {
 
    public async logout(): Promise<void> {
       try {
-         // The token will be automatically included in the Authorization header
-         // by the axios interceptor in index.ts
          await this.post<void>(this.endpoints.LOGOUT, {})
       } catch (error) {
          console.error('Logout error:', error)
       } finally {
          localStorage.removeItem('accessToken')
-         localStorage.removeItem('refreshToken')
       }
    }
 
    public async refreshToken(
       refreshToken: string
-   ): Promise<{ accessToken: string; refreshToken: string }> {
+   ): Promise<{ accessToken: string }> {
       const response = await this.post<AuthResponse>(
          this.endpoints.REFRESH_TOKEN,
          { refreshToken }
       )
       const data = response.data.data
 
-      if (data.accessToken && data.refreshToken) {
+      if (data.accessToken) {
          localStorage.setItem('accessToken', data.accessToken)
-         localStorage.setItem('refreshToken', data.refreshToken)
          return {
             accessToken: data.accessToken,
-            refreshToken: data.refreshToken,
          }
       }
 
@@ -106,10 +100,6 @@ class AuthService extends ApiService {
 
    public getToken(): string | null {
       return localStorage.getItem('accessToken')
-   }
-
-   public getRefreshToken(): string | null {
-      return localStorage.getItem('refreshToken')
    }
 
    public isAuthenticated(): boolean {

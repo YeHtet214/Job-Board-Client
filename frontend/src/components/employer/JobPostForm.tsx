@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Formik, FormikHelpers } from 'formik'
+import { Formik, FormikHelpers, FormikProps } from 'formik'
 import { useNavigate } from 'react-router-dom'
 import {
     Card,
@@ -51,7 +51,7 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
     const { toast } = useToast()
     const [skills, setSkills] = useState<string[]>(job?.requiredSkills || [])
     const [skillInput, setSkillInput] = useState('')
-    const formikRef = useRef<any>(null)
+    const formikRef = useRef<FormikProps<CreateJobDto>>(null)
 
     useEffect(() => setSkills(job?.requiredSkills || []), [job])
 
@@ -168,7 +168,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
                     <Form>
                         <CardContent className="space-y-6">
                             <InputFieldWithLabel
-                                formik={true}
                                 name="title"
                                 label="Job Title"
                                 placeholder="e.g. Senior React Developer"
@@ -177,7 +176,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
                             />
 
                             <TextareaField
-                                formik={true}
                                 name="description"
                                 label="Job Description"
                                 placeholder="Describe the job responsibilities, requirements, benefits, etc."
@@ -187,7 +185,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
                             />
 
                             <InputFieldWithLabel
-                                formik={true}
                                 name="location"
                                 label="Location"
                                 placeholder="e.g. New York, NY or Remote"
@@ -196,7 +193,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
                             />
 
                             <SelectFieldWithLabel
-                                formik={true}
                                 name="type"
                                 label="Job Type"
                                 options={jobTypeOptions}
@@ -207,7 +203,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <InputFieldWithLabel
-                                    formik={true}
                                     name="salaryMin"
                                     label="Minimum Salary"
                                     placeholder="e.g. 50000"
@@ -216,7 +211,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
                                 />
 
                                 <InputFieldWithLabel
-                                    formik={true}
                                     name="salaryMax"
                                     label="Maximum Salary"
                                     placeholder="e.g. 80000"
@@ -290,7 +284,7 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
                                         ))}
                                     </div>
                                 )}
-                                {formikRef.current?.errors.requiredSkills &&
+                                {formikRef.current?.errors?.requiredSkills &&
                                     formikRef.current?.touched
                                         .requiredSkills && (
                                         <p className="mt-1 text-sm text-red-600">
@@ -304,7 +298,6 @@ const JobPostForm = ({ job, isEditing = false }: JobPostFormProps) => {
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6">
                                 <SelectFieldWithLabel
-                                    formik={true}
                                     name="experienceLevel"
                                     label="Experience Level"
                                     options={experienceLevelOptions}

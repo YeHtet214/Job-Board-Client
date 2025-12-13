@@ -179,7 +179,7 @@ const EmployerApplicationDetailPage: React.FC = () => {
                     {/* Application tab */}
                     <TabsContent value="application">
                         <ApplicationTabContent
-                            resumeUrl={application.resumeUrl}
+                            resumeUrl={application.resumeURL}
                             coverLetter={application.coverLetter}
                             status={application.status}
                         />

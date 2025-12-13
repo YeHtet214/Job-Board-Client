@@ -82,7 +82,7 @@ const JobSeekerDashboard: React.FC = () => {
                         ? { completed: true, text: 'Added an Experience' }
                         : { completed: false, text: 'Experience added' }
                 const resume =
-                    profile.resumeUrl !== ''
+                    profile.resumeURL !== ''
                         ? { completed: true, text: 'Resume uploaded' }
                         : { completed: false, text: 'Resume uploaded' }
                 setCompletionItems([basic, skills, experience, resume])
